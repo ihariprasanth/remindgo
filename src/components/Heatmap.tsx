@@ -141,20 +141,20 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
 
   const getCellColor = (level: number, isSelected: boolean) => {
     if (isSelected) {
-      return 'bg-[#38bdf8] border-[#38bdf8] shadow-[0_0_10px_#38bdf8] scale-110';
+      return 'bg-[#22c55e] border-[#16a34a] shadow-[0_0_10px_#22c55e] scale-110';
     }
     switch (level) {
       case 1:
-        return 'bg-[#0d2744] border-[#163a66]/60 hover:border-[#38bdf8]';
+        return 'bg-[#9be9a8] border-[#7bc96f]/60 dark:bg-[#0e4429] dark:border-[#006d32]/60 hover:border-[#22c55e]';
       case 2:
-        return 'bg-[#134982] border-[#1a5b9e]/60 hover:border-[#38bdf8] shadow-[0_0_4px_rgba(19,73,130,0.5)]';
+        return 'bg-[#40c463] border-[#30a14e]/60 dark:bg-[#006d32] dark:border-[#26a641]/60 hover:border-[#22c55e] shadow-[0_0_4px_rgba(38,166,65,0.3)]';
       case 3:
-        return 'bg-[#1d6fd8] border-[#2684fc] hover:border-white shadow-[0_0_6px_rgba(29,111,216,0.6)]';
+        return 'bg-[#30a14e] border-[#216e39]/70 dark:bg-[#26a641] dark:border-[#39d353]/60 hover:border-[#22c55e] shadow-[0_0_6px_rgba(46,160,67,0.5)]';
       case 4:
-        return 'bg-[#0a84ff] border-[#38bdf8] hover:border-white shadow-[0_0_10px_rgba(10,132,255,0.85)]';
+        return 'bg-[#216e39] border-[#19582d] dark:bg-[#39d353] dark:border-[#56e36d] hover:border-emerald-400 shadow-[0_0_8px_rgba(57,211,83,0.7)]';
       case 0:
       default:
-        return 'bg-white/[0.04] border-white/[0.06] hover:border-white/30';
+        return 'bg-neutral-200/70 border-neutral-300/80 hover:border-neutral-400 dark:bg-white/[0.05] dark:border-white/[0.06] dark:hover:border-white/30';
     }
   };
 
@@ -163,12 +163,12 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
       {/* Header controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-white tracking-wide">
+          <span className="text-sm font-semibold text-neutral-900 dark:text-white tracking-wide">
             {totalCount} contribution{totalCount === 1 ? '' : 's'} in{' '}
             {viewMode === 'currentYear' ? new Date().getFullYear() : 'the last year'}
           </span>
           {leetCodeData && (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/30">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#f59e0b]/15 text-[#b45309] dark:text-[#f59e0b] border border-[#f59e0b]/30">
               +{leetCodeData.totalSolved} LeetCode
             </span>
           )}
@@ -178,13 +178,13 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
         <div className="flex items-center gap-2 flex-wrap">
           {/* Source filter */}
           {leetCodeData && (
-            <div className="flex items-center bg-black/40 p-1 rounded-xl border border-white/10 text-xs">
+            <div className="flex items-center bg-neutral-200/70 dark:bg-black/40 p-1 rounded-xl border border-neutral-300/80 dark:border-white/10 text-xs">
               <button
                 onClick={() => setDataSource('all')}
                 className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                   dataSource === 'all'
-                    ? 'bg-white/15 text-white font-medium shadow-sm'
-                    : 'text-white/50 hover:text-white'
+                    ? 'bg-white dark:bg-white/15 text-neutral-900 dark:text-white font-medium shadow-sm'
+                    : 'text-neutral-500 hover:text-neutral-900 dark:text-white/50 dark:hover:text-white'
                 }`}
               >
                 <Sparkles size={11} /> All
@@ -193,8 +193,8 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
                 onClick={() => setDataSource('tasks')}
                 className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                   dataSource === 'tasks'
-                    ? 'bg-white/15 text-white font-medium shadow-sm'
-                    : 'text-white/50 hover:text-white'
+                    ? 'bg-white dark:bg-white/15 text-neutral-900 dark:text-white font-medium shadow-sm'
+                    : 'text-neutral-500 hover:text-neutral-900 dark:text-white/50 dark:hover:text-white'
                 }`}
               >
                 <CheckCircle2 size={11} /> Tasks
@@ -203,8 +203,8 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
                 onClick={() => setDataSource('leetcode')}
                 className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                   dataSource === 'leetcode'
-                    ? 'bg-white/15 text-white font-medium shadow-sm'
-                    : 'text-white/50 hover:text-white'
+                    ? 'bg-white dark:bg-white/15 text-neutral-900 dark:text-white font-medium shadow-sm'
+                    : 'text-neutral-500 hover:text-neutral-900 dark:text-white/50 dark:hover:text-white'
                 }`}
               >
                 <Code2 size={11} /> LeetCode
@@ -213,13 +213,13 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
           )}
 
           {/* Time range toggle */}
-          <div className="flex items-center bg-black/40 p-1 rounded-xl border border-white/10 text-xs">
+          <div className="flex items-center bg-neutral-200/70 dark:bg-black/40 p-1 rounded-xl border border-neutral-300/80 dark:border-white/10 text-xs">
             <button
               onClick={() => setViewMode('last12Months')}
               className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
                 viewMode === 'last12Months'
-                  ? 'bg-white/15 text-white font-medium shadow-sm'
-                  : 'text-white/50 hover:text-white'
+                  ? 'bg-white dark:bg-white/15 text-neutral-900 dark:text-white font-medium shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-900 dark:text-white/50 dark:hover:text-white'
               }`}
             >
               12 Months
@@ -228,8 +228,8 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
               onClick={() => setViewMode('currentYear')}
               className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
                 viewMode === 'currentYear'
-                  ? 'bg-white/15 text-white font-medium shadow-sm'
-                  : 'text-white/50 hover:text-white'
+                  ? 'bg-white dark:bg-white/15 text-neutral-900 dark:text-white font-medium shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-900 dark:text-white/50 dark:hover:text-white'
               }`}
             >
               {new Date().getFullYear()}
@@ -242,7 +242,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
       <div className="overflow-x-auto pb-2 relative">
         <div className="inline-block min-w-full">
           {/* Month labels header */}
-          <div className="flex ml-8 mb-2 h-4 relative text-[11px] text-white/40 font-mono">
+          <div className="flex ml-8 mb-2 h-4 relative text-[11px] text-neutral-500 dark:text-white/40 font-mono">
             {monthLabels.map((m, idx) => (
               <span
                 key={idx}
@@ -259,7 +259,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
           {/* Grid with Day Labels */}
           <div className="flex">
             {/* Day Labels (Mon, Wed, Fri) */}
-            <div className="flex flex-col justify-between text-[10px] text-white/40 font-mono pr-2.5 h-[104px] pt-[15px] pb-[4px]">
+            <div className="flex flex-col justify-between text-[10px] text-neutral-500 dark:text-white/40 font-mono pr-2.5 h-[104px] pt-[15px] pb-[4px]">
               <span>Mon</span>
               <span>Wed</span>
               <span>Fri</span>
@@ -299,12 +299,12 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
       </div>
 
       {/* Footer: Legend & Day Filter Reset */}
-      <div className="flex items-center justify-between pt-3 border-t border-white/[0.08] mt-3 text-xs text-white/50">
+      <div className="flex items-center justify-between pt-3 border-t border-neutral-200 dark:border-white/[0.08] mt-3 text-xs text-neutral-600 dark:text-white/50">
         <div>
           {selectedDate && (
             <button
               onClick={() => onSelectDate?.('')}
-              className="text-[#58a6ff] hover:underline flex items-center gap-1 font-medium"
+              className="text-[#0a84ff] dark:text-[#58a6ff] hover:underline flex items-center gap-1 font-medium"
             >
               Showing items for {selectedDate} • Clear filter
             </button>
@@ -313,11 +313,11 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
 
         <div className="flex items-center gap-1.5 ml-auto text-[11px]">
           <span>Less</span>
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-white/[0.05] border border-white/[0.08]" />
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#0d2744] border border-[#163a66]" />
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#134982] border border-[#1a5b9e]" />
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#1d6fd8] border border-[#2684fc]" />
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#0a84ff] border border-[#38bdf8] shadow-[0_0_4px_#0a84ff]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-neutral-200 dark:bg-white/[0.05] border border-neutral-300 dark:border-white/[0.08]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#9be9a8] dark:bg-[#0e4429] border border-[#7bc96f] dark:border-[#006d32]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#40c463] dark:bg-[#006d32] border border-[#30a14e] dark:border-[#26a641]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#30a14e] dark:bg-[#26a641] border border-[#216e39] dark:border-[#39d353]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#216e39] dark:bg-[#39d353] border border-[#19582d] dark:border-[#56e36d] shadow-[0_0_4px_#39d353]" />
           <span>More</span>
         </div>
       </div>
@@ -325,22 +325,22 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
       {/* Tooltip */}
       {hoveredCell && (
         <div
-          className="fixed z-50 transform -translate-x-1/2 -translate-y-full mb-2 pointer-events-none liquid-glass-pill text-white text-xs px-3 py-2 rounded-xl shadow-2xl whitespace-nowrap border border-white/20"
+          className="fixed z-50 transform -translate-x-1/2 -translate-y-full mb-2 pointer-events-none liquid-glass-pill text-neutral-900 dark:text-white text-xs px-3 py-2 rounded-xl shadow-2xl whitespace-nowrap border border-neutral-200 dark:border-white/20"
           style={{
             left: `${hoveredCell.x}px`,
             top: `${hoveredCell.y - 8}px`
           }}
         >
-          <div className="font-semibold text-[#38bdf8]">
+          <div className="font-semibold text-emerald-600 dark:text-[#39d353]">
             {hoveredCell.cell.count === 0
               ? 'No activity'
               : `${hoveredCell.cell.count} total contribution${hoveredCell.cell.count === 1 ? '' : 's'}`}
           </div>
-          <div className="text-white/60 text-[11px]">
+          <div className="text-neutral-600 dark:text-white/60 text-[11px]">
             on {format(hoveredCell.cell.date, 'MMM d, yyyy')}
           </div>
           {(hoveredCell.cell.taskCount > 0 || hoveredCell.cell.leetcodeCount > 0) && (
-            <div className="text-[10px] text-white/50 pt-1 border-t border-white/10 mt-1 flex gap-2">
+            <div className="text-[10px] text-neutral-500 dark:text-white/50 pt-1 border-t border-neutral-200 dark:border-white/10 mt-1 flex gap-2">
               <span>Tasks: {hoveredCell.cell.taskCount}</span>
               <span>LeetCode: {hoveredCell.cell.leetcodeCount}</span>
             </div>

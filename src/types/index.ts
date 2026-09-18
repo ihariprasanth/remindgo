@@ -111,6 +111,13 @@ export interface ElectronAPI {
   // System
   getAppVersion: () => Promise<string>;
   onOpenAddTask?: (callback: () => void) => () => void;
+  onTasksChanged?: (callback: () => void) => () => void;
+
+  // Desktop Widget
+  toggleWidget: () => Promise<void>;
+  openMainWindow: () => Promise<void>;
+  setWidgetAlwaysOnTop: (pinned: boolean) => Promise<void>;
+  isWidgetPinned: () => Promise<boolean>;
 }
 
 declare global {

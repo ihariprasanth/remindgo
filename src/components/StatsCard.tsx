@@ -144,19 +144,19 @@ export const StatsCard: React.FC<StatsCardProps> = ({ tasks }) => {
             className={`liquid-glass-card rounded-2xl p-4 flex flex-col justify-between ${c.glow}`}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-medium text-white/50">{c.title}</span>
+              <span className="text-xs font-medium text-neutral-600 dark:text-white/50">{c.title}</span>
               <div
-                className={`w-8 h-8 rounded-xl bg-gradient-to-br ${c.bgGradient} flex items-center justify-center border border-white/10`}
+                className={`w-8 h-8 rounded-xl bg-gradient-to-br ${c.bgGradient} flex items-center justify-center border border-neutral-200 dark:border-white/10`}
                 style={{ color: c.color }}
               >
                 <Icon size={16} />
               </div>
             </div>
             <div>
-              <div className="text-2xl font-bold tracking-tight text-white font-mono">
+              <div className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white font-mono">
                 {c.value}
               </div>
-              <div className="text-[11px] text-white/40 mt-0.5">{c.subtitle}</div>
+              <div className="text-[11px] text-neutral-500 dark:text-white/40 mt-0.5">{c.subtitle}</div>
             </div>
           </div>
         );

@@ -50,5 +50,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => {
       ipcRenderer.removeListener('open-add-task', handler);
     };
-  }
+  },
+  onTasksChanged: (callback: () => void) => {
+    const handler = () => callback();
+    ipcRenderer.on('tasks-changed', handler);
+    return () => {
+      ipcRenderer.removeListener('tasks-changed', handler);
+    };
+  },
+
+  // Desktop Widget
+  toggleWidget: () => ipcRenderer.invoke('toggle-widget'),
+  openMainWindow: () => ipcRenderer.invoke('open-main-window'),
+  setWidgetAlwaysOnTop: (pinned: boolean) => ipcRenderer.invoke('widget-set-always-on-top', pinned),
+  isWidgetPinned: () => ipcRenderer.invoke('widget-is-pinned')
 });

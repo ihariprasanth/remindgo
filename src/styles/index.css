@@ -108,10 +108,34 @@ body {
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.liquid-glass-card:hover {
+.dark .liquid-glass-card:hover {
   background: var(--bg-card-hover);
   border-color: rgba(255, 255, 255, 0.18);
   box-shadow: var(--border-specular), 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
+.light .liquid-glass-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: var(--border-specular), 0 10px 30px rgba(0, 0, 0, 0.10);
+}
+
+.liquid-glass-pill {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.dark .liquid-glass-pill {
+  background: rgba(18, 18, 18, 0.90);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.light .liquid-glass-pill {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: #1d1d1f;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .liquid-nav-pill-active {
@@ -145,15 +169,31 @@ body {
 }
 
 .macos-btn-secondary {
+  border-radius: 10px;
+}
+
+.dark .macos-btn-secondary {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
   color: #ffffff;
 }
 
-.macos-btn-secondary:hover {
+.dark .macos-btn-secondary:hover {
   background: rgba(255, 255, 255, 0.14);
   border-color: rgba(255, 255, 255, 0.22);
+}
+
+.light .macos-btn-secondary {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  color: #1d1d1f;
+}
+
+.light .macos-btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.18);
 }
 
 .macos-input {

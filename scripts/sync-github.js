@@ -54,7 +54,7 @@ async function syncGit() {
   };
 
   const version = 'v2.5.0';
-  const commitMsg = `Release ${version}: Official RemindGo launch with Liquid Glass UI, LeetCode Tracker, and Apple SF Pro typography`;
+  const commitMsg = `Update v2.5.0: Classical GitHub Green Heatmap, Light/Dark contrast overhaul, and Floating Windows Desktop Widget`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

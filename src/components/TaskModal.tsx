@@ -83,16 +83,16 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="bg-[#121821]/80 backdrop-blur-3xl border border-white/15 rounded-3xl w-full max-w-lg shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="bg-white/95 dark:bg-[#121821]/90 backdrop-blur-3xl border border-neutral-200 dark:border-white/15 rounded-3xl w-full max-w-lg shadow-[0_20px_60px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-          <h2 className="text-sm font-bold text-white tracking-wide">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-white/10">
+          <h2 className="text-sm font-bold text-neutral-900 dark:text-white tracking-wide">
             {initialTask ? 'Edit Task & Reminder' : 'Create New Task & Reminder'}
           </h2>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-colors cursor-pointer"
+            className="w-7 h-7 rounded-full bg-neutral-100 hover:bg-neutral-200 dark:bg-white/10 dark:hover:bg-white/20 flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:text-white/70 dark:hover:text-white transition-colors cursor-pointer"
           >
             <X size={14} />
           </button>
@@ -102,8 +102,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1">
           {/* Title */}
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">
-              Task Title <span className="text-red-400">*</span>
+            <label className="block text-xs font-medium text-neutral-700 dark:text-white/60 mb-1.5">
+              Task Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -112,13 +112,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Solve LeetCode daily problem"
-              className="w-full bg-black/40 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#0a84ff] focus:ring-1 focus:ring-[#0a84ff]"
+              className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-white/30 focus:outline-none focus:border-[#0a84ff] focus:ring-1 focus:ring-[#0a84ff]"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">
+            <label className="block text-xs font-medium text-neutral-700 dark:text-white/60 mb-1.5">
               Description (optional)
             </label>
             <textarea
@@ -126,35 +126,35 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Extra details, links, or notes..."
-              className="w-full bg-black/40 border border-white/15 rounded-xl px-3.5 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#0a84ff] focus:ring-1 focus:ring-[#0a84ff] resize-none"
+              className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3.5 py-2 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-white/30 focus:outline-none focus:border-[#0a84ff] focus:ring-1 focus:ring-[#0a84ff] resize-none"
             />
           </div>
 
           {/* Date & Time Row */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1.5">
-                <Calendar size={13} className="text-[#0a84ff]" /> Date <span className="text-red-400">*</span>
+              <label className="block text-xs font-medium text-neutral-700 dark:text-white/60 mb-1.5 flex items-center gap-1.5">
+                <Calendar size={13} className="text-[#0a84ff]" /> Date <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#0a84ff]"
+                className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3 py-2 text-sm text-neutral-900 dark:text-white focus:outline-none focus:border-[#0a84ff]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1.5">
-                <Clock size={13} className="text-[#58a6ff]" /> Reminder Time <span className="text-red-400">*</span>
+              <label className="block text-xs font-medium text-neutral-700 dark:text-white/60 mb-1.5 flex items-center gap-1.5">
+                <Clock size={13} className="text-[#0a84ff]" /> Reminder Time <span className="text-red-500">*</span>
               </label>
               <input
                 type="time"
                 required
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#0a84ff]"
+                className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3 py-2 text-sm text-neutral-900 dark:text-white focus:outline-none focus:border-[#0a84ff]"
               />
             </div>
           </div>
@@ -162,26 +162,26 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {/* Category & Repeat */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1.5">
+              <label className="block text-xs font-medium text-neutral-700 dark:text-white/60 mb-1.5 flex items-center gap-1.5">
                 <Tag size={13} className="text-[#f59e0b]" /> Category
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#39d353]"
+                className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3 py-2 text-sm text-neutral-900 dark:text-white focus:outline-none focus:border-[#0a84ff]"
               >
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c} className="bg-[#121821] text-white">
+                  <option key={c} value={c} className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">
                     {c}
                   </option>
                 ))}
-                <option value="Other" className="bg-[#121821] text-white">Custom...</option>
+                <option value="Other" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Custom...</option>
               </select>
             </div>
 
             {category === 'Other' ? (
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1.5">
+                <label className="block text-xs font-medium text-neutral-700 dark:text-white/60 mb-1.5">
                   Custom Category Name
                 </label>
                 <input
@@ -189,22 +189,22 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   value={customCategory}
                   onChange={(e) => setCustomCategory(e.target.value)}
                   placeholder="e.g., Coding"
-                  className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#39d353]"
+                  className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3 py-2 text-sm text-neutral-900 dark:text-white focus:outline-none focus:border-[#0a84ff]"
                 />
               </div>
             ) : (
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1.5">
+                <label className="block text-xs font-medium text-neutral-700 dark:text-white/60 mb-1.5 flex items-center gap-1.5">
                   <Repeat size={13} className="text-[#bc8cff]" /> Repeat
                 </label>
                 <select
                   value={repeat}
                   onChange={(e) => setRepeat(e.target.value as TaskRepeat)}
-                  className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#39d353]"
+                  className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3 py-2 text-sm text-neutral-900 dark:text-white focus:outline-none focus:border-[#0a84ff]"
                 >
-                  <option value="none" className="bg-[#121821] text-white">Does not repeat</option>
-                  <option value="daily" className="bg-[#121821] text-white">Daily</option>
-                  <option value="weekly" className="bg-[#121821] text-white">Weekly</option>
+                  <option value="none" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Does not repeat</option>
+                  <option value="daily" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Daily</option>
+                  <option value="weekly" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Weekly</option>
                 </select>
               </div>
             )}
@@ -212,7 +212,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* Priority */}
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1.5">
+            <label className="block text-xs font-medium text-neutral-700 dark:text-white/60 mb-1.5 flex items-center gap-1.5">
               <Flag size={13} /> Priority
             </label>
             <div className="grid grid-cols-3 gap-2.5">
@@ -220,11 +220,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 const isSelected = priority === p;
                 let colorClass = '';
                 if (p === 'low') {
-                  colorClass = isSelected ? 'bg-[#58a6ff]/25 text-[#58a6ff] border-[#58a6ff]' : 'text-white/50 border-white/10';
+                  colorClass = isSelected ? 'bg-[#58a6ff]/25 text-[#0a84ff] border-[#0a84ff]' : 'text-neutral-600 dark:text-white/50 border-neutral-300 dark:border-white/10';
                 } else if (p === 'medium') {
-                  colorClass = isSelected ? 'bg-[#f59e0b]/25 text-[#f59e0b] border-[#f59e0b]' : 'text-white/50 border-white/10';
+                  colorClass = isSelected ? 'bg-[#f59e0b]/25 text-[#b45309] dark:text-[#f59e0b] border-[#f59e0b]' : 'text-neutral-600 dark:text-white/50 border-neutral-300 dark:border-white/10';
                 } else {
-                  colorClass = isSelected ? 'bg-[#f43f5e]/25 text-[#f43f5e] border-[#f43f5e]' : 'text-white/50 border-white/10';
+                  colorClass = isSelected ? 'bg-[#f43f5e]/25 text-[#e11d48] dark:text-[#f43f5e] border-[#f43f5e]' : 'text-neutral-600 dark:text-white/50 border-neutral-300 dark:border-white/10';
                 }
 
                 return (
@@ -233,7 +233,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     type="button"
                     onClick={() => setPriority(p)}
                     className={`py-2 px-3 rounded-xl text-xs font-semibold border capitalize transition-all cursor-pointer ${colorClass} ${
-                      !isSelected ? 'hover:bg-white/[0.05]' : 'shadow-md'
+                      !isSelected ? 'hover:bg-black/5 dark:hover:bg-white/[0.05]' : 'shadow-md'
                     }`}
                   >
                     {p}
@@ -244,11 +244,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200 dark:border-white/10">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-white/60 hover:text-white rounded-xl transition-colors cursor-pointer"
+              className="px-4 py-2 text-xs font-medium text-neutral-600 hover:text-neutral-900 dark:text-white/60 dark:hover:text-white rounded-xl transition-colors cursor-pointer"
             >
               Cancel
             </button>

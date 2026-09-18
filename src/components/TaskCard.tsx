@@ -54,9 +54,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onToggle, onEdit, onDe
     <div
       className={`group relative rounded-2xl p-4 transition-all liquid-glass-card ${
         isCompleted
-          ? 'opacity-60 bg-black/20 border-white/[0.04]'
+          ? 'opacity-60 bg-black/5 dark:bg-black/20 border-neutral-200 dark:border-white/[0.04]'
           : isOverdue
-          ? 'border-red-500/30 bg-red-950/10'
+          ? 'border-red-500/30 bg-red-50 dark:bg-red-950/10'
           : ''
       }`}
     >
@@ -68,7 +68,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onToggle, onEdit, onDe
           className={`mt-0.5 w-5 h-5 rounded-lg border flex items-center justify-center transition-all flex-shrink-0 cursor-pointer ${
             isCompleted
               ? 'bg-[#0a84ff] border-[#38bdf8] text-white shadow-[0_0_10px_rgba(10,132,255,0.5)]'
-              : 'border-white/20 hover:border-[#0a84ff] bg-black/40'
+              : 'border-neutral-300 dark:border-white/20 hover:border-[#0a84ff] bg-neutral-100 dark:bg-black/40'
           }`}
         >
           {isCompleted && <Check size={12} strokeWidth={3} />}
@@ -79,14 +79,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onToggle, onEdit, onDe
           <div className="flex items-center gap-2 flex-wrap mb-1.5">
             <h3
               className={`text-sm font-semibold leading-tight ${
-                isCompleted ? 'line-through text-white/40' : 'text-white'
+                isCompleted ? 'line-through text-neutral-400 dark:text-white/40' : 'text-neutral-900 dark:text-white'
               }`}
             >
               {task.title}
             </h3>
 
             {/* Category tag */}
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.06] text-white/60 border border-white/[0.08]">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-white/[0.06] text-neutral-600 dark:text-white/60 border border-neutral-200 dark:border-white/[0.08]">
               {task.category}
             </span>
 
@@ -95,7 +95,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onToggle, onEdit, onDe
 
             {/* Repeat indicator */}
             {task.repeat !== 'none' && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#bc8cff]/15 text-[#bc8cff] border border-[#bc8cff]/30 flex items-center gap-1">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#bc8cff]/15 text-[#9333ea] dark:text-[#bc8cff] border border-[#bc8cff]/30 flex items-center gap-1">
                 <Repeat size={10} /> {task.repeat}
               </span>
             )}
@@ -103,19 +103,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onToggle, onEdit, onDe
 
           {/* Description */}
           {task.description && (
-            <p className="text-xs text-white/50 line-clamp-2 mb-2">
+            <p className="text-xs text-neutral-600 dark:text-white/50 line-clamp-2 mb-2">
               {task.description}
             </p>
           )}
 
           {/* Metadata footer */}
-          <div className="flex items-center gap-3 text-xs text-white/50 flex-wrap mt-2">
+          <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-white/50 flex-wrap mt-2">
             <div
               className={`flex items-center gap-1.5 font-mono text-[11px] ${
                 isOverdue ? 'text-[#f43f5e] font-semibold' : ''
               }`}
             >
-              {isOverdue ? <AlertTriangle size={13} /> : <Clock size={13} className="text-[#58a6ff]" />}
+              {isOverdue ? <AlertTriangle size={13} /> : <Clock size={13} className="text-[#0a84ff] dark:text-[#58a6ff]" />}
               <span>{task.date}</span>
               <span>•</span>
               <span>{task.time}</span>
@@ -141,14 +141,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onToggle, onEdit, onDe
           <button
             onClick={() => onEdit(task)}
             title="Edit task"
-            className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-neutral-400 hover:text-neutral-900 dark:text-white/50 dark:hover:text-white hover:bg-neutral-200/60 dark:hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
           >
             <Edit2 size={13} />
           </button>
           <button
             onClick={() => onDelete(task.id)}
             title="Delete task"
-            className="p-1.5 text-white/50 hover:text-red-400 hover:bg-red-500/15 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-neutral-400 hover:text-red-600 dark:text-white/50 dark:hover:text-red-400 hover:bg-red-500/15 rounded-lg transition-colors cursor-pointer"
           >
             <Trash2 size={13} />
           </button>

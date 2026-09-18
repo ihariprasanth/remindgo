@@ -4,6 +4,7 @@ import fs from 'fs';
 import { dbInstance } from './db/database';
 import { createMainWindow, getMainWindow, setQuitting } from './windows/mainWindow';
 import { createOrShowAlarmWindow, closeAlarmWindow } from './windows/alarmWindow';
+import { toggleWidgetWindow, getWidgetWindow, setWidgetAlwaysOnTop, isWidgetAlwaysOnTop } from './windows/widgetWindow';
 import { setupTray, destroyTray } from './tray';
 import { AlarmScheduler } from './scheduler';
 import { fetchLeetCodeData } from './leetcode';
@@ -83,6 +84,11 @@ app.on('window-all-closed', () => {
   }
 });
 
+function broadcastTasksChanged() {
+  getMainWindow()?.webContents.send('tasks-changed');
+  getWidgetWindow()?.webContents.send('tasks-changed');
+}
+
 // ==========================================
 // IPC Handlers - Tasks
 // ==========================================
@@ -99,25 +105,30 @@ ipcMain.handle('create-task', async (_event, taskData: Omit<Task, 'id' | 'create
   };
   const created = dbInstance.createTask(newTask);
   scheduler?.checkDueTasks();
+  broadcastTasksChanged();
   return created;
 });
 
 ipcMain.handle('update-task', async (_event, task: Task) => {
   const updated = dbInstance.updateTask(task);
   scheduler?.checkDueTasks();
+  broadcastTasksChanged();
   return updated;
 });
 
 ipcMain.handle('delete-task', async (_event, id: string) => {
-  return dbInstance.deleteTask(id);
+  const res = dbInstance.deleteTask(id);
+  broadcastTasksChanged();
+  return res;
 });
 
 ipcMain.handle('toggle-task-status', async (_event, id: string) => {
   const task = dbInstance.getTaskById(id);
   if (!task) throw new Error('Task not found');
 
+  let result: Task;
   if (task.status === 'completed') {
-    return dbInstance.setTaskStatus(id, 'pending', null);
+    result = dbInstance.setTaskStatus(id, 'pending', null);
   } else {
     if (task.repeat === 'daily' || task.repeat === 'weekly') {
       const [year, month, day] = task.date.split('-').map(Number);
@@ -142,11 +153,13 @@ ipcMain.handle('toggle-task-status', async (_event, id: string) => {
       task.status = 'pending';
       task.last_notified_at = null;
       task.snoozed_until = null;
-      return dbInstance.updateTask(task);
+      result = dbInstance.updateTask(task);
     } else {
-      return dbInstance.setTaskStatus(id, 'completed', new Date().toISOString());
+      result = dbInstance.setTaskStatus(id, 'completed', new Date().toISOString());
     }
   }
+  broadcastTasksChanged();
+  return result;
 });
 
 // ==========================================
@@ -314,4 +327,30 @@ ipcMain.handle('window-is-maximized', (event) => {
 
 ipcMain.handle('get-app-version', () => {
   return app.getVersion();
+});
+
+// ==========================================
+// IPC Handlers - Desktop Widget
+// ==========================================
+ipcMain.handle('toggle-widget', async () => {
+  toggleWidgetWindow(isDev, devServerUrl);
+});
+
+ipcMain.handle('widget-set-always-on-top', async (_event, pinned: boolean) => {
+  setWidgetAlwaysOnTop(pinned);
+});
+
+ipcMain.handle('widget-is-pinned', async () => {
+  return isWidgetAlwaysOnTop();
+});
+
+ipcMain.handle('open-main-window', async () => {
+  const win = getMainWindow();
+  if (win) {
+    if (win.isMinimized()) win.restore();
+    win.show();
+    win.focus();
+  } else {
+    createMainWindow(isDev, devServerUrl);
+  }
 });

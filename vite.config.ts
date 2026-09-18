@@ -15,7 +15,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
-        alarm: path.resolve(__dirname, 'alarm.html')
+        alarm: path.resolve(__dirname, 'alarm.html'),
+        widget: path.resolve(__dirname, 'widget.html')
       }
     }
   },

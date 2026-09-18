@@ -69,21 +69,21 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   return (
     <div className="p-6 space-y-6 overflow-y-auto h-full max-w-4xl mx-auto">
       <div>
-        <h2 className="text-lg font-bold text-white tracking-wide">Application Preferences</h2>
-        <p className="text-xs text-white/50">
+        <h2 className="text-lg font-bold text-[var(--text-main)] tracking-wide">Application Preferences</h2>
+        <p className="text-xs text-[var(--text-sub)]">
           Configure alarms, tray behavior, sound alerts, LeetCode profile, and offline backups
         </p>
       </div>
 
       {/* LeetCode Sync Settings */}
       <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
+        <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
           <Code2 size={16} className="text-[#f59e0b]" />
           LeetCode Account Integration
         </h3>
 
         <div>
-          <label className="block text-xs font-medium text-white/60 mb-1.5">
+          <label className="block text-xs font-medium text-[var(--text-sub)] mb-1.5">
             Default LeetCode Username
           </label>
           <div className="flex gap-2 max-w-md">
@@ -92,7 +92,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               value={lcUsername}
               onChange={(e) => setLcUsername(e.target.value)}
               placeholder="e.g. neal_wu"
-              className="flex-1 bg-black/40 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#f59e0b] font-mono"
+              className="flex-1 bg-black/5 dark:bg-black/40 border border-[var(--border-glass)] rounded-xl px-3.5 py-2 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#f59e0b] font-mono"
             />
             <button
               onClick={handleSaveLeetCode}
@@ -101,7 +101,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               Save
             </button>
           </div>
-          <p className="text-[11px] text-white/40 mt-1.5">
+          <p className="text-[11px] text-[var(--text-muted)] mt-1.5">
             Your LeetCode profile data and submission activity will be cached offline in local SQLite.
           </p>
         </div>
@@ -109,14 +109,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
       {/* Alarm & Sound Settings */}
       <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
+        <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
           <Bell size={16} className="text-[#0a84ff]" />
           Alarm & Sound Alerts
         </h3>
 
         {/* Sound Selection */}
         <div>
-          <label className="block text-xs font-medium text-white/60 mb-2">
+          <label className="block text-xs font-medium text-[var(--text-sub)] mb-2">
             Alarm Audio Profile
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -128,17 +128,17 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => handleSoundChange(opt.id)}
                   className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-white/[0.08] border-[#0a84ff] shadow-[0_0_12px_rgba(10,132,255,0.25)]'
-                      : 'border-white/10 hover:border-white/25 bg-black/20'
+                      ? 'bg-blue-500/10 dark:bg-white/[0.08] border-[#0a84ff] shadow-[0_0_12px_rgba(10,132,255,0.25)]'
+                      : 'border-[var(--border-glass)] hover:border-[#0a84ff]/50 bg-black/5 dark:bg-black/20'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-semibold ${isSelected ? 'text-[#0a84ff]' : 'text-white'}`}>
+                    <span className={`text-xs font-semibold ${isSelected ? 'text-[#0a84ff]' : 'text-[var(--text-main)]'}`}>
                       {opt.name}
                     </span>
                     {isSelected && <Check size={14} className="text-[#0a84ff]" />}
                   </div>
-                  <p className="text-[11px] text-white/50 mt-1">{opt.description}</p>
+                  <p className="text-[11px] text-[var(--text-sub)] mt-1">{opt.description}</p>
                 </div>
               );
             })}
@@ -148,11 +148,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         {/* Volume & Preview Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center justify-between">
+            <label className="block text-xs font-medium text-[var(--text-sub)] mb-1.5 flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Volume2 size={14} /> Alarm Volume
               </span>
-              <span className="font-mono text-[11px] text-white/80">{Math.round(settings.soundVolume * 100)}%</span>
+              <span className="font-mono text-[11px] text-[var(--text-main)]">{Math.round(settings.soundVolume * 100)}%</span>
             </label>
             <input
               type="range"
@@ -170,15 +170,15 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">
+            <label className="block text-xs font-medium text-[var(--text-sub)] mb-1.5">
               Test Audio Sound
             </label>
             <button
               onClick={handleToggleSoundPreview}
               className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition-all cursor-pointer ${
                 isPlayingPreview
-                  ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.3)]'
-                  : 'bg-white/10 text-white border-white/15 hover:border-[#0a84ff]'
+                  ? 'bg-red-500/20 text-red-500 dark:text-red-400 border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.3)]'
+                  : 'bg-black/5 dark:bg-white/10 text-[var(--text-main)] border-[var(--border-glass)] hover:border-[#0a84ff]'
               }`}
             >
               {isPlayingPreview ? (
@@ -196,7 +196,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
         {/* Default Snooze Duration */}
         <div className="pt-2">
-          <label className="block text-xs font-medium text-white/60 mb-1.5">
+          <label className="block text-xs font-medium text-[var(--text-sub)] mb-1.5">
             Default Snooze Duration
           </label>
           <div className="flex gap-2">
@@ -207,7 +207,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 className={`px-3.5 py-2 rounded-xl text-xs font-mono font-semibold border transition-all cursor-pointer ${
                   settings.snoozeDuration === mins
                     ? 'bg-[#0a84ff] text-white border-[#38bdf8] shadow-[0_0_12px_rgba(10,132,255,0.3)]'
-                    : 'bg-black/30 text-white/60 border-white/10 hover:border-white/30'
+                    : 'bg-black/5 dark:bg-black/30 text-[var(--text-sub)] border-[var(--border-glass)] hover:border-[#0a84ff]'
                 }`}
               >
                 {mins} mins
@@ -219,7 +219,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
       {/* Windows & Background Running Behavior */}
       <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
+        <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
           <HardDrive size={16} className="text-[#58a6ff]" />
           Windows Background Behavior
         </h3>
@@ -289,19 +289,19 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
       {/* Backup & Local Data */}
       <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
+        <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
           <ShieldCheck size={16} className="text-[#bc8cff]" />
           Offline Data & Local Backups
         </h3>
 
-        <p className="text-xs text-white/50">
+        <p className="text-xs text-[var(--text-sub)]">
           All tasks, activity history, and settings are saved locally inside an SQLite database file. No external internet or cloud account is required.
         </p>
 
         <div className="flex gap-3 flex-wrap">
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white border border-white/15 py-2.5 px-4 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+            className="flex items-center gap-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[var(--text-main)] border border-[var(--border-glass)] py-2.5 px-4 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
           >
             <Download size={14} className="text-[#0a84ff]" />
             Export Backup (JSON)
@@ -309,7 +309,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
           <button
             onClick={handleImport}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white border border-white/15 py-2.5 px-4 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+            className="flex items-center gap-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[var(--text-main)] border border-[var(--border-glass)] py-2.5 px-4 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
           >
             <Upload size={14} className="text-[#58a6ff]" />
             Import Backup (JSON)

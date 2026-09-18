@@ -117,8 +117,8 @@ export const TasksPage: React.FC<TasksPageProps> = ({
       {/* Title & Action Bar */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-lg font-bold text-white tracking-wide">Task & Reminder Manager</h2>
-          <p className="text-xs text-white/50">
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white tracking-wide">Task & Reminder Manager</h2>
+          <p className="text-xs text-neutral-600 dark:text-white/50">
             Schedule exact alarms and manage your productivity
           </p>
         </div>
@@ -142,14 +142,14 @@ export const TasksPage: React.FC<TasksPageProps> = ({
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? 'liquid-glass-active-pill'
-                  : 'text-white/60 hover:text-white hover:bg-white/[0.05]'
+                  ? 'liquid-glass-active-pill font-semibold'
+                  : 'text-neutral-600 dark:text-white/60 hover:text-neutral-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/[0.05]'
               }`}
             >
               <span>{tab.label}</span>
               <span
                 className={`text-[10px] px-2 py-0.2 rounded-full font-mono ${
-                  isActive ? 'bg-[#0a84ff]/20 text-[#0a84ff]' : 'bg-white/10 text-white/60'
+                  isActive ? 'bg-[#0a84ff]/20 text-[#0a84ff]' : 'bg-neutral-200 dark:bg-white/10 text-neutral-700 dark:text-white/60'
                 }`}
               >
                 {tab.count}
@@ -163,27 +163,27 @@ export const TasksPage: React.FC<TasksPageProps> = ({
       <div className="flex items-center gap-3 flex-wrap">
         {/* Search input */}
         <div className="relative flex-1 min-w-[220px]">
-          <Search size={14} className="absolute left-3.5 top-3 text-white/40" />
+          <Search size={14} className="absolute left-3.5 top-3 text-neutral-400 dark:text-white/40" />
           <input
             type="text"
             placeholder="Search tasks by title, category, notes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 bg-black/40 border border-white/15 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#0a84ff]"
+            className="w-full pl-9 pr-3.5 py-2 bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl text-xs text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-white/40 focus:outline-none focus:border-[#0a84ff]"
           />
         </div>
 
         {/* Category Filter */}
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-white/50">Category:</span>
+          <span className="text-xs text-neutral-600 dark:text-white/50">Category:</span>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-black/40 border border-white/15 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a84ff]"
+            className="bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 text-xs text-neutral-900 dark:text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a84ff]"
           >
-            <option value="all" className="bg-[#121821]">All Categories</option>
+            <option value="all" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">All Categories</option>
             {categories.map((c) => (
-              <option key={c} value={c} className="bg-[#121821]">
+              <option key={c} value={c} className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">
                 {c}
               </option>
             ))}
@@ -192,16 +192,16 @@ export const TasksPage: React.FC<TasksPageProps> = ({
 
         {/* Priority Filter */}
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-white/50">Priority:</span>
+          <span className="text-xs text-neutral-600 dark:text-white/50">Priority:</span>
           <select
             value={selectedPriority}
             onChange={(e) => setSelectedPriority(e.target.value)}
-            className="bg-black/40 border border-white/15 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a84ff]"
+            className="bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 text-xs text-neutral-900 dark:text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a84ff]"
           >
-            <option value="all" className="bg-[#121821]">All Priorities</option>
-            <option value="high" className="bg-[#121821]">High</option>
-            <option value="medium" className="bg-[#121821]">Medium</option>
-            <option value="low" className="bg-[#121821]">Low</option>
+            <option value="all" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">All Priorities</option>
+            <option value="high" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">High</option>
+            <option value="medium" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Medium</option>
+            <option value="low" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Low</option>
           </select>
         </div>
       </div>

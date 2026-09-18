@@ -55,11 +55,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Sparkles size={16} className="text-[#0a84ff]" />
-              <h2 className="text-lg font-bold text-white tracking-wide">
+              <h2 className="text-lg font-bold text-neutral-900 dark:text-white tracking-wide">
                 Productivity & Activity Heatmap
               </h2>
             </div>
-            <p className="text-xs text-white/50">
+            <p className="text-xs text-neutral-600 dark:text-white/50">
               Activity tracking based on your completed tasks and LeetCode submissions.
             </p>
           </div>
@@ -81,7 +81,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       {selectedDate && dateFilteredTasks && (
         <div className="liquid-glass-card rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <h3 className="text-sm font-bold text-neutral-900 dark:text-white flex items-center gap-2">
               <Calendar size={15} className="text-[#0a84ff]" />
               Activity for {selectedDate} ({dateFilteredTasks.length} task{dateFilteredTasks.length === 1 ? '' : 's'})
             </h3>
@@ -95,7 +95,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
           <div className="space-y-2.5">
             {dateFilteredTasks.length === 0 ? (
-              <div className="text-xs text-white/50 py-4 text-center">
+              <div className="text-xs text-neutral-500 dark:text-white/50 py-4 text-center">
                 No tasks completed on this date.
               </div>
             ) : (
@@ -119,18 +119,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="liquid-glass-card rounded-2xl p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-neutral-900 dark:text-white flex items-center gap-2">
                 <Clock size={16} className="text-[#0a84ff]" />
                 Today’s Agenda
               </h3>
-              <span className="text-xs font-mono text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-mono text-neutral-700 dark:text-white/60 bg-neutral-200/80 dark:bg-white/10 px-2 py-0.5 rounded-full">
                 {todayPending.length} pending
               </span>
             </div>
 
             <div className="space-y-2.5">
               {todayPending.length === 0 ? (
-                <div className="text-center py-8 text-xs text-white/40 border border-dashed border-white/10 rounded-xl">
+                <div className="text-center py-8 text-xs text-neutral-500 dark:text-white/40 border border-dashed border-neutral-300 dark:border-white/10 rounded-xl">
                   No more pending tasks for today!
                 </div>
               ) : (
@@ -147,10 +147,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </div>
           </div>
 
-          <div className="pt-4 mt-3 border-t border-white/10">
+          <div className="pt-4 mt-3 border-t border-neutral-200 dark:border-white/10">
             <button
               onClick={onOpenAddTask}
-              className="w-full py-2.5 text-xs font-semibold text-[#0a84ff] hover:text-white hover:bg-white/[0.06] border border-dashed border-[#0a84ff]/40 hover:border-[#0a84ff] rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 text-xs font-semibold text-[#0a84ff] hover:bg-blue-500/10 border border-dashed border-[#0a84ff]/40 hover:border-[#0a84ff] rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Plus size={14} /> Add Task for Today
             </button>
@@ -160,18 +160,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         {/* Recently Completed */}
         <div className="liquid-glass-card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <h3 className="text-sm font-bold text-neutral-900 dark:text-white flex items-center gap-2">
               <CheckCircle2 size={16} className="text-[#0a84ff]" />
               Completed Today
             </h3>
-            <span className="text-xs font-mono text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-mono text-neutral-700 dark:text-white/60 bg-neutral-200/80 dark:bg-white/10 px-2 py-0.5 rounded-full">
               {todayCompleted.length} finished
             </span>
           </div>
 
           <div className="space-y-2.5">
             {todayCompleted.length === 0 ? (
-              <div className="text-center py-8 text-xs text-white/40 border border-dashed border-white/10 rounded-xl">
+              <div className="text-center py-8 text-xs text-neutral-500 dark:text-white/40 border border-dashed border-neutral-300 dark:border-white/10 rounded-xl">
                 No tasks finished yet today. Complete one to illuminate your heatmap!
               </div>
             ) : (

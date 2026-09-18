@@ -73,7 +73,7 @@ export const TaskList: React.FC<TaskListProps> = ({
         <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${titleColor}`}>
           {icon}
           <span>{title}</span>
-          <span className="bg-[#21262d] text-[#8b949e] px-2 py-0.5 rounded-full text-[10px] font-mono">
+          <span className="bg-neutral-200 dark:bg-[#21262d] text-neutral-700 dark:text-[#8b949e] px-2 py-0.5 rounded-full text-[10px] font-mono">
             {count}
           </span>
         </div>
@@ -119,7 +119,7 @@ export const TaskList: React.FC<TaskListProps> = ({
       <div>
         {renderSection('Upcoming Tasks', upcomingTasks.length, upcomingTasks, <Calendar size={14} />, 'text-[#bc8cff]')}
         {upcomingTasks.length === 0 && (
-          <div className="text-center py-8 text-xs text-[#8b949e]">No upcoming tasks scheduled yet.</div>
+          <div className="text-center py-8 text-xs text-neutral-500 dark:text-[#8b949e]">No upcoming tasks scheduled yet.</div>
         )}
       </div>
     );
@@ -130,7 +130,7 @@ export const TaskList: React.FC<TaskListProps> = ({
       <div>
         {renderSection('Overdue Tasks', overdueTasks.length, overdueTasks, <AlertCircle size={14} />, 'text-[#f85149]')}
         {overdueTasks.length === 0 && (
-          <div className="text-center py-8 text-xs text-[#8b949e]">No overdue tasks! You are all caught up.</div>
+          <div className="text-center py-8 text-xs text-neutral-500 dark:text-[#8b949e]">No overdue tasks! You are all caught up.</div>
         )}
       </div>
     );
@@ -141,7 +141,7 @@ export const TaskList: React.FC<TaskListProps> = ({
       <div>
         {renderSection('Completed Tasks', completedTasks.length, completedTasks, <CheckCircle size={14} />, 'text-[#0a84ff]')}
         {completedTasks.length === 0 && (
-          <div className="text-center py-8 text-xs text-[#8b949e]">No completed tasks yet. Finish a task to build your streak!</div>
+          <div className="text-center py-8 text-xs text-neutral-500 dark:text-[#8b949e]">No completed tasks yet. Finish a task to build your streak!</div>
         )}
       </div>
     );

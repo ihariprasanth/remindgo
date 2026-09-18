@@ -57,6 +57,13 @@ export function setupTray(isDev: boolean, devServerUrl?: string): Tray {
       click: showApp
     },
     {
+      label: 'Toggle Desktop Widget',
+      click: () => {
+        const { toggleWidgetWindow } = require('./windows/widgetWindow');
+        toggleWidgetWindow(isDev, devServerUrl);
+      }
+    },
+    {
       label: 'Add Task...',
       click: () => {
         showApp();

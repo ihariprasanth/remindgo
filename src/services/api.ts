@@ -128,7 +128,12 @@ const mockAPI: ElectronAPI = {
   maximizeWindow: () => {},
   closeWindow: () => {},
   isMaximized: async () => false,
-  getAppVersion: async () => '1.0.0'
+  getAppVersion: async () => '1.0.0',
+  toggleWidget: async () => {},
+  openMainWindow: async () => {},
+  setWidgetAlwaysOnTop: async () => {},
+  isWidgetPinned: async () => false,
+  onTasksChanged: () => () => {}
 };
 
 export const api: ElectronAPI = (typeof window !== 'undefined' && window.electronAPI) ? window.electronAPI : mockAPI;
