@@ -47,7 +47,9 @@ let mockSettings: Settings = {
   closeToTray: true,
   startWithWindows: false,
   leetcodeUsername: '',
-  theme: 'dark'
+  theme: 'dark',
+  autoOpenWidget: false,
+  widgetAlwaysOnTop: false
 };
 
 let mockLeetCodeData: LeetCodeData = {

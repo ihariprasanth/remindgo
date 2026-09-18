@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, Check, Code2 } from 'lucide-react';
+import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, Check, Code2, Pin, ExternalLink } from 'lucide-react';
 import { Settings } from '../types';
 import { SOUND_OPTIONS, audioService } from '../services/audioService';
 import { api } from '../services/api';
@@ -287,7 +287,103 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         </div>
       </div>
 
-      {/* Backup & Local Data */}
+      {/* Desktop Floating Widget Settings */}
+      <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
+        <div className="flex items-center justify-between border-b border-[var(--border-glass)] pb-3 flex-wrap gap-2">
+          <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+            <Pin size={16} className="text-[#0a84ff]" />
+            Desktop Floating Widget
+          </h3>
+
+          <button
+            onClick={() => api.toggleWidget()}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0a84ff] hover:bg-[#0066d6] text-white text-xs font-semibold rounded-xl transition-all shadow-[0_2px_10px_rgba(10,132,255,0.3)] cursor-pointer"
+          >
+            <ExternalLink size={12} />
+            <span>Launch / Toggle Widget</span>
+          </button>
+        </div>
+
+        <p className="text-xs text-[var(--text-sub)]">
+          The Desktop Widget is a lightweight, frameless floating companion window that sits on your Windows desktop. It includes your daily To-Do checklist with quick-add, classical GitHub green heatmap, and LeetCode daily challenge.
+        </p>
+
+        <div className="space-y-3">
+          {/* Always on top toggle */}
+          <div className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--border-glass)] bg-black/5 dark:bg-black/20">
+            <div>
+              <div className="text-xs font-semibold text-[var(--text-main)]">
+                Pin Widget Always on Top
+              </div>
+              <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
+                Keep the floating widget above all open applications and windows.
+              </div>
+            </div>
+            <label className="macos-switch flex-shrink-0 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={Boolean(settings.widgetAlwaysOnTop)}
+                onChange={(e) => {
+                  const val = e.target.checked;
+                  onUpdateSettings({ widgetAlwaysOnTop: val });
+                  api.setWidgetAlwaysOnTop(val);
+                }}
+              />
+              <span className="macos-slider" />
+            </label>
+          </div>
+
+          {/* Auto open on launch */}
+          <div className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--border-glass)] bg-black/5 dark:bg-black/20">
+            <div>
+              <div className="text-xs font-semibold text-[var(--text-main)]">
+                Open Widget Automatically on Launch
+              </div>
+              <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
+                Automatically display the floating desktop widget whenever RemindGo starts up.
+              </div>
+            </div>
+            <label className="macos-switch flex-shrink-0 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={Boolean(settings.autoOpenWidget)}
+                onChange={(e) => onUpdateSettings({ autoOpenWidget: e.target.checked })}
+              />
+              <span className="macos-slider" />
+            </label>
+          </div>
+        </div>
+
+        {/* Feature Overview Pills */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+          <div className="p-3 rounded-xl bg-black/5 dark:bg-black/30 border border-[var(--border-glass)]">
+            <div className="text-xs font-semibold text-[#0a84ff] flex items-center gap-1.5 mb-1">
+              <span>📋</span> To-Do Checklist
+            </div>
+            <div className="text-[11px] text-[var(--text-sub)]">
+              Inline task toggle, view pending items, and add instant tasks for today.
+            </div>
+          </div>
+
+          <div className="p-3 rounded-xl bg-black/5 dark:bg-black/30 border border-[var(--border-glass)]">
+            <div className="text-xs font-semibold text-[#22c55e] flex items-center gap-1.5 mb-1">
+              <span>🟩</span> GitHub Green Heatmap
+            </div>
+            <div className="text-[11px] text-[var(--text-sub)]">
+              Compact 20-week green grid with current streaks and contribution count.
+            </div>
+          </div>
+
+          <div className="p-3 rounded-xl bg-black/5 dark:bg-black/30 border border-[var(--border-glass)]">
+            <div className="text-xs font-semibold text-[#f59e0b] flex items-center gap-1.5 mb-1">
+              <span>⚡</span> LeetCode Daily
+            </div>
+            <div className="text-[11px] text-[var(--text-sub)]">
+              Solved breakdown, ranking, and direct link to solve today's challenge.
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
         <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
           <ShieldCheck size={16} className="text-[#bc8cff]" />

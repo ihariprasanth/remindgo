@@ -4,7 +4,7 @@ import fs from 'fs';
 import { dbInstance } from './db/database';
 import { createMainWindow, getMainWindow, setQuitting } from './windows/mainWindow';
 import { createOrShowAlarmWindow, closeAlarmWindow } from './windows/alarmWindow';
-import { toggleWidgetWindow, getWidgetWindow, setWidgetAlwaysOnTop, isWidgetAlwaysOnTop } from './windows/widgetWindow';
+import { toggleWidgetWindow, getWidgetWindow, setWidgetAlwaysOnTop, isWidgetAlwaysOnTop, createOrShowWidgetWindow } from './windows/widgetWindow';
 import { setupTray, destroyTray } from './tray';
 import { AlarmScheduler } from './scheduler';
 import { fetchLeetCodeData } from './leetcode';
@@ -57,6 +57,11 @@ app.whenReady().then(async () => {
   // Start alarm scheduler
   scheduler = new AlarmScheduler(isDev, devServerUrl);
   scheduler.start();
+
+  // Auto-open Desktop Widget if configured
+  if (initialSettings.autoOpenWidget) {
+    createOrShowWidgetWindow(isDev, devServerUrl);
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -201,6 +206,9 @@ ipcMain.handle('update-settings', async (_event, partialSettings: Partial<Settin
     } catch (err) {
       console.warn('[Main] Failed to update login item settings:', err);
     }
+  }
+  if (partialSettings.widgetAlwaysOnTop !== undefined) {
+    setWidgetAlwaysOnTop(partialSettings.widgetAlwaysOnTop);
   }
   return updated;
 });

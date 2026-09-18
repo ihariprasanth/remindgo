@@ -217,7 +217,9 @@ export class TaskDatabase {
       closeToTray: true,
       startWithWindows: false,
       leetcodeUsername: '',
-      theme: 'dark'
+      theme: 'dark',
+      autoOpenWidget: false,
+      widgetAlwaysOnTop: false
     };
 
     if (!this.db) return defaultSettings;
@@ -237,7 +239,9 @@ export class TaskDatabase {
       closeToTray: settingsMap.closeToTray === 'true',
       startWithWindows: settingsMap.startWithWindows === 'true',
       leetcodeUsername: settingsMap.leetcodeUsername || '',
-      theme: (settingsMap.theme === 'light' ? 'light' : 'dark')
+      theme: (settingsMap.theme === 'light' ? 'light' : 'dark'),
+      autoOpenWidget: settingsMap.autoOpenWidget === 'true',
+      widgetAlwaysOnTop: settingsMap.widgetAlwaysOnTop === 'true'
     };
   }
 

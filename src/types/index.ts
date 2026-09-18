@@ -27,6 +27,8 @@ export interface Settings {
   startWithWindows: boolean;
   leetcodeUsername?: string;
   theme: 'dark' | 'light';
+  autoOpenWidget?: boolean;
+  widgetAlwaysOnTop?: boolean;
 }
 
 export interface HeatmapDay {
