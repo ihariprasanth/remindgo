@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Sun, Moon, ChevronLeft, ChevronRight, Plus, Minus, Square, Copy, X, Pin } from 'lucide-react';
+import { Sun, Moon, ChevronLeft, ChevronRight, Plus, Minus, Square, Copy, X } from 'lucide-react';
 import { api } from '../services/api';
 import logoSquircle from '../assets/logo-squircle.png';
 
@@ -38,10 +38,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const handleClose = () => {
     api.closeWindow();
-  };
-
-  const handleToggleWidget = () => {
-    api.toggleWidget();
   };
 
   return (
@@ -87,16 +83,6 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right: Actions, Theme Switcher & Windows Controls */}
       <div className="flex items-center gap-2 no-drag">
-        {/* Desktop Widget Launcher Button */}
-        <button
-          onClick={handleToggleWidget}
-          title="Open Floating Desktop Widget (To-Do List & Heatmap)"
-          className="flex items-center gap-1.5 px-3 py-1.5 macos-btn bg-neutral-200/70 dark:bg-white/10 hover:bg-neutral-300 dark:hover:bg-white/15 border border-[var(--border-glass)] text-xs font-semibold text-neutral-800 dark:text-white cursor-pointer shadow-sm"
-        >
-          <Pin size={12} className="text-[#0a84ff]" />
-          <span className="hidden md:inline">Widget</span>
-        </button>
-
         {/* Quick New Task Button */}
         <button
           onClick={onOpenAddTask}

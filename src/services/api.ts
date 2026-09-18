@@ -135,6 +135,7 @@ const mockAPI: ElectronAPI = {
   openMainWindow: async () => {},
   setWidgetAlwaysOnTop: async () => {},
   isWidgetPinned: async () => false,
+  resizeWidget: async () => {},
   onOpenAddTask: () => () => {},
   onTasksChanged: () => () => {}
 };

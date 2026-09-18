@@ -29,6 +29,7 @@ export interface Settings {
   theme: 'dark' | 'light';
   autoOpenWidget?: boolean;
   widgetAlwaysOnTop?: boolean;
+  widgetMode?: 'heatmap' | 'tasks';
 }
 
 export interface HeatmapDay {
@@ -120,6 +121,7 @@ export interface ElectronAPI {
   openMainWindow: () => Promise<void>;
   setWidgetAlwaysOnTop: (pinned: boolean) => Promise<void>;
   isWidgetPinned: () => Promise<boolean>;
+  resizeWidget?: (width: number, height: number) => Promise<void>;
 }
 
 declare global {

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Clock, Settings as SettingsIcon, 
-  Code2, Search, HardDrive, Pin 
+  Code2, Search, HardDrive 
 } from 'lucide-react';
-import { api } from '../services/api';
 import { Task } from '../types';
 import { format } from 'date-fns';
 import logoSquircle from '../assets/logo-squircle.png';
@@ -160,24 +159,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      <div className="space-y-2">
-        {/* Quick Launch Desktop Widget Button */}
-        <button
-          onClick={() => api.toggleWidget()}
-          title="Open Floating Companion Widget on Windows Desktop"
-          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-[#0a84ff]/10 hover:bg-[#0a84ff]/20 text-[#0a84ff] border border-[#0a84ff]/30 transition-all cursor-pointer shadow-sm"
-        >
-          <div className="flex items-center gap-2">
-            <Pin size={13} className="rotate-45" />
-            <span>Desktop Widget</span>
-          </div>
-          <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-md bg-[#0a84ff] text-white">
-            Open
-          </span>
-        </button>
-
-        {/* Footer System Status Badge */}
-        <div className="p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-glass)] text-[11px] text-[var(--text-sub)] space-y-0.5">
+      {/* Footer System Status Badge */}
+      <div className="p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-glass)] text-[11px] text-[var(--text-sub)] space-y-0.5">
           <div className="flex items-center gap-2">
             <HardDrive size={13} className="text-[#0a84ff]" />
             <span className="font-semibold text-[var(--text-main)]">100% Offline SQLite</span>
@@ -186,7 +169,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             Local Storage • No Telemetry
           </div>
         </div>
-      </div>
     </aside>
   );
 };

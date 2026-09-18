@@ -305,10 +305,30 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         </div>
 
         <p className="text-xs text-[var(--text-sub)]">
-          The Desktop Widget is a lightweight, frameless floating companion window that sits on your Windows desktop. It includes your daily To-Do checklist with quick-add, classical GitHub green heatmap, and LeetCode daily challenge.
+          The Desktop Widget is a lightweight, frameless floating card that sits on your Windows desktop wallpaper. By default, it stays behind active applications (browsers, IDEs) so it never blocks your tabs or work.
         </p>
 
         <div className="space-y-3">
+          {/* Default Widget Mode */}
+          <div className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--border-glass)] bg-black/5 dark:bg-black/20">
+            <div>
+              <div className="text-xs font-semibold text-[var(--text-main)]">
+                Default Desktop Widget View
+              </div>
+              <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
+                Choose what the desktop companion widget displays initially.
+              </div>
+            </div>
+            <select
+              value={settings.widgetMode || 'heatmap'}
+              onChange={(e) => onUpdateSettings({ widgetMode: e.target.value as 'heatmap' | 'tasks' })}
+              className="bg-neutral-100 dark:bg-[#141414] border border-neutral-300 dark:border-white/15 text-xs text-neutral-900 dark:text-white rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#0a84ff]"
+            >
+              <option value="heatmap">Classical Green Heatmap</option>
+              <option value="tasks">Today's To-Do Checklist</option>
+            </select>
+          </div>
+
           {/* Always on top toggle */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--border-glass)] bg-black/5 dark:bg-black/20">
             <div>
@@ -316,7 +336,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 Pin Widget Always on Top
               </div>
               <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
-                Keep the floating widget above all open applications and windows.
+                Keep the widget floating on top of all windows (leave disabled for desktop-only display).
               </div>
             </div>
             <label className="macos-switch flex-shrink-0 cursor-pointer">
@@ -340,7 +360,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 Open Widget Automatically on Launch
               </div>
               <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
-                Automatically display the floating desktop widget whenever RemindGo starts up.
+                Automatically display the desktop companion widget whenever RemindGo starts up.
               </div>
             </div>
             <label className="macos-switch flex-shrink-0 cursor-pointer">

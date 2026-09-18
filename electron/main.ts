@@ -4,7 +4,7 @@ import fs from 'fs';
 import { dbInstance } from './db/database';
 import { createMainWindow, getMainWindow, setQuitting } from './windows/mainWindow';
 import { createOrShowAlarmWindow, closeAlarmWindow } from './windows/alarmWindow';
-import { toggleWidgetWindow, getWidgetWindow, setWidgetAlwaysOnTop, isWidgetAlwaysOnTop, createOrShowWidgetWindow } from './windows/widgetWindow';
+import { toggleWidgetWindow, getWidgetWindow, setWidgetAlwaysOnTop, isWidgetAlwaysOnTop, createOrShowWidgetWindow, resizeWidgetWindow } from './windows/widgetWindow';
 import { setupTray, destroyTray } from './tray';
 import { AlarmScheduler } from './scheduler';
 import { fetchLeetCodeData } from './leetcode';
@@ -350,6 +350,10 @@ ipcMain.handle('widget-set-always-on-top', async (_event, pinned: boolean) => {
 
 ipcMain.handle('widget-is-pinned', async () => {
   return isWidgetAlwaysOnTop();
+});
+
+ipcMain.handle('widget-resize', async (_event, { width, height }: { width: number; height: number }) => {
+  resizeWidgetWindow(width, height);
 });
 
 ipcMain.handle('open-main-window', async () => {

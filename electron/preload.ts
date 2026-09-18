@@ -63,5 +63,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   toggleWidget: () => ipcRenderer.invoke('toggle-widget'),
   openMainWindow: () => ipcRenderer.invoke('open-main-window'),
   setWidgetAlwaysOnTop: (pinned: boolean) => ipcRenderer.invoke('widget-set-always-on-top', pinned),
-  isWidgetPinned: () => ipcRenderer.invoke('widget-is-pinned')
+  isWidgetPinned: () => ipcRenderer.invoke('widget-is-pinned'),
+  resizeWidget: (width: number, height: number) => ipcRenderer.invoke('widget-resize', { width, height })
 });

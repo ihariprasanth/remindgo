@@ -83,6 +83,15 @@ body {
   color: #1d1d1f;
 }
 
+/* Transparent Desktop Widget Window Background */
+body.widget-transparent,
+.widget-transparent,
+.widget-transparent body {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
 /* Liquid Glass Elements */
 .liquid-glass-base {
   background: var(--bg-glass-base);

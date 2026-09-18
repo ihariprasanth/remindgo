@@ -28,12 +28,12 @@ export function createOrShowWidgetWindow(isDev: boolean, devServerUrl?: string):
 
   const primaryDisplay = screen.getPrimaryDisplay();
   const { x: workX, y: workY, width: screenWidth, height: screenHeight } = primaryDisplay.workArea;
-  const winWidth = 380;
-  const winHeight = 540;
+  const winWidth = 390;
+  const winHeight = 185;
 
-  // Position nicely on the right side of the screen like a Windows widget
+  // Position nicely on the right side of the screen like a Windows desktop widget
   const x = Math.max(workX + 20, workX + screenWidth - winWidth - 30);
-  const y = Math.max(workY + 40, workY + Math.round((screenHeight - winHeight) / 2));
+  const y = Math.max(workY + 40, workY + 80);
 
   const iconPath = isDev
     ? path.join(__dirname, '../../assets/icon.ico')
@@ -42,18 +42,18 @@ export function createOrShowWidgetWindow(isDev: boolean, devServerUrl?: string):
   widgetWindowInstance = new BrowserWindow({
     width: winWidth,
     height: winHeight,
-    minWidth: 340,
-    minHeight: 460,
     x,
     y,
-    title: 'RemindGo Widget',
+    title: 'RemindGo Desktop Widget',
     icon: iconPath,
     frame: false,
-    resizable: true,
+    transparent: true,
+    backgroundColor: '#00000000',
+    hasShadow: false,
+    resizable: false,
     alwaysOnTop: isPinned,
-    skipTaskbar: false,
+    skipTaskbar: true,
     show: false,
-    backgroundColor: '#000000',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -110,5 +110,11 @@ export function closeWidgetWindow(): void {
   if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
     widgetWindowInstance.close();
     widgetWindowInstance = null;
+  }
+}
+
+export function resizeWidgetWindow(width: number, height: number): void {
+  if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
+    widgetWindowInstance.setSize(width, height);
   }
 }
