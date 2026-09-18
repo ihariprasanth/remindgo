@@ -141,17 +141,17 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
 
   const getCellColor = (level: number, isSelected: boolean) => {
     if (isSelected) {
-      return 'bg-[#58a6ff] border-[#38bdf8] shadow-[0_0_8px_#38bdf8] scale-110';
+      return 'bg-[#38bdf8] border-[#38bdf8] shadow-[0_0_10px_#38bdf8] scale-110';
     }
     switch (level) {
       case 1:
-        return 'bg-[#0e4429] border-[#0e4429]/60 hover:border-[#39d353]';
+        return 'bg-[#0d2744] border-[#163a66]/60 hover:border-[#38bdf8]';
       case 2:
-        return 'bg-[#006d32] border-[#006d32]/60 hover:border-[#39d353] shadow-[0_0_4px_rgba(0,109,50,0.4)]';
+        return 'bg-[#134982] border-[#1a5b9e]/60 hover:border-[#38bdf8] shadow-[0_0_4px_rgba(19,73,130,0.5)]';
       case 3:
-        return 'bg-[#26a641] border-[#26a641] hover:border-white shadow-[0_0_6px_rgba(38,166,65,0.6)]';
+        return 'bg-[#1d6fd8] border-[#2684fc] hover:border-white shadow-[0_0_6px_rgba(29,111,216,0.6)]';
       case 4:
-        return 'bg-[#39d353] border-[#39d353] hover:border-white shadow-[0_0_8px_rgba(57,211,83,0.8)]';
+        return 'bg-[#0a84ff] border-[#38bdf8] hover:border-white shadow-[0_0_10px_rgba(10,132,255,0.85)]';
       case 0:
       default:
         return 'bg-white/[0.04] border-white/[0.06] hover:border-white/30';
@@ -314,10 +314,10 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
         <div className="flex items-center gap-1.5 ml-auto text-[11px]">
           <span>Less</span>
           <span className="w-[11px] h-[11px] rounded-[3px] bg-white/[0.05] border border-white/[0.08]" />
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#0e4429] border border-[#0e4429]" />
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#006d32] border border-[#006d32]" />
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#26a641] border border-[#26a641]" />
-          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#39d353] border border-[#39d353]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#0d2744] border border-[#163a66]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#134982] border border-[#1a5b9e]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#1d6fd8] border border-[#2684fc]" />
+          <span className="w-[11px] h-[11px] rounded-[3px] bg-[#0a84ff] border border-[#38bdf8] shadow-[0_0_4px_#0a84ff]" />
           <span>More</span>
         </div>
       </div>
@@ -331,7 +331,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
             top: `${hoveredCell.y - 8}px`
           }}
         >
-          <div className="font-semibold text-[#39d353]">
+          <div className="font-semibold text-[#38bdf8]">
             {hoveredCell.cell.count === 0
               ? 'No activity'
               : `${hoveredCell.cell.count} total contribution${hoveredCell.cell.count === 1 ? '' : 's'}`}

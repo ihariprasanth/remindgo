@@ -51,8 +51,8 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <img src={logoSquircle} alt="RemindGo" className="w-5 h-5 rounded-[6px] shadow-sm border border-white/20" />
-          <span className="w-2 h-2 rounded-full bg-[#39d353] animate-ping" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#39d353]">
+          <span className="w-2 h-2 rounded-full bg-[#0a84ff] animate-ping" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#0a84ff]">
             RemindGo Alarm
           </span>
         </div>
@@ -67,7 +67,7 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
       {/* Center Alarm Content */}
       <div className="my-auto text-center space-y-3">
         {/* Pulsing RemindGo Circular Logo */}
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#39d353]/15 alarm-pulse p-1 border border-[#39d353]/30 shadow-[0_0_25px_rgba(57,211,83,0.3)] mb-1">
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#0a84ff]/15 alarm-pulse p-1 border border-[#0a84ff]/30 shadow-[0_0_25px_rgba(10,132,255,0.35)] mb-1">
           <img src={logoCircle} alt="RemindGo" className="w-full h-full object-cover rounded-full shadow-inner" />
         </div>
 
@@ -87,7 +87,7 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
           </p>
         )}
 
-        <div className="flex items-center justify-center gap-1.5 text-xs text-[#58a6ff] font-mono">
+        <div className="flex items-center justify-center gap-1.5 text-xs text-[#0a84ff] font-mono">
           <Clock size={14} />
           <span>Scheduled for {task.time} ({task.date})</span>
         </div>
@@ -98,7 +98,7 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
         {/* Mark Done Primary Button */}
         <button
           onClick={() => handleDismiss(true)}
-          className="w-full py-2.5 px-4 bg-[#238636] hover:bg-[#2ea043] text-white text-sm font-semibold rounded-lg shadow-md transition-colors flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-2.5 px-4 bg-[#0a84ff] hover:bg-[#0066d6] text-white text-sm font-semibold rounded-xl shadow-[0_4px_16px_rgba(10,132,255,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           <Check size={16} strokeWidth={3} />
           <span>Mark as Completed</span>

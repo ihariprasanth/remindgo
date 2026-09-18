@@ -92,7 +92,7 @@ export const LeetCodePage: React.FC<LeetCodePageProps> = ({
                   <span>Offline (Cached local data)</span>
                 </span>
               ) : (
-                <span className="flex items-center gap-1.5 text-[#39d353]">
+                <span className="flex items-center gap-1.5 text-[#0a84ff]">
                   <CheckCircle size={14} />
                   <span>Live profile connected</span>
                 </span>
@@ -283,7 +283,7 @@ export const LeetCodePage: React.FC<LeetCodePageProps> = ({
           {/* Solved Problems Breakdown */}
           <div className="liquid-glass-card rounded-2xl p-6">
             <h3 className="text-sm font-bold text-[var(--text-main)] mb-5 flex items-center gap-2">
-              <Sparkles size={16} className="text-[#39d353]" />
+              <Sparkles size={16} className="text-[#0a84ff]" />
               Solved Problems Breakdown
             </h3>
 
@@ -301,7 +301,7 @@ export const LeetCodePage: React.FC<LeetCodePageProps> = ({
 
               <div className="text-right">
                 <span className="text-xs text-[var(--text-sub)] block">Solved Rate</span>
-                <span className="text-xl font-bold font-mono text-[#39d353]">
+                <span className="text-xl font-bold font-mono text-[#0a84ff]">
                   {getPercentage(leetCodeData.totalSolved, leetCodeData.totalQuestions)}%
                 </span>
               </div>

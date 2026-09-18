@@ -112,7 +112,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Solve LeetCode daily problem"
-              className="w-full bg-black/40 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#39d353] focus:ring-1 focus:ring-[#39d353]"
+              className="w-full bg-black/40 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#0a84ff] focus:ring-1 focus:ring-[#0a84ff]"
             />
           </div>
 
@@ -126,7 +126,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Extra details, links, or notes..."
-              className="w-full bg-black/40 border border-white/15 rounded-xl px-3.5 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#39d353] focus:ring-1 focus:ring-[#39d353] resize-none"
+              className="w-full bg-black/40 border border-white/15 rounded-xl px-3.5 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#0a84ff] focus:ring-1 focus:ring-[#0a84ff] resize-none"
             />
           </div>
 
@@ -134,14 +134,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1.5">
-                <Calendar size={13} className="text-[#39d353]" /> Date <span className="text-red-400">*</span>
+                <Calendar size={13} className="text-[#0a84ff]" /> Date <span className="text-red-400">*</span>
               </label>
               <input
                 type="date"
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#39d353]"
+                className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#0a84ff]"
               />
             </div>
 
@@ -154,7 +154,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 required
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#39d353]"
+                className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#0a84ff]"
               />
             </div>
           </div>
@@ -254,7 +254,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-xs font-semibold text-white bg-gradient-to-r from-[#238636] to-[#2ea043] hover:from-[#2ea043] hover:to-[#39d353] rounded-xl shadow-[0_4px_14px_rgba(35,134,54,0.4)] transition-all cursor-pointer border border-white/15"
+              className="px-5 py-2 text-xs font-semibold text-white bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] rounded-xl shadow-[0_4px_14px_rgba(10,132,255,0.4)] transition-all cursor-pointer border border-white/15"
             >
               {initialTask ? 'Update Task' : 'Save Task'}
             </button>

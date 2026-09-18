@@ -18,13 +18,19 @@ export function getMainWindow(): BrowserWindow | null {
 }
 
 export function createMainWindow(isDev: boolean, devServerUrl?: string): BrowserWindow {
+  const iconPath = isDev
+    ? path.join(__dirname, '../../assets/icon.ico')
+    : path.join(__dirname, '../assets/icon.ico');
+
   mainWindowInstance = new BrowserWindow({
     width: 1140,
     height: 760,
     minWidth: 960,
     minHeight: 640,
     title: 'RemindGo',
-    frame: false, // Clean custom frameless titlebar with GitHub theme
+    icon: iconPath,
+    frame: false,
+    autoHideMenuBar: true,
     backgroundColor: '#000000',
     show: false,
     webPreferences: {
@@ -57,14 +63,7 @@ export function createMainWindow(isDev: boolean, devServerUrl?: string): Browser
     }
   });
 
-  mainWindowInstance.on('minimize', (event) => {
-    const settings = dbInstance.getSettings();
-    if (settings.minimizeToTray) {
-      event.preventDefault();
-      mainWindowInstance?.hide();
-    }
-  });
-
+  // Standard Windows minimize: remains in Windows Taskbar & Task Manager
   mainWindowInstance.on('closed', () => {
     mainWindowInstance = null;
   });

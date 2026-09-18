@@ -109,7 +109,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
     { id: 'today' as const, label: 'Today', count: tabCounts.today, color: 'text-[#58a6ff]' },
     { id: 'upcoming' as const, label: 'Upcoming', count: tabCounts.upcoming, color: 'text-[#bc8cff]' },
     { id: 'overdue' as const, label: 'Overdue', count: tabCounts.overdue, color: 'text-[#f43f5e]' },
-    { id: 'completed' as const, label: 'Completed', count: tabCounts.completed, color: 'text-[#39d353]' },
+    { id: 'completed' as const, label: 'Completed', count: tabCounts.completed, color: 'text-[#0a84ff]' },
   ];
 
   return (
@@ -125,7 +125,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
 
         <button
           onClick={onOpenAddTask}
-          className="flex items-center gap-2 bg-gradient-to-r from-[#238636] to-[#2ea043] hover:from-[#2ea043] hover:to-[#39d353] text-white py-2.5 px-4 rounded-xl text-xs font-semibold shadow-[0_4px_16px_rgba(35,134,54,0.35)] transition-all cursor-pointer border border-white/15"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] text-white py-2.5 px-4 rounded-xl text-xs font-semibold shadow-[0_4px_16px_rgba(10,132,255,0.35)] transition-all cursor-pointer border border-white/15"
         >
           <Plus size={15} strokeWidth={2.5} />
           <span>New Task</span>
@@ -149,7 +149,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
               <span>{tab.label}</span>
               <span
                 className={`text-[10px] px-2 py-0.2 rounded-full font-mono ${
-                  isActive ? 'bg-[#39d353]/20 text-[#39d353]' : 'bg-white/10 text-white/60'
+                  isActive ? 'bg-[#0a84ff]/20 text-[#0a84ff]' : 'bg-white/10 text-white/60'
                 }`}
               >
                 {tab.count}
@@ -169,7 +169,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
             placeholder="Search tasks by title, category, notes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 bg-black/40 border border-white/15 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#39d353]"
+            className="w-full pl-9 pr-3.5 py-2 bg-black/40 border border-white/15 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#0a84ff]"
           />
         </div>
 
@@ -179,7 +179,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-black/40 border border-white/15 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#39d353]"
+            className="bg-black/40 border border-white/15 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a84ff]"
           >
             <option value="all" className="bg-[#121821]">All Categories</option>
             {categories.map((c) => (
@@ -196,7 +196,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
           <select
             value={selectedPriority}
             onChange={(e) => setSelectedPriority(e.target.value)}
-            className="bg-black/40 border border-white/15 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#39d353]"
+            className="bg-black/40 border border-white/15 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a84ff]"
           >
             <option value="all" className="bg-[#121821]">All Priorities</option>
             <option value="high" className="bg-[#121821]">High</option>

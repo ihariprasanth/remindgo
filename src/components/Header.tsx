@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Sun, Moon, ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react';
+import { Sun, Moon, ChevronLeft, ChevronRight, Plus, Minus, Square, Copy, X } from 'lucide-react';
 import { api } from '../services/api';
 
 interface HeaderProps {
@@ -41,10 +41,13 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="h-12 border-b border-[var(--border-glass)] flex items-center justify-between px-4 select-none titlebar-drag flex-shrink-0 z-30 transition-colors">
-      {/* Left: macOS Traffic Lights & Nav Capsule */}
-      <div className="flex items-center gap-4">
-        {/* Traffic Lights */}
+    <header 
+      onDoubleClick={handleMaximize}
+      className="h-12 border-b border-[var(--border-glass)] flex items-center justify-between px-3 select-none titlebar-drag flex-shrink-0 z-30 transition-colors"
+    >
+      {/* Left: Traffic Lights & Navigation */}
+      <div className="flex items-center gap-3">
+        {/* macOS Traffic Lights */}
         <div
           className="flex items-center gap-2 no-drag cursor-pointer py-1"
           onMouseEnter={() => setHoverControls(true)}
@@ -62,7 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Yellow: Minimize */}
           <button
             onClick={handleMinimize}
-            title="Minimize to Tray"
+            title="Minimize"
             className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] border border-[#dea123] flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
           >
             {hoverControls && <span className="text-[9px] text-[#5c3c00] font-bold leading-none mb-0.5">–</span>}
@@ -78,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
 
-        {/* macOS History Navigation Capsule (< >) */}
+        {/* History Navigation Capsule (< >) */}
         <div className="hidden sm:flex items-center bg-black/10 dark:bg-white/10 rounded-lg p-0.5 border border-[var(--border-glass)] no-drag">
           <button
             onClick={onBack}
@@ -99,11 +102,11 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Center: View Title Badge */}
       <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-[var(--border-glass)] text-xs font-semibold text-[var(--text-main)] pointer-events-none shadow-sm">
-        <span className="w-2 h-2 rounded-full bg-[#39d353] shadow-[0_0_8px_#39d353]" />
+        <span className="w-2 h-2 rounded-full bg-[#0a84ff] shadow-[0_0_8px_#0a84ff]" />
         <span>{title}</span>
       </div>
 
-      {/* Right: Actions & Theme Switcher */}
+      {/* Right: Actions, Theme Switcher & Windows Controls */}
       <div className="flex items-center gap-2 no-drag">
         {/* Quick New Task Button */}
         <button
@@ -123,9 +126,42 @@ export const Header: React.FC<HeaderProps> = ({
           {theme === 'dark' ? (
             <Sun size={14} className="text-[#f59e0b]" />
           ) : (
-            <Moon size={14} className="text-[#3b82f6]" />
+            <Moon size={14} className="text-[#0a84ff]" />
           )}
         </button>
+
+        {/* Vertical Divider */}
+        <div className="w-[1px] h-4 bg-white/10 mx-0.5" />
+
+        {/* Windows Window Controls */}
+        <div className="flex items-center gap-0.5">
+          {/* Minimize Button */}
+          <button
+            onClick={handleMinimize}
+            title="Minimize"
+            className="w-7 h-7 rounded-md flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 active:bg-white/20 transition-colors cursor-pointer"
+          >
+            <Minus size={13} />
+          </button>
+
+          {/* Maximize / Restore Button */}
+          <button
+            onClick={handleMaximize}
+            title={isMax ? 'Restore' : 'Maximize'}
+            className="w-7 h-7 rounded-md flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 active:bg-white/20 transition-colors cursor-pointer"
+          >
+            {isMax ? <Copy size={11} className="rotate-180" /> : <Square size={11} />}
+          </button>
+
+          {/* Close Button */}
+          <button
+            onClick={handleClose}
+            title="Close"
+            className="w-7 h-7 rounded-md flex items-center justify-center text-white/70 hover:text-white hover:bg-[#e81123] active:bg-[#c4101f] transition-colors cursor-pointer"
+          >
+            <X size={13} />
+          </button>
+        </div>
       </div>
     </header>
   );

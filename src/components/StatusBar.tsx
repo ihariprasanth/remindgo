@@ -16,7 +16,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({ tasks, leetCodeData }) => 
       {/* Left: Task statistics */}
       <div className="flex items-center gap-3">
         <span className="flex items-center gap-1">
-          <CheckCircle2 size={12} className="text-[#39d353]" />
+          <CheckCircle2 size={12} className="text-[#0a84ff]" />
           <span>{completedCount} completed</span>
         </span>
         <span>•</span>
@@ -39,7 +39,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({ tasks, leetCodeData }) => 
         <span>•</span>
 
         <span className="flex items-center gap-1 text-[var(--text-sub)]">
-          <HardDrive size={12} className="text-[#39d353]" />
+          <HardDrive size={12} className="text-[#0a84ff]" />
           <span>SQLite Engine</span>
         </span>
       </div>

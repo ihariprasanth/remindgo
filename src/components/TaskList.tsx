@@ -139,7 +139,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   if (filterSection === 'completed') {
     return (
       <div>
-        {renderSection('Completed Tasks', completedTasks.length, completedTasks, <CheckCircle size={14} />, 'text-[#39d353]')}
+        {renderSection('Completed Tasks', completedTasks.length, completedTasks, <CheckCircle size={14} />, 'text-[#0a84ff]')}
         {completedTasks.length === 0 && (
           <div className="text-center py-8 text-xs text-[#8b949e]">No completed tasks yet. Finish a task to build your streak!</div>
         )}
@@ -153,7 +153,7 @@ export const TaskList: React.FC<TaskListProps> = ({
       {renderSection('Overdue', overdueTasks.length, overdueTasks, <AlertCircle size={14} />, 'text-[#f85149]')}
       {renderSection('Today', todayTasks.length, todayTasks, <Clock size={14} />, 'text-[#58a6ff]')}
       {renderSection('Upcoming', upcomingTasks.length, upcomingTasks, <Calendar size={14} />, 'text-[#bc8cff]')}
-      {renderSection('Completed', completedTasks.length, completedTasks, <CheckCircle size={14} />, 'text-[#39d353]')}
+      {renderSection('Completed', completedTasks.length, completedTasks, <CheckCircle size={14} />, 'text-[#0a84ff]')}
     </div>
   );
 };

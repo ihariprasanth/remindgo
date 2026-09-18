@@ -101,9 +101,9 @@ export const StatsCard: React.FC<StatsCardProps> = ({ tasks }) => {
       value: `${stats.currentStreak} day${stats.currentStreak === 1 ? '' : 's'}`,
       subtitle: stats.currentStreak > 0 ? 'Burning streak 🔥' : 'Complete a task today',
       icon: Flame,
-      color: '#39d353',
-      bgGradient: 'from-[#39d353]/20 to-[#39d353]/5',
-      glow: 'shadow-[0_0_20px_rgba(57,211,83,0.25)]'
+      color: '#0a84ff',
+      bgGradient: 'from-[#0a84ff]/20 to-[#0a84ff]/5',
+      glow: 'shadow-[0_0_20px_rgba(10,132,255,0.25)]'
     },
     {
       title: 'Best Record',

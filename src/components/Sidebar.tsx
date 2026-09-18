@@ -162,7 +162,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Footer System Status Badge */}
       <div className="p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-glass)] text-[11px] text-[var(--text-sub)] space-y-0.5">
         <div className="flex items-center gap-2">
-          <HardDrive size={13} className="text-[#39d353]" />
+          <HardDrive size={13} className="text-[#0a84ff]" />
           <span className="font-semibold text-[var(--text-main)]">100% Offline SQLite</span>
         </div>
         <div className="text-[10px] text-[var(--text-muted)]">

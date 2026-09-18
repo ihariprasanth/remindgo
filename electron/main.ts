@@ -21,6 +21,8 @@ const devServerUrl = process.env.VITE_DEV_SERVER_URL;
 
 let scheduler: AlarmScheduler | null = null;
 
+app.name = 'RemindGo';
+app.setName('RemindGo');
 app.setAppUserModelId('com.remindgo.app');
 
 app.on('second-instance', () => {

@@ -67,8 +67,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onToggle, onEdit, onDe
           onClick={() => onToggle(task.id)}
           className={`mt-0.5 w-5 h-5 rounded-lg border flex items-center justify-center transition-all flex-shrink-0 cursor-pointer ${
             isCompleted
-              ? 'bg-[#238636] border-[#39d353] text-white shadow-[0_0_10px_rgba(57,211,83,0.5)]'
-              : 'border-white/20 hover:border-[#39d353] bg-black/40'
+              ? 'bg-[#0a84ff] border-[#38bdf8] text-white shadow-[0_0_10px_rgba(10,132,255,0.5)]'
+              : 'border-white/20 hover:border-[#0a84ff] bg-black/40'
           }`}
         >
           {isCompleted && <Check size={12} strokeWidth={3} />}
@@ -129,7 +129,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onToggle, onEdit, onDe
             )}
 
             {isCompleted && task.completed_at && (
-              <div className="text-[11px] text-[#39d353]">
+              <div className="text-[11px] text-[#0a84ff]">
                 Done {format(parseISO(task.completed_at), 'MMM d, HH:mm')}
               </div>
             )}

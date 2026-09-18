@@ -54,13 +54,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles size={16} className="text-[#39d353]" />
+              <Sparkles size={16} className="text-[#0a84ff]" />
               <h2 className="text-lg font-bold text-white tracking-wide">
                 Productivity & Activity Heatmap
               </h2>
             </div>
             <p className="text-xs text-white/50">
-              GitHub-style activity tracking based on your completed tasks and LeetCode submissions.
+              Activity tracking based on your completed tasks and LeetCode submissions.
             </p>
           </div>
         </div>
@@ -82,12 +82,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="liquid-glass-card rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Calendar size={15} className="text-[#39d353]" />
+              <Calendar size={15} className="text-[#0a84ff]" />
               Activity for {selectedDate} ({dateFilteredTasks.length} task{dateFilteredTasks.length === 1 ? '' : 's'})
             </h3>
             <button
               onClick={() => setSelectedDate(null)}
-              className="text-xs text-[#58a6ff] hover:underline cursor-pointer"
+              className="text-xs text-[#0a84ff] hover:underline cursor-pointer"
             >
               Close date view
             </button>
@@ -120,7 +120,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Clock size={16} className="text-[#58a6ff]" />
+                <Clock size={16} className="text-[#0a84ff]" />
                 Today’s Agenda
               </h3>
               <span className="text-xs font-mono text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
@@ -150,7 +150,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           <div className="pt-4 mt-3 border-t border-white/10">
             <button
               onClick={onOpenAddTask}
-              className="w-full py-2.5 text-xs font-semibold text-[#39d353] hover:text-white hover:bg-white/[0.06] border border-dashed border-[#39d353]/40 hover:border-[#39d353] rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 text-xs font-semibold text-[#0a84ff] hover:text-white hover:bg-white/[0.06] border border-dashed border-[#0a84ff]/40 hover:border-[#0a84ff] rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Plus size={14} /> Add Task for Today
             </button>
@@ -161,7 +161,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="liquid-glass-card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-[#39d353]" />
+              <CheckCircle2 size={16} className="text-[#0a84ff]" />
               Completed Today
             </h3>
             <span className="text-xs font-mono text-white/60 bg-white/10 px-2 py-0.5 rounded-full">

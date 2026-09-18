@@ -110,7 +110,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       {/* Alarm & Sound Settings */}
       <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
         <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
-          <Bell size={16} className="text-[#39d353]" />
+          <Bell size={16} className="text-[#0a84ff]" />
           Alarm & Sound Alerts
         </h3>
 
@@ -128,15 +128,15 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   onClick={() => handleSoundChange(opt.id)}
                   className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-white/[0.08] border-[#39d353] shadow-[0_0_12px_rgba(57,211,83,0.25)]'
+                      ? 'bg-white/[0.08] border-[#0a84ff] shadow-[0_0_12px_rgba(10,132,255,0.25)]'
                       : 'border-white/10 hover:border-white/25 bg-black/20'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-semibold ${isSelected ? 'text-[#39d353]' : 'text-white'}`}>
+                    <span className={`text-xs font-semibold ${isSelected ? 'text-[#0a84ff]' : 'text-white'}`}>
                       {opt.name}
                     </span>
-                    {isSelected && <Check size={14} className="text-[#39d353]" />}
+                    {isSelected && <Check size={14} className="text-[#0a84ff]" />}
                   </div>
                   <p className="text-[11px] text-white/50 mt-1">{opt.description}</p>
                 </div>
@@ -165,7 +165,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 onUpdateSettings({ soundVolume: vol });
                 audioService.setVolume(vol);
               }}
-              className="w-full accent-[#39d353] cursor-pointer"
+              className="w-full accent-[#0a84ff] cursor-pointer"
             />
           </div>
 
@@ -178,7 +178,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition-all cursor-pointer ${
                 isPlayingPreview
                   ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.3)]'
-                  : 'bg-white/10 text-white border-white/15 hover:border-[#39d353]'
+                  : 'bg-white/10 text-white border-white/15 hover:border-[#0a84ff]'
               }`}
             >
               {isPlayingPreview ? (
@@ -206,7 +206,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 onClick={() => onUpdateSettings({ snoozeDuration: mins })}
                 className={`px-3.5 py-2 rounded-xl text-xs font-mono font-semibold border transition-all cursor-pointer ${
                   settings.snoozeDuration === mins
-                    ? 'bg-[#238636] text-white border-[#39d353] shadow-[0_0_12px_rgba(57,211,83,0.3)]'
+                    ? 'bg-[#0a84ff] text-white border-[#38bdf8] shadow-[0_0_12px_rgba(10,132,255,0.3)]'
                     : 'bg-black/30 text-white/60 border-white/10 hover:border-white/30'
                 }`}
               >
@@ -303,7 +303,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             onClick={handleExport}
             className="flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white border border-white/15 py-2.5 px-4 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
           >
-            <Download size={14} className="text-[#39d353]" />
+            <Download size={14} className="text-[#0a84ff]" />
             Export Backup (JSON)
           </button>
 
@@ -317,7 +317,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         </div>
 
         {exportMessage && (
-          <div className="p-3 rounded-xl bg-[#238636]/20 border border-[#238636]/40 text-xs text-[#39d353]">
+          <div className="p-3 rounded-xl bg-[#0a84ff]/20 border border-[#0a84ff]/40 text-xs text-[#38bdf8]">
             {exportMessage}
           </div>
         )}
