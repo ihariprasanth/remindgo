@@ -5,6 +5,7 @@ import { Sidebar, NavTab } from './components/Sidebar';
 import { Header } from './components/Header';
 import { TaskModal } from './components/TaskModal';
 import { AlarmPopup } from './components/AlarmPopup';
+import { audioService } from './services/audioService';
 import { getMillisUntilMidnightIST } from './utils/istTime';
 import { DashboardPage } from './pages/DashboardPage';
 import { TasksPage } from './pages/TasksPage';
@@ -23,7 +24,7 @@ export const App: React.FC = () => {
     snoozeDuration: 5,
     minimizeToTray: true,
     closeToTray: true,
-    startWithWindows: false,
+    startWithWindows: true,
     leetcodeUsername: '',
     theme: 'dark'
   });
@@ -40,17 +41,12 @@ export const App: React.FC = () => {
   } | undefined>(undefined);
   const [inAppAlarmTask, setInAppAlarmTask] = useState<Task | null>(null);
 
-  // Apply theme to document element
+  // Pure Pitch-Black OLED Dark Mode Only
   useEffect(() => {
     const root = document.documentElement;
-    if (settings.theme === 'light') {
-      root.classList.remove('dark');
-      root.classList.add('light');
-    } else {
-      root.classList.remove('light');
-      root.classList.add('dark');
-    }
-  }, [settings.theme]);
+    root.classList.remove('light');
+    root.classList.add('dark');
+  }, []);
 
   const loadData = useCallback(async () => {
     try {
@@ -96,6 +92,12 @@ export const App: React.FC = () => {
       loadData();
     });
 
+    const cleanupAlarmDismissed = api.onAlarmDismissed?.(() => {
+      audioService.stopLoop();
+      setInAppAlarmTask(null);
+      loadData();
+    });
+
     const handleFocus = () => loadData();
     window.addEventListener('focus', handleFocus);
 
@@ -114,6 +116,7 @@ export const App: React.FC = () => {
     return () => {
       cleanupTrayAction?.();
       cleanupAlarm();
+      cleanupAlarmDismissed?.();
       window.removeEventListener('focus', handleFocus);
       if (midnightTimer) clearTimeout(midnightTimer);
     };
@@ -143,13 +146,6 @@ export const App: React.FC = () => {
       setHistoryIndex(newIndex);
       setCurrentTab(history[newIndex]);
     }
-  };
-
-  // Theme toggle
-  const handleToggleTheme = async () => {
-    const newTheme = settings.theme === 'dark' ? 'light' : 'dark';
-    const updated = await api.updateSettings({ theme: newTheme });
-    setSettings(updated);
   };
 
   // LeetCode refresh
@@ -247,14 +243,12 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`flex flex-col h-screen w-screen overflow-hidden ${settings.theme} transition-colors`}>
+    <div className="flex flex-col h-screen w-screen overflow-hidden dark">
       {/* Outer macOS Window Container with Liquid Glass Frame */}
       <div className="flex flex-col flex-1 overflow-hidden liquid-glass-base">
         {/* macOS Unified Titlebar & Toolbar */}
         <Header
           title={getHeaderTitle()}
-          theme={settings.theme}
-          onToggleTheme={handleToggleTheme}
           onOpenAddTask={handleOpenAddTask}
           onBack={handleBack}
           onForward={handleForward}
@@ -348,11 +342,13 @@ export const App: React.FC = () => {
               task={inAppAlarmTask}
               settings={settings}
               onDismiss={async (markDone) => {
+                audioService.stopLoop();
                 await api.dismissAlarm(inAppAlarmTask.id, markDone);
                 setInAppAlarmTask(null);
                 loadData();
               }}
               onSnooze={async (minutes) => {
+                audioService.stopLoop();
                 await api.snoozeAlarm(inAppAlarmTask.id, minutes);
                 setInAppAlarmTask(null);
                 loadData();

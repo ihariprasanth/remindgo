@@ -144,7 +144,7 @@ export class AlarmScheduler {
     task.last_notified_at = nowIso;
 
     // 1. Popup the prominent always-on-top alarm window
-    createOrShowAlarmWindow(task, this.isDev, this.devServerUrl);
+    const alarmWin = createOrShowAlarmWindow(task, this.isDev, this.devServerUrl);
 
     // 2. Also show native Windows Notification
     if (Notification.isSupported()) {
@@ -164,10 +164,13 @@ export class AlarmScheduler {
       }
     }
 
-    // 3. Inform main window if open
+    // 3. Inform main window of task updates; only trigger in-app overlay if dedicated alarm window is unavailable
     const mainWin = getMainWindow();
     if (mainWin && !mainWin.isDestroyed()) {
-      mainWin.webContents.send('alarm-triggered', task);
+      mainWin.webContents.send('tasks-changed');
+      if (!alarmWin) {
+        mainWin.webContents.send('alarm-triggered', task);
+      }
     }
   }
 }

@@ -27,6 +27,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.removeListener('alarm-triggered', handler);
     };
   },
+  onAlarmDismissed: (callback: () => void) => {
+    const handler = () => callback();
+    ipcRenderer.on('alarm-dismissed', handler);
+    return () => {
+      ipcRenderer.removeListener('alarm-dismissed', handler);
+    };
+  },
   snoozeAlarm: (taskId: string, minutes: number) => ipcRenderer.invoke('snooze-alarm', { taskId, minutes }),
   dismissAlarm: (taskId: string, markDone?: boolean) => ipcRenderer.invoke('dismiss-alarm', { taskId, markDone }),
   previewSound: (soundName: string) => ipcRenderer.invoke('preview-sound', soundName),

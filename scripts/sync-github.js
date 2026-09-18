@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.5.4';
-  const commitMsg = `Release v2.5.4: Professional Clean UI, Locked Desktop Widget, +5:30 IST Engine, and Extended Tones`;
+  const version = 'v2.5.5';
+  const commitMsg = `Release v2.5.5: Exact Reminder Actions, Audio Sync Fix, macOS Traffic Lights, Top-Right Widget, and Developer Profile`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

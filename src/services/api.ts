@@ -120,6 +120,7 @@ const mockAPI: ElectronAPI = {
     return mockSettings.leetcodeUsername ? mockLeetCodeData : null;
   },
   onAlarmTrigger: () => () => {},
+  onAlarmDismissed: () => () => {},
   snoozeAlarm: async () => {},
   dismissAlarm: async () => {},
   previewSound: async () => {},
@@ -130,7 +131,7 @@ const mockAPI: ElectronAPI = {
   maximizeWindow: () => {},
   closeWindow: () => {},
   isMaximized: async () => false,
-  getAppVersion: async () => '2.5.4',
+  getAppVersion: async () => '2.5.5',
   toggleWidget: async () => {},
   openMainWindow: async () => {},
   setWidgetAlwaysOnTop: async () => {},

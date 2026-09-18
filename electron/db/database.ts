@@ -215,10 +215,10 @@ export class TaskDatabase {
       snoozeDuration: 5,
       minimizeToTray: true,
       closeToTray: true,
-      startWithWindows: false,
+      startWithWindows: true,
       leetcodeUsername: '',
       theme: 'dark',
-      autoOpenWidget: false,
+      autoOpenWidget: true,
       widgetAlwaysOnTop: false
     };
 
@@ -235,12 +235,12 @@ export class TaskDatabase {
       alarmSound: settingsMap.alarmSound || defaultSettings.alarmSound,
       soundVolume: settingsMap.soundVolume ? parseFloat(settingsMap.soundVolume) : defaultSettings.soundVolume,
       snoozeDuration: settingsMap.snoozeDuration ? parseInt(settingsMap.snoozeDuration, 10) : defaultSettings.snoozeDuration,
-      minimizeToTray: settingsMap.minimizeToTray === 'true',
-      closeToTray: settingsMap.closeToTray === 'true',
-      startWithWindows: settingsMap.startWithWindows === 'true',
+      minimizeToTray: settingsMap.minimizeToTray !== undefined ? settingsMap.minimizeToTray === 'true' : true,
+      closeToTray: settingsMap.closeToTray !== undefined ? settingsMap.closeToTray === 'true' : true,
+      startWithWindows: settingsMap.startWithWindows !== undefined ? settingsMap.startWithWindows === 'true' : true,
       leetcodeUsername: settingsMap.leetcodeUsername || '',
-      theme: (settingsMap.theme === 'light' ? 'light' : 'dark'),
-      autoOpenWidget: settingsMap.autoOpenWidget === 'true',
+      theme: 'dark',
+      autoOpenWidget: settingsMap.autoOpenWidget !== undefined ? settingsMap.autoOpenWidget === 'true' : true,
       widgetAlwaysOnTop: settingsMap.widgetAlwaysOnTop === 'true'
     };
   }

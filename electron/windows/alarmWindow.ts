@@ -1,6 +1,8 @@
 import { BrowserWindow, screen } from 'electron';
 import path from 'path';
 import { Task } from '../../src/types';
+import { getMainWindow } from './mainWindow';
+import { getWidgetWindow } from './widgetWindow';
 
 let alarmWindowInstance: BrowserWindow | null = null;
 let currentAlarmTask: Task | null = null;
@@ -69,6 +71,8 @@ export function createOrShowAlarmWindow(task: Task, isDev: boolean, devServerUrl
   alarmWindowInstance.on('closed', () => {
     alarmWindowInstance = null;
     currentAlarmTask = null;
+    getMainWindow()?.webContents.send('alarm-dismissed');
+    getWidgetWindow()?.webContents.send('alarm-dismissed');
   });
 
   return alarmWindowInstance;
@@ -79,5 +83,7 @@ export function closeAlarmWindow(): void {
     alarmWindowInstance.close();
     alarmWindowInstance = null;
     currentAlarmTask = null;
+    getMainWindow()?.webContents.send('alarm-dismissed');
+    getWidgetWindow()?.webContents.send('alarm-dismissed');
   }
 }

@@ -94,6 +94,11 @@ function broadcastTasksChanged() {
   getWidgetWindow()?.webContents.send('tasks-changed');
 }
 
+function broadcastAlarmDismissed() {
+  getMainWindow()?.webContents.send('alarm-dismissed');
+  getWidgetWindow()?.webContents.send('alarm-dismissed');
+}
+
 // ==========================================
 // IPC Handlers - Tasks
 // ==========================================
@@ -220,6 +225,7 @@ ipcMain.handle('snooze-alarm', async (_event, { taskId, minutes }: { taskId: str
   console.log(`[Main] Snoozing task ${taskId} for ${minutes} minutes`);
   dbInstance.snoozeTask(taskId, minutes);
   closeAlarmWindow();
+  broadcastAlarmDismissed();
   broadcastTasksChanged();
 });
 
@@ -258,6 +264,7 @@ ipcMain.handle('dismiss-alarm', async (_event, { taskId, markDone }: { taskId: s
     }
   }
   closeAlarmWindow();
+  broadcastAlarmDismissed();
   broadcastTasksChanged();
 });
 

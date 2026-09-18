@@ -4,8 +4,8 @@
 
 /* Apple San Francisco Typography & Liquid Glass Theme Tokens */
 :root {
-  --font-mac: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'SF Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-mono: 'SF Mono', 'JetBrains Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --font-mac: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'SF Pro', sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, monospace;
   font-size: 14.5px;
 }
 

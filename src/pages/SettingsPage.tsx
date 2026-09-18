@@ -450,12 +450,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-xl border border-white/20 mb-3 bg-white p-0.5">
           <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
         </div>
-        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.5.4 • Liquid Glass Edition</div>
+        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.5.5 • Liquid Glass Edition</div>
         <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
           Liquid Glass Architecture • LeetCode Integration • Local SQLite Engine
         </div>
         <div className="text-[10px] text-[var(--text-muted)] mt-1 font-mono">
-          Developed by Hariprasanth
+          Developed by Hariprasanth T
         </div>
       </div>
     </div>

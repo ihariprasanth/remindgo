@@ -31,9 +31,9 @@ export function createOrShowWidgetWindow(isDev: boolean, devServerUrl?: string):
   const winWidth = 390;
   const winHeight = 185;
 
-  // Position nicely on the right side of the screen like a Windows desktop widget
-  const x = Math.max(workX + 20, workX + screenWidth - winWidth - 30);
-  const y = Math.max(workY + 40, workY + 80);
+  // Position neatly on the top-right corner of the desktop wallpaper
+  const x = Math.max(workX + 20, workX + screenWidth - winWidth - 25);
+  const y = workY + 25;
 
   const iconPath = isDev
     ? path.join(__dirname, '../../assets/icon.ico')

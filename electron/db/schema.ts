@@ -37,7 +37,8 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   snoozeDuration: '5',
   minimizeToTray: 'true',
   closeToTray: 'true',
-  startWithWindows: 'false',
+  startWithWindows: 'true',
   leetcodeUsername: '',
-  theme: 'dark'
+  theme: 'dark',
+  autoOpenWidget: 'true'
 };

@@ -9,6 +9,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"SF Pro"', 'sans-serif'],
+        mono: ['"SF Mono"', 'ui-monospace', 'Menlo', 'Monaco', 'monospace'],
+      },
       colors: {
         github: {
           canvas: '#0d1117',

@@ -96,6 +96,7 @@ export interface ElectronAPI {
 
   // Alarm actions
   onAlarmTrigger: (callback: (task: Task) => void) => () => void;
+  onAlarmDismissed?: (callback: () => void) => () => void;
   snoozeAlarm: (taskId: string, minutes: number) => Promise<void>;
   dismissAlarm: (taskId: string, markDone?: boolean) => Promise<void>;
   previewSound: (soundName: string) => Promise<void>;

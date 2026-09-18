@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Clock, Check, X } from 'lucide-react';
 import { Task, Settings } from '../types';
 import { audioService } from '../services/audioService';
@@ -18,9 +18,6 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
   onDismiss,
   onSnooze
 }) => {
-  const [customSnooze, setCustomSnooze] = useState('15');
-  const [showCustom, setShowCustom] = useState(false);
-
   useEffect(() => {
     // Start audio loop when alarm popup mounts
     const sound = settings?.alarmSound || 'digital-alarm';
@@ -29,23 +26,32 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
     audioService.startLoop(sound);
 
     return () => {
-      // Ensure audio stops when unmounting
+      // Ensure audio stops strictly when unmounting
       audioService.stopLoop();
     };
   }, [settings]);
 
-  const handleDismiss = (markDone: boolean = false) => {
+  const handleThankYou = () => {
+    // 1. Immediately silence audio
     audioService.stopLoop();
-    onDismiss(markDone);
+    // 2. Mark as completed and close
+    onDismiss(true);
   };
 
-  const handleSnooze = (minutes: number) => {
+  const handleSnoozeMinutes = (minutes: number) => {
+    // 1. Immediately silence audio
     audioService.stopLoop();
+    // 2. Set snooze time in DB
     onSnooze(minutes);
   };
 
+  const handleClose = () => {
+    audioService.stopLoop();
+    onDismiss(false);
+  };
+
   return (
-    <div className="w-full h-full bg-[#000000] text-white flex flex-col justify-between p-6 select-none border border-white/15 rounded-2xl shadow-2xl overflow-hidden">
+    <div className="w-full h-full bg-[#000000] text-white flex flex-col justify-between p-6 select-none border border-white/15 rounded-2xl shadow-2xl overflow-hidden font-sans">
       {/* Top Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -56,8 +62,9 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
           </span>
         </div>
         <button
-          onClick={() => handleDismiss(false)}
-          className="text-white/60 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+          onClick={handleClose}
+          className="text-white/60 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+          title="Close Alarm"
         >
           <X size={16} />
         </button>
@@ -71,8 +78,8 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
         </div>
 
         <div>
-          <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-white/80 border border-white/10">
-            {task.category}
+          <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-white/80 border border-white/10 font-mono">
+            {task.category || 'General'}
           </span>
         </div>
 
@@ -92,65 +99,38 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
         </div>
       </div>
 
-      {/* Action Controls */}
+      {/* Action Controls - Exactly 4 options as requested */}
       <div className="space-y-3 pt-2">
-        {/* Mark Done Primary Button */}
+        {/* Option 1: "THANK YOU I WILL DO IT NOW" (Primary button) */}
         <button
-          onClick={() => handleDismiss(true)}
-          className="w-full py-2.5 px-4 bg-[#0a84ff] hover:bg-[#0066d6] text-white text-sm font-semibold rounded-xl shadow-[0_4px_16px_rgba(10,132,255,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer"
+          onClick={handleThankYou}
+          className="w-full py-3 px-4 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] active:scale-[0.99] text-white text-sm font-semibold rounded-xl shadow-[0_4px_16px_rgba(10,132,255,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wide text-xs"
         >
           <Check size={16} strokeWidth={3} />
-          <span>Mark as Completed</span>
+          <span>Thank you I will do it now</span>
         </button>
 
-        {/* Snooze & Dismiss Row */}
-        <div className="grid grid-cols-4 gap-2">
+        {/* Options 2, 3, 4: "5MIN", "10MIN", "15MIN" Snooze Buttons */}
+        <div className="grid grid-cols-3 gap-2.5">
           <button
-            onClick={() => handleSnooze(5)}
-            className="py-1.5 px-2 bg-[#161616] hover:bg-[#262626] text-white text-xs font-mono font-medium rounded-xl border border-white/10 transition-colors cursor-pointer"
+            onClick={() => handleSnoozeMinutes(5)}
+            className="py-2 px-3 bg-[#141414] hover:bg-[#222222] active:bg-[#2a2a2a] text-white text-xs font-mono font-semibold rounded-xl border border-white/15 transition-all text-center cursor-pointer shadow-sm hover:border-[#0a84ff]/50"
           >
-            +5 min
+            5 min
           </button>
           <button
-            onClick={() => handleSnooze(10)}
-            className="py-1.5 px-2 bg-[#161616] hover:bg-[#262626] text-white text-xs font-mono font-medium rounded-xl border border-white/10 transition-colors cursor-pointer"
+            onClick={() => handleSnoozeMinutes(10)}
+            className="py-2 px-3 bg-[#141414] hover:bg-[#222222] active:bg-[#2a2a2a] text-white text-xs font-mono font-semibold rounded-xl border border-white/15 transition-all text-center cursor-pointer shadow-sm hover:border-[#0a84ff]/50"
           >
-            +10 min
+            10 min
           </button>
           <button
-            onClick={() => setShowCustom(!showCustom)}
-            className="py-1.5 px-2 bg-[#161616] hover:bg-[#262626] text-white text-xs font-medium rounded-xl border border-white/10 transition-colors cursor-pointer"
+            onClick={() => handleSnoozeMinutes(15)}
+            className="py-2 px-3 bg-[#141414] hover:bg-[#222222] active:bg-[#2a2a2a] text-white text-xs font-mono font-semibold rounded-xl border border-white/15 transition-all text-center cursor-pointer shadow-sm hover:border-[#0a84ff]/50"
           >
-            Custom
-          </button>
-          <button
-            onClick={() => handleDismiss(false)}
-            className="py-1.5 px-2 bg-[#161616] hover:bg-[#da3633]/20 hover:text-[#f85149] text-white/60 text-xs font-medium rounded-xl border border-white/10 hover:border-[#f85149]/40 transition-colors cursor-pointer"
-          >
-            Dismiss
+            15 min
           </button>
         </div>
-
-        {/* Custom Snooze Input dropdown if opened */}
-        {showCustom && (
-          <div className="flex items-center gap-2 pt-1">
-            <input
-              type="number"
-              min="1"
-              max="120"
-              value={customSnooze}
-              onChange={(e) => setCustomSnooze(e.target.value)}
-              className="w-20 px-2.5 py-1 macos-input text-xs font-mono"
-            />
-            <span className="text-xs text-white/60">minutes</span>
-            <button
-              onClick={() => handleSnooze(parseInt(customSnooze, 10) || 15)}
-              className="ml-auto px-3.5 py-1 macos-btn macos-btn-secondary text-xs font-medium cursor-pointer"
-            >
-              Apply Snooze
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
