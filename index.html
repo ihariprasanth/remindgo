@@ -149,15 +149,20 @@
         <!-- Window Bar -->
         <div class="h-11 bg-black/40 border-b border-white/10 flex items-center justify-between px-4">
           <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></span>
-            <span class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></span>
-            <span class="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></span>
+            <div class="w-5 h-5 rounded-[6px] overflow-hidden bg-white p-0.5 shadow-sm border border-white/20">
+              <img src="./logo-squircle.png" alt="RemindGo" class="w-full h-full object-cover rounded-[4px]" />
+            </div>
+            <span class="font-bold text-xs text-white">RemindGo</span>
           </div>
           <div class="flex items-center gap-2 px-3 py-1 rounded-full liquid-glass-pill text-xs text-white/80 font-medium">
-            <img src="./logo-circle.png" alt="RemindGo" class="w-4 h-4 rounded-full border border-white/20 shadow-sm" />
-            <span>RemindGo • Productivity Dashboard</span>
+            <span class="w-2 h-2 rounded-full bg-[#0a84ff]"></span>
+            <span>Productivity Dashboard</span>
           </div>
-          <div class="text-[11px] font-mono text-white/40">Liquid Glass</div>
+          <div class="flex items-center gap-2 text-white/60 text-xs">
+            <span class="cursor-pointer hover:text-white">─</span>
+            <span class="cursor-pointer hover:text-white">▢</span>
+            <span class="cursor-pointer hover:text-red-400">✕</span>
+          </div>
         </div>
 
         <!-- Window Body -->
@@ -186,8 +191,8 @@
             <!-- Heatmap Grid Mockup -->
             <div class="liquid-glass-pill p-4 rounded-xl space-y-2">
               <div class="flex items-center justify-between text-xs">
-                <span class="font-semibold text-white">52-Week Activity Grid</span>
-                <span class="text-[11px] text-white/50 font-mono">Tasks + LeetCode</span>
+                <span class="font-semibold text-white">Classical GitHub Green Heatmap</span>
+                <span class="text-[11px] text-emerald-400 font-mono">Tasks + LeetCode</span>
               </div>
               <div class="grid grid-cols-12 gap-1.5 pt-1">
                 <div class="h-3 rounded-[2px] bg-[#0e4429]"></div>
@@ -262,28 +267,28 @@
 
         <!-- Feature 4 -->
         <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#bc8cff]/20 text-[#bc8cff] flex items-center justify-center text-lg">🟩</div>
-          <h3 class="text-base font-bold text-white">GitHub 52-Week Heatmap</h3>
+          <div class="w-10 h-10 rounded-xl bg-[#22c55e]/20 text-[#22c55e] flex items-center justify-center text-lg">🟩</div>
+          <h3 class="text-base font-bold text-white">Classical Green Heatmap</h3>
           <p class="text-xs text-white/60 leading-relaxed">
-            Dynamic calendar grid with green intensity blocks for both task completions and LeetCode submissions with interactive tooltips and streak calculations.
+            Dynamic calendar grid with authentic GitHub classical green intensity blocks for task completions and LeetCode submissions with streaks.
           </p>
         </div>
 
         <!-- Feature 5 -->
         <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#f43f5e]/20 text-[#f43f5e] flex items-center justify-center text-lg">🌓</div>
-          <h3 class="text-base font-bold text-white">Dark & Light Liquid Glass</h3>
+          <div class="w-10 h-10 rounded-xl bg-[#f43f5e]/20 text-[#f43f5e] flex items-center justify-center text-lg">📌</div>
+          <h3 class="text-base font-bold text-white">Desktop Floating Widget</h3>
           <p class="text-xs text-white/60 leading-relaxed">
-            Authentic frosted acrylic aesthetics, traffic light window controls, and instant toggle between Dark Mode and Light Mode.
+            Floating compact desktop widget for Windows with tabs for Today's To-Do list, Classical Green Heatmap, and LeetCode Tracker with Always-on-Top pin.
           </p>
         </div>
 
         <!-- Feature 6 -->
         <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#34c759]/20 text-[#34c759] flex items-center justify-center text-lg">📌</div>
-          <h3 class="text-base font-bold text-white">System Tray Integration</h3>
+          <div class="w-10 h-10 rounded-xl bg-[#34c759]/20 text-[#34c759] flex items-center justify-center text-lg">🌓</div>
+          <h3 class="text-base font-bold text-white">Adaptive Light & Dark Modes</h3>
           <p class="text-xs text-white/60 leading-relaxed">
-            Minimizes directly to the Windows system tray with quick-actions menu. Alarms continue to fire reliably in the background.
+            Pitch-black OLED Dark Mode and high-contrast charcoal Light Mode with standard Windows top-right controls and system tray minimize.
           </p>
         </div>
       </div>
