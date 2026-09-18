@@ -56,7 +56,7 @@ async function main() {
       dir: projectDir,
       remote: 'origin',
       ref: 'main',
-      force: false,
+      force: true,
       onAuth: () => ({
         username: token,
         password: ''
@@ -72,6 +72,7 @@ async function main() {
         dir: projectDir,
         remote: 'origin',
         ref: 'refs/tags/v2.5.0',
+        force: true,
         onAuth: () => ({
           username: token,
           password: ''
