@@ -40,7 +40,7 @@ export function setupTray(isDev: boolean, devServerUrl?: string): Tray {
 
   const icon = getTrayIcon();
   trayInstance = new Tray(icon);
-  trayInstance.setToolTip('TaskPulse - Offline Task Reminder');
+  trayInstance.setToolTip('RemindGo - Offline Task Reminder');
 
   const showApp = () => {
     const mainWin = getMainWindow();
@@ -53,7 +53,7 @@ export function setupTray(isDev: boolean, devServerUrl?: string): Tray {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Open TaskPulse',
+      label: 'Open RemindGo',
       click: showApp
     },
     {
@@ -66,7 +66,7 @@ export function setupTray(isDev: boolean, devServerUrl?: string): Tray {
     },
     { type: 'separator' },
     {
-      label: 'Exit TaskPulse',
+      label: 'Exit RemindGo',
       click: () => {
         setQuitting(true);
         app.quit();

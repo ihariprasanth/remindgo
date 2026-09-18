@@ -105,7 +105,7 @@ export class AlarmScheduler {
     if (Notification.isSupported()) {
       try {
         const notif = new Notification({
-          title: `TaskPulse: ${task.title}`,
+          title: `RemindGo: ${task.title}`,
           body: task.description ? `${task.description} - Due: ${task.time}` : `Scheduled at ${task.time}`,
           urgency: 'critical',
           silent: true // The custom alarm popup handles looping sound

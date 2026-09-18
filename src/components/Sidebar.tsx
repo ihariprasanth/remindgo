@@ -88,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <div>
             <span className="font-bold text-xs tracking-wide text-[var(--text-main)] block leading-tight">
-              TaskPulse
+              RemindGo
             </span>
             <span className="text-[10px] text-[var(--text-muted)] block leading-tight font-mono">
               macOS 26 Edition

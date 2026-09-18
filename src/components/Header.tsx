@@ -53,7 +53,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Red: Close */}
           <button
             onClick={handleClose}
-            title="Close TaskPulse"
+            title="Close RemindGo"
             className="w-3.5 h-3.5 rounded-full bg-[#ff5f56] border border-[#e0443e] flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
           >
             {hoverControls && <span className="text-[9px] text-[#4d0000] font-bold leading-none">×</span>}

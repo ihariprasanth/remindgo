@@ -1,6 +1,6 @@
 {
-  "appId": "com.taskpulse.app",
-  "productName": "TaskPulse",
+  "appId": "com.remindgo.app",
+  "productName": "RemindGo",
   "directories": {
     "output": "release"
   },
@@ -44,10 +44,10 @@
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": "always",
     "createStartMenuShortcut": true,
-    "shortcutName": "TaskPulse",
-    "uninstallDisplayName": "TaskPulse"
+    "shortcutName": "RemindGo",
+    "uninstallDisplayName": "RemindGo"
   },
   "portable": {
-    "artifactName": "TaskPulse-Portable-${version}.exe"
+    "artifactName": "RemindGo-Portable-${version}.exe"
   }
 }

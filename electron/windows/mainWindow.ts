@@ -23,7 +23,7 @@ export function createMainWindow(isDev: boolean, devServerUrl?: string): Browser
     height: 760,
     minWidth: 960,
     minHeight: 640,
-    title: 'TaskPulse',
+    title: 'RemindGo',
     frame: false, // Clean custom frameless titlebar with GitHub theme
     backgroundColor: '#0d1117',
     show: false,

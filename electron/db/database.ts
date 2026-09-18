@@ -14,7 +14,16 @@ export class TaskDatabase {
     if (!fs.existsSync(userDataDir)) {
       fs.mkdirSync(userDataDir, { recursive: true });
     }
-    this.dbPath = path.join(userDataDir, 'taskpulse.db');
+    this.dbPath = path.join(userDataDir, 'remindgo.db');
+    const oldDbPath = path.join(userDataDir, 'taskpulse.db');
+    if (!fs.existsSync(this.dbPath) && fs.existsSync(oldDbPath)) {
+      try {
+        fs.copyFileSync(oldDbPath, this.dbPath);
+        console.log('[TaskDatabase] Successfully migrated taskpulse.db to remindgo.db');
+      } catch (err) {
+        console.error('[TaskDatabase] Error migrating database:', err);
+      }
+    }
     console.log('[TaskDatabase] Database path:', this.dbPath);
   }
 

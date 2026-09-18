@@ -265,7 +265,7 @@ export const LeetCodePage: React.FC<LeetCodePageProps> = ({
                     className="px-4 py-2 rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-md cursor-pointer"
                   >
                     <PlusCircle size={15} />
-                    <span>Set Reminder in TaskPulse</span>
+                    <span>Set Reminder in RemindGo</span>
                   </button>
                 </div>
               </div>

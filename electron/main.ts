@@ -21,7 +21,7 @@ const devServerUrl = process.env.VITE_DEV_SERVER_URL;
 
 let scheduler: AlarmScheduler | null = null;
 
-app.setAppUserModelId('com.taskpulse.app');
+app.setAppUserModelId('com.remindgo.app');
 
 app.on('second-instance', () => {
   const mainWin = getMainWindow();
@@ -244,8 +244,8 @@ ipcMain.handle('dismiss-alarm', async (_event, { taskId, markDone }: { taskId: s
 ipcMain.handle('export-data', async () => {
   const mainWin = getMainWindow();
   const { canceled, filePath } = await dialog.showSaveDialog(mainWin!, {
-    title: 'Export TaskPulse Backup',
-    defaultPath: `taskpulse-backup-${new Date().toISOString().slice(0, 10)}.json`,
+    title: 'Export RemindGo Backup',
+    defaultPath: `remindgo-backup-${new Date().toISOString().slice(0, 10)}.json`,
     filters: [{ name: 'JSON Backup', extensions: ['json'] }]
   });
 
@@ -263,7 +263,7 @@ ipcMain.handle('export-data', async () => {
 ipcMain.handle('import-data', async () => {
   const mainWin = getMainWindow();
   const { canceled, filePaths } = await dialog.showOpenDialog(mainWin!, {
-    title: 'Import TaskPulse Backup',
+    title: 'Import RemindGo Backup',
     properties: ['openFile'],
     filters: [{ name: 'JSON Backup', extensions: ['json'] }]
   });

@@ -251,7 +251,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 Minimize Directly to Tray
               </div>
               <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
-                When clicking the minimize button, hide TaskPulse into the tray icon.
+                When clicking the minimize button, hide RemindGo into the tray icon.
               </div>
             </div>
             <label className="macos-switch flex-shrink-0 cursor-pointer">
@@ -271,7 +271,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 Start Automatically with Windows
               </div>
               <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
-                Launches TaskPulse in background when Windows boots up so no reminders are missed.
+                Launches RemindGo in background when Windows boots up so no reminders are missed.
               </div>
             </div>
             <label className="macos-switch flex-shrink-0 cursor-pointer">
@@ -330,7 +330,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
       {/* About Section */}
       <div className="text-center text-xs text-white/40 pt-2">
-        <div className="font-semibold text-white/80">TaskPulse v2.0 • Liquid Glass Edition</div>
+        <div className="font-semibold text-white/80">RemindGo v2.5 • macOS 26 Liquid Glass Edition</div>
         <div className="text-[11px] text-white/40 mt-0.5">
           macOS Liquid Glass UI • LeetCode Integration • Local SQLite Engine
         </div>

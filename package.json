@@ -1,9 +1,9 @@
 {
-  "name": "taskpulse",
+  "name": "remindgo",
   "version": "2.5.0",
-  "description": "Offline Windows Task Reminder App with GitHub-style UI",
+  "description": "Offline Windows Task Reminder App with macOS 26 Liquid Glass UI & LeetCode Tracker",
   "main": "dist-electron/main.js",
-  "author": "TaskPulse Team",
+  "author": "Hariprasanth (RemindGo)",
   "license": "MIT",
   "scripts": {
     "dev:vite": "vite",
