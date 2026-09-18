@@ -1,38 +1,38 @@
-# TaskPulse
+# RemindGo
 
-A Windows desktop task and reminder manager built with Electron, React, TypeScript, and SQLite.
+A privacy-first Windows task and reminder manager built with Electron, React, TypeScript, and SQLite.
 
-TaskPulse allows users to create scheduled tasks and receive reminders at specific dates and times. It runs in the background through the Windows system tray and stores all data locally.
+RemindGo helps you create scheduled tasks, receive precise reminders, track productivity, and manage daily activities from a simple desktop application.
 
 ## Features
 
 ### Task Management
 
 - Create, edit, complete, and delete tasks
-- Schedule tasks with date and exact time
+- Schedule tasks with exact date and time
 - Set task priority: Low, Medium, High
 - Add categories and tags
 - Daily and weekly recurring tasks
 - Search and filter tasks
-- Separate views for today, upcoming, overdue, and completed tasks
+- Track today, upcoming, overdue, and completed tasks
 
 ### Reminder System
 
 - Always-on-top alarm popup
-- Continuous alarm sound until dismissed or snoozed
+- Continuous alarm sound
 - Native Windows notifications
-- Snooze options: 5, 10, 15 minutes, or custom duration
-- Automatically handles missed alarms after sleep or screen unlock
-- Prevents dismissed alarms from triggering again after application restart
+- Snooze for 5, 10, 15 minutes, or custom duration
+- Missed alarm recovery after sleep or screen unlock
+- Prevents dismissed alarms from triggering again
 
 ### Productivity Heatmap
 
 - GitHub-style 52-week activity heatmap
 - Daily task completion tracking
-- Different intensity levels based on completed tasks
+- Completion intensity based on activity
 - Interactive date tooltips
-- View the last 12 months or current year
-- Select a date to view completed tasks
+- Last 12 months and current year views
+- Click a date to view completed tasks
 
 ### Productivity Statistics
 
@@ -41,28 +41,29 @@ TaskPulse allows users to create scheduled tasks and receive reminders at specif
 - Tasks completed today
 - Total completed tasks
 
-### Privacy and Offline Storage
+### Offline and Privacy
 
-- Fully offline application
+- 100% offline
 - No account or login required
 - No external servers
 - No telemetry
 - Local SQLite database
-- JSON backup and restore support
+- JSON backup and restore
 
 Data is stored locally at:
 
 ```text
-%APPDATA%/TaskPulse/taskpulse.db
+%APPDATA%/RemindGo/remindgo.db
 ```
 
 ### Windows Integration
 
 - System tray support
 - Minimize to tray
-- Close to tray option
-- Launch automatically with Windows
-- Windows installer and portable executable support
+- Close to tray
+- Launch on Windows startup
+- Windows installer
+- Portable executable
 
 ## Technology Stack
 
@@ -78,7 +79,7 @@ Data is stored locally at:
 
 ## Theme
 
-TaskPulse uses a GitHub-inspired dark theme.
+RemindGo uses a GitHub-inspired dark theme.
 
 ```text
 Background:        #0d1117
@@ -105,17 +106,13 @@ Contribution colors:
 
 ### Installation
 
-Clone the repository and install the dependencies:
-
 ```bash
-cd C:\Users\HARIPRASANTH\.gemini\antigravity\scratch\taskpulse
-
+git clone <repository-url>
+cd RemindGo
 npm.cmd install
 ```
 
 ### Development
-
-Start the application in development mode:
 
 ```bash
 npm.cmd run dev
@@ -131,28 +128,28 @@ Build the application:
 npm.cmd run build
 ```
 
-Create Windows installer and portable executable:
+Create the Windows installer and portable executable:
 
 ```bash
 npm.cmd run build:win
 ```
 
-The generated files will be available in:
+Generated files will be available in:
 
 ```text
 release/
 ```
 
-Example output:
+Example:
 
 ```text
-release/TaskPulse Setup 1.0.0.exe
-release/TaskPulse-Portable-1.0.0.exe
+release/RemindGo Setup 1.0.0.exe
+release/RemindGo-Portable-1.0.0.exe
 ```
 
 ## Alarm Sounds
 
-TaskPulse includes several built-in alarm sound profiles:
+RemindGo includes multiple built-in alarm profiles:
 
 1. Digital Alarm
 2. Gentle Chime
@@ -160,7 +157,7 @@ TaskPulse includes several built-in alarm sound profiles:
 4. Synth Bell
 5. Classic Beep
 
-The default audio file is located at:
+Default sound:
 
 ```text
 assets/sounds/alarm.wav
@@ -175,7 +172,7 @@ assets/sounds/
 ## Project Structure
 
 ```text
-taskpulse/
+RemindGo/
 ├── electron/
 │   ├── main.ts
 │   ├── preload.ts
@@ -194,7 +191,6 @@ taskpulse/
 │   ├── main.tsx
 │   ├── alarm.tsx
 │   ├── App.tsx
-│   │
 │   ├── components/
 │   │   ├── Heatmap.tsx
 │   │   ├── StatsCard.tsx
@@ -202,19 +198,15 @@ taskpulse/
 │   │   ├── TaskCard.tsx
 │   │   ├── TaskModal.tsx
 │   │   └── AlarmPopup.tsx
-│   │
 │   ├── pages/
 │   │   ├── DashboardPage.tsx
 │   │   ├── TasksPage.tsx
 │   │   └── SettingsPage.tsx
-│   │
 │   ├── services/
 │   │   ├── audioService.ts
 │   │   └── api.ts
-│   │
 │   ├── styles/
 │   │   └── index.css
-│   │
 │   └── types/
 │       └── index.ts
 │
