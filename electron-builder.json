@@ -45,7 +45,8 @@
     "createDesktopShortcut": "always",
     "createStartMenuShortcut": true,
     "shortcutName": "RemindGo",
-    "uninstallDisplayName": "RemindGo"
+    "uninstallDisplayName": "RemindGo",
+    "artifactName": "RemindGo-Setup-${version}.exe"
   },
   "portable": {
     "artifactName": "RemindGo-Portable-${version}.exe"
