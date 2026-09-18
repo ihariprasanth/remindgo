@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskPulse • Offline Windows Task Manager & LeetCode Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['SF Pro Display', 'Inter', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'SF Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --font-mac: 'SF Pro Display', 'Inter', -apple-system, sans-serif;
+    }
+    body {
+      font-family: var(--font-mac);
+      letter-spacing: -0.015em;
+    }
+    .liquid-glass-card {
+      background: rgba(22, 30, 44, 0.65);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 12px 36px rgba(0, 0, 0, 0.35);
+    }
+    .light .liquid-glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+    .liquid-glass-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(16px);
+    }
+    .light .liquid-glass-pill {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.05); }
+    }
+    .ambient-glow {
+      animation: pulse-glow 8s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-[#080c14] text-[#f8fafc] dark:bg-[#080c14] dark:text-[#f8fafc] transition-colors duration-300 min-h-screen relative overflow-x-hidden">
+
+  <!-- Ambient Fluid Glow Backgrounds -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-40 left-1/4 w-[600px] h-[600px] rounded-full bg-[#39d353]/15 blur-[120px] ambient-glow"></div>
+    <div class="absolute top-1/3 -right-20 w-[500px] h-[500px] rounded-full bg-[#58a6ff]/12 blur-[130px] ambient-glow" style="animation-delay: 3s;"></div>
+    <div class="absolute -bottom-40 left-10 w-[550px] h-[550px] rounded-full bg-[#bc8cff]/10 blur-[140px] ambient-glow" style="animation-delay: 5s;"></div>
+  </div>
+
+  <div class="relative z-10">
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 border-b border-white/10 backdrop-blur-2xl bg-black/40 dark:bg-black/40 transition-colors">
+      <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#238636] to-[#39d353] p-0.5 shadow-[0_0_15px_rgba(57,211,83,0.4)] flex items-center justify-center">
+            <div class="w-full h-full bg-[#0d1117]/80 rounded-[14px] flex items-center justify-center">
+              <span class="w-3 h-3 rounded-full bg-[#39d353] shadow-[0_0_8px_#39d353]"></span>
+            </div>
+          </div>
+          <div>
+            <span class="font-bold text-base tracking-tight text-white block leading-tight">TaskPulse</span>
+            <span class="text-[10px] text-white/50 block font-mono">macOS 26 Liquid Glass</span>
+          </div>
+        </a>
+
+        <!-- Nav Links -->
+        <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-white/70">
+          <a href="#features" class="hover:text-white transition-colors">Features</a>
+          <a href="#leetcode" class="hover:text-white transition-colors">LeetCode Sync</a>
+          <a href="#heatmap" class="hover:text-white transition-colors">Heatmap</a>
+          <a href="#developer" class="hover:text-white transition-colors">Developer</a>
+          <a href="#releases" class="hover:text-white transition-colors">Releases</a>
+        </nav>
+
+        <!-- Right Action & Theme Toggle -->
+        <div class="flex items-center gap-3">
+          <!-- Theme Switcher -->
+          <button id="themeToggle" class="p-2 rounded-xl liquid-glass-pill text-white/80 hover:text-white transition-colors cursor-pointer" title="Toggle Dark/Light Mode">
+            <svg id="themeIconSun" class="w-4 h-4 text-amber-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <svg id="themeIconMoon" class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+          </button>
+
+          <!-- Download Button -->
+          <a href="#download" class="flex items-center gap-2 bg-gradient-to-r from-[#238636] to-[#2ea043] hover:from-[#2ea043] hover:to-[#39d353] text-white text-xs font-semibold py-2 px-4 rounded-xl shadow-[0_4px_16px_rgba(35,134,54,0.4)] transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <span>Download .exe</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
+      <!-- Tag Pill -->
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full liquid-glass-pill text-xs font-medium text-white/90 mb-6 shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-[#39d353] shadow-[0_0_8px_#39d353]"></span>
+        <span>TaskPulse v2.5 Liquid Glass Edition</span>
+        <span class="text-white/40">• Windows Desktop Offline App</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight max-w-4xl mx-auto">
+        The Offline Task Reminder with <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#39d353] via-[#58a6ff] to-[#bc8cff]">macOS Liquid Glass</span> Aesthetic.
+      </h1>
+
+      <p class="text-base sm:text-lg text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
+        High-precision exact-time looping alarms, GitHub-style 52-week activity heatmap, and offline-cached LeetCode tracking — built 100% private with local SQLite for Windows.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <a href="https://github.com" class="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#238636] to-[#2ea043] hover:from-[#2ea043] hover:to-[#39d353] text-white font-semibold py-3 px-6 rounded-2xl shadow-[0_6px_24px_rgba(35,134,54,0.45)] text-sm transition-all hover:-translate-y-0.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          <span>Download TaskPulse Setup (.exe)</span>
+        </a>
+        <a href="#features" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/10 text-white font-medium py-3 px-6 rounded-2xl text-sm transition-all">
+          <span>Explore Features</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </a>
+      </div>
+
+      <!-- Interactive macOS Window Mockup -->
+      <div class="max-w-4xl mx-auto rounded-2xl overflow-hidden liquid-glass-card border border-white/20 shadow-[0_25px_70px_rgba(0,0,0,0.6)] text-left">
+        <!-- macOS Window Bar -->
+        <div class="h-11 bg-black/40 border-b border-white/10 flex items-center justify-between px-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></span>
+          </div>
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full liquid-glass-pill text-xs text-white/80 font-medium">
+            <span class="w-2 h-2 rounded-full bg-[#39d353]"></span>
+            <span>TaskPulse • Productivity Dashboard</span>
+          </div>
+          <div class="text-[11px] font-mono text-white/40">macOS 26</div>
+        </div>
+
+        <!-- Window Body -->
+        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-black/20">
+          <!-- Left Mockup Column: LeetCode Widget -->
+          <div class="liquid-glass-pill p-4 rounded-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-[#f59e0b]">LeetCode Profile</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#39d353]/15 text-[#39d353]">Live Synced</span>
+            </div>
+            <div class="text-2xl font-bold font-mono text-white">312 <span class="text-xs font-normal text-white/50">/ 4,055 Solved</span></div>
+            <div class="space-y-1.5 text-xs">
+              <div class="flex justify-between text-[11px] text-white/70"><span>Easy</span><span class="text-[#39d353]">145 / 965</span></div>
+              <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="w-1/3 h-full bg-[#39d353]"></div></div>
+              <div class="flex justify-between text-[11px] text-white/70"><span>Medium</span><span class="text-[#f59e0b]">138 / 2,115</span></div>
+              <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="w-1/4 h-full bg-[#f59e0b]"></div></div>
+            </div>
+            <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-white/60">
+              <span>Streak: <strong class="text-[#f43f5e]">14 days 🔥</strong></span>
+              <span>Rank: <strong>#45,210</strong></span>
+            </div>
+          </div>
+
+          <!-- Middle & Right Mockup Columns: Heatmap & Today -->
+          <div class="md:col-span-2 space-y-4">
+            <!-- Heatmap Grid Mockup -->
+            <div class="liquid-glass-pill p-4 rounded-xl space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-white">52-Week Activity Grid</span>
+                <span class="text-[11px] text-white/50 font-mono">Tasks + LeetCode</span>
+              </div>
+              <div class="grid grid-cols-12 gap-1.5 pt-1">
+                <div class="h-3 rounded-[2px] bg-[#0e4429]"></div>
+                <div class="h-3 rounded-[2px] bg-[#006d32]"></div>
+                <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                <div class="h-3 rounded-[2px] bg-[#006d32]"></div>
+                <div class="h-3 rounded-[2px] bg-[#0e4429]"></div>
+                <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                <div class="h-3 rounded-[2px] bg-[#006d32]"></div>
+                <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+              </div>
+            </div>
+
+            <!-- Alarm & Reminder Notification Mockup -->
+            <div class="p-3.5 rounded-xl border border-[#39d353]/30 bg-[#39d353]/10 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-[#39d353]/20 flex items-center justify-center text-[#39d353]">
+                  🔔
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-white">Exact Alarm: LeetCode Daily Challenge</div>
+                  <div class="text-[11px] text-white/60">Scheduled for 14:00 • Looping Audio Active</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono px-2.5 py-1 rounded-md bg-[#238636] text-white font-semibold">Mark Done</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Features Grid -->
+    <section id="features" class="max-w-6xl mx-auto px-6 py-16">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Engineered for Precision & Privacy</h2>
+        <p class="text-xs sm:text-sm text-white/50 max-w-xl mx-auto">
+          Everything runs entirely on your local Windows PC without third-party tracking or cloud dependence.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[#39d353]/20 text-[#39d353] flex items-center justify-center text-lg">📴</div>
+          <h3 class="text-base font-bold text-white">100% Offline SQLite</h3>
+          <p class="text-xs text-white/60 leading-relaxed">
+            All your tasks, reminder timestamps, and preferences are stored in an embedded SQLite binary database. No telemetry, no accounts.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[#f59e0b]/20 text-[#f59e0b] flex items-center justify-center text-lg">🔔</div>
+          <h3 class="text-base font-bold text-white">Exact Looping Alarm</h3>
+          <p class="text-xs text-white/60 leading-relaxed">
+            Always-on-top centered popup window with persistent audio chimes that ring continuously until snoozed or dismissed. Catches up on missed alarms after waking from sleep.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[#58a6ff]/20 text-[#58a6ff] flex items-center justify-center text-lg">💻</div>
+          <h3 class="text-base font-bold text-white">LeetCode Sync & Cache</h3>
+          <p class="text-xs text-white/60 leading-relaxed">
+            Track solved problem counts (Easy/Med/Hard), global ranking, and streak. Today's daily challenge can be added as a reminder in 1 click!
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[#bc8cff]/20 text-[#bc8cff] flex items-center justify-center text-lg">🟩</div>
+          <h3 class="text-base font-bold text-white">GitHub 52-Week Heatmap</h3>
+          <p class="text-xs text-white/60 leading-relaxed">
+            Dynamic calendar grid with green intensity blocks for both task completions and LeetCode submissions with interactive tooltips and streak calculations.
+          </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[#f43f5e]/20 text-[#f43f5e] flex items-center justify-center text-lg">🌓</div>
+          <h3 class="text-base font-bold text-white">Dark & Light Liquid Glass</h3>
+          <p class="text-xs text-white/60 leading-relaxed">
+            Authentic macOS 26 frosted acrylic aesthetics, traffic light window controls, and instant toggle between Dark Mode and Light Mode.
+          </p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[#34c759]/20 text-[#34c759] flex items-center justify-center text-lg">📌</div>
+          <h3 class="text-base font-bold text-white">System Tray Integration</h3>
+          <p class="text-xs text-white/60 leading-relaxed">
+            Minimizes directly to the Windows system tray with quick-actions menu. Alarms continue to fire reliably in the background.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer Profile Section -->
+    <section id="developer" class="max-w-4xl mx-auto px-6 py-16">
+      <div class="liquid-glass-card rounded-3xl p-8 md:p-10 relative overflow-hidden">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <!-- Avatar -->
+          <div class="w-28 h-28 rounded-3xl bg-gradient-to-tr from-[#238636] via-[#39d353] to-[#58a6ff] p-1 shadow-[0_0_30px_rgba(57,211,83,0.3)] flex-shrink-0">
+            <div class="w-full h-full bg-[#0d1117] rounded-[22px] flex items-center justify-center text-3xl font-extrabold text-white">
+              HP
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div class="text-center md:text-left flex-1">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass-pill text-xs font-semibold text-[#39d353] mb-2">
+              <span>Creator & Lead Developer</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Hariprasanth</h2>
+            <p class="text-xs sm:text-sm text-white/70 mb-4 leading-relaxed">
+              Software Engineer & desktop tool craftsman passionate about building privacy-first offline utilities, native-fidelity user interfaces, and seamless developer workflows.
+            </p>
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs text-white/60">
+              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">Electron</span>
+              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">React</span>
+              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">TypeScript</span>
+              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">SQLite</span>
+              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">macOS Design</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Version Release Changelog -->
+    <section id="releases" class="max-w-4xl mx-auto px-6 py-16">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Release Roadmap & Changelog</h2>
+        <p class="text-xs text-white/50">Continuous improvements committed to the GitHub repository</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- v2.5.0 -->
+        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-[#39d353]">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-white">v2.5.0 — macOS Liquid Glass & LeetCode Fix</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#39d353]/20 text-[#39d353]">Latest Release</span>
+            </div>
+            <span class="text-xs text-white/40 font-mono">Current</span>
+          </div>
+          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
+            <li>Fixed LeetCode GraphQL 400 error and deprecated <code>userCalendar</code> field to 200 OK.</li>
+            <li>Embedded authentic Apple San Francisco (SF Pro) font family.</li>
+            <li>Added instant Dark Mode 🌙 and Light Mode ☀️ toggle with macOS switch controls.</li>
+            <li>Configured NSIS installer to automatically place Desktop shortcut and register in Windows App List.</li>
+          </ul>
+        </div>
+
+        <!-- v2.0.0 -->
+        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-[#f59e0b]">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-sm text-white">v2.0.0 — LeetCode Tracker & Liquid Glass</span>
+            <span class="text-xs text-white/40 font-mono">Previous</span>
+          </div>
+          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
+            <li>Added LeetCode username tracking: Easy, Medium, Hard problem breakdown and ranking.</li>
+            <li>Today's Daily Challenge widget with 1-click alarm reminder creation.</li>
+            <li>Offline SQLite caching for all LeetCode submission data.</li>
+          </ul>
+        </div>
+
+        <!-- v1.0.0 -->
+        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-[#58a6ff]">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-sm text-white">v1.0.0 — Offline Core Release</span>
+            <span class="text-xs text-white/40 font-mono">Initial</span>
+          </div>
+          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
+            <li>Embedded SQLite database schema for offline task CRUD.</li>
+            <li>Looping synthesized alarm audio engine with snooze (+5m, +10m, +15m).</li>
+            <li>GitHub contribution heatmap with streak metrics.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download Hub Section -->
+    <section id="download" class="max-w-4xl mx-auto px-6 py-16 text-center">
+      <div class="liquid-glass-card rounded-3xl p-10">
+        <h2 class="text-3xl font-extrabold text-white mb-3">Download TaskPulse for Windows</h2>
+        <p class="text-xs sm:text-sm text-white/60 max-w-md mx-auto mb-8">
+          Download the Windows installer with automatic Desktop shortcut creation or grab the portable standalone version.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="../release/TaskPulse%20Setup%201.0.0.exe" download class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#238636] hover:bg-[#2ea043] text-white font-semibold py-3 px-6 rounded-2xl shadow-lg text-xs transition-all">
+            <span>Download Installer (.exe)</span>
+            <span class="text-white/50 text-[10px]">~91 MB</span>
+          </a>
+          <a href="../release/TaskPulse-Portable-1.0.0.exe" download class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/15 text-white font-semibold py-3 px-6 rounded-2xl text-xs transition-all">
+            <span>Download Portable (.exe)</span>
+            <span class="text-white/50 text-[10px]">~91 MB</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-8 text-center text-xs text-white/40 font-mono">
+      <div>TaskPulse Desktop • Developed with ❤️ by Hariprasanth</div>
+      <div class="mt-1 text-[11px] text-white/30">MIT License • 100% Offline & Open Source</div>
+    </footer>
+  </div>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    const themeBtn = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('themeIconSun');
+    const moonIcon = document.getElementById('themeIconMoon');
+    const html = document.documentElement;
+
+    themeBtn.addEventListener('click', () => {
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

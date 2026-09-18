@@ -1,0 +1,43 @@
+{
+  "name": "taskpulse",
+  "version": "1.0.0",
+  "description": "Offline Windows Task Reminder App with GitHub-style UI",
+  "main": "dist-electron/main.js",
+  "author": "TaskPulse Team",
+  "license": "MIT",
+  "scripts": {
+    "dev:vite": "vite",
+    "dev:electron": "node ./scripts/dev-runner.js",
+    "dev": "concurrently -k -s first \"npm run dev:vite\" \"npm run dev:electron\"",
+    "build:vite": "vite build",
+    "build:electron": "node ./scripts/build-electron.js",
+    "build": "npm run build:vite && npm run build:electron",
+    "build:win": "npm run build && electron-builder --win --x64",
+    "build:portable": "npm run build && electron-builder --win portable --x64"
+  },
+  "dependencies": {
+    "date-fns": "^3.6.0",
+    "lucide-react": "^0.395.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sql.js": "^1.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/sql.js": "^1.4.9",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.6.1",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^31.0.2",
+    "electron-builder": "^24.13.3",
+    "esbuild": "^0.21.5",
+    "isomorphic-git": "^1.42.2",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "appId": "com.taskpulse.app",
+  "productName": "TaskPulse",
+  "directories": {
+    "output": "release"
+  },
+  "asar": true,
+  "asarUnpack": [
+    "**/*.wasm",
+    "**/node_modules/sql.js/**/*"
+  ],
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*",
+    "assets/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "assets",
+      "to": "assets"
+    },
+    {
+      "from": "node_modules/sql.js/dist/sql-wasm.wasm",
+      "to": "sql-wasm.wasm"
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "assets/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": "always",
+    "createStartMenuShortcut": true,
+    "shortcutName": "TaskPulse",
+    "uninstallDisplayName": "TaskPulse"
+  },
+  "portable": {
+    "artifactName": "TaskPulse-Portable-${version}.exe"
+  }
+}
