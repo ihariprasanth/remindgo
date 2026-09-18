@@ -1,158 +1,233 @@
-# TaskPulse ⏱️
+# TaskPulse
 
-> **100% Offline Windows Task & Reminder Manager with GitHub-Style Productivity Heatmap**
+A Windows desktop task and reminder manager built with Electron, React, TypeScript, and SQLite.
 
-TaskPulse is a modern, privacy-first Windows desktop application built with **Electron**, **React**, **TypeScript**, and an embedded **SQLite** local database. It alerts you at the exact scheduled date and time with a high-priority, always-on-top alarm popup window, native Windows notifications, and looping audio, even when minimized to the Windows system tray.
+TaskPulse allows users to create scheduled tasks and receive reminders at specific dates and times. It runs in the background through the Windows system tray and stores all data locally.
 
----
+## Features
 
-## ✨ Features
+### Task Management
 
-- 📅 **Task & Exact-Time Reminders**: Schedule tasks with date, time, priority (Low/Medium/High), category tags, and recurrence (Daily / Weekly).
-- 🔔 **Persistent Alarm System**:
-  - Always-on-top centered alarm popup window.
-  - Looping alarm audio chime that rings continuously until dismissed or snoozed.
-  - Backup native Windows notification with actionable click.
-  - Multi-tiered snooze: 5 minutes, 10 minutes, 15 minutes, or custom duration.
-  - Missed alarm catch-up: catches up immediately after waking from sleep or unlocking screen.
-  - Persisted notification state: dismissed alarms are never re-triggered on restart.
-- 🟩 **GitHub-Style Contribution Heatmap**:
-  - 52-week x 7-day activity calendar grid with authentic GitHub dark styling.
-  - Green intensity blocks reflecting the count of completed tasks per day.
-  - Interactive tooltip showing exact completion counts and formatted dates.
-  - Toggle between "Last 12 Months" and "Current Year".
-  - Click any square to filter and inspect completed tasks on that day.
-- 🔥 **Productivity Stats & Streaks**:
-  - Current consecutive day streak calculation.
-  - Best all-time streak tracker.
-  - Completed today count & total all-time metrics.
-- 📴 **100% Offline & Private**:
-  - Zero external servers, zero telemetry, zero accounts or logins.
-  - Data is saved directly in `%APPDATA%/TaskPulse/taskpulse.db`.
-  - Easy JSON backup export and import for seamless offline migration.
-- 💻 **Tray & Windows Integration**:
-  - Runs in background with custom system tray icon and context menu.
-  - Minimize to tray and close-to-tray toggles.
-  - Optional "Launch on Windows Startup" setting (`openAtLogin`).
+- Create, edit, complete, and delete tasks
+- Schedule tasks with date and exact time
+- Set task priority: Low, Medium, High
+- Add categories and tags
+- Daily and weekly recurring tasks
+- Search and filter tasks
+- Separate views for today, upcoming, overdue, and completed tasks
 
----
+### Reminder System
 
-## 🎨 GitHub Dark Mode Theme
+- Always-on-top alarm popup
+- Continuous alarm sound until dismissed or snoozed
+- Native Windows notifications
+- Snooze options: 5, 10, 15 minutes, or custom duration
+- Automatically handles missed alarms after sleep or screen unlock
+- Prevents dismissed alarms from triggering again after application restart
 
-- Background: `#0d1117`
-- Surfaces / Cards: `#161b22`
-- Borders: `#30363d`
-- Contribution Green: `#0e4429`, `#006d32`, `#26a641`, `#39d353`
-- Typography: System font stack + JetBrains Mono for dates and numbers
+### Productivity Heatmap
 
----
+- GitHub-style 52-week activity heatmap
+- Daily task completion tracking
+- Different intensity levels based on completed tasks
+- Interactive date tooltips
+- View the last 12 months or current year
+- Select a date to view completed tasks
 
-## 🚀 Quick Start & Development
+### Productivity Statistics
+
+- Current daily streak
+- Best all-time streak
+- Tasks completed today
+- Total completed tasks
+
+### Privacy and Offline Storage
+
+- Fully offline application
+- No account or login required
+- No external servers
+- No telemetry
+- Local SQLite database
+- JSON backup and restore support
+
+Data is stored locally at:
+
+```text
+%APPDATA%/TaskPulse/taskpulse.db
+```
+
+### Windows Integration
+
+- System tray support
+- Minimize to tray
+- Close to tray option
+- Launch automatically with Windows
+- Windows installer and portable executable support
+
+## Technology Stack
+
+- Electron
+- React
+- TypeScript
+- Vite
+- SQLite
+- sql.js
+- Tailwind CSS
+- Electron Builder
+- Web Audio API
+
+## Theme
+
+TaskPulse uses a GitHub-inspired dark theme.
+
+```text
+Background:        #0d1117
+Cards / Surfaces:  #161b22
+Borders:           #30363d
+```
+
+Contribution colors:
+
+```text
+#0e4429
+#006d32
+#26a641
+#39d353
+```
+
+## Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher)
+
+- Node.js 18 or higher
 - npm
+- Windows
 
 ### Installation
+
+Clone the repository and install the dependencies:
+
 ```bash
-# Clone or navigate to the project folder
 cd C:\Users\HARIPRASANTH\.gemini\antigravity\scratch\taskpulse
 
-# Install dependencies
 npm.cmd install
 ```
 
-### Running in Development Mode
+### Development
+
+Start the application in development mode:
+
 ```bash
 npm.cmd run dev
 ```
-This runs the Vite React development server concurrently with Electron.
 
----
+This starts the Vite development server and Electron application.
 
-## 📦 Building the Windows Executable (.exe)
+## Build
 
-TaskPulse uses `electron-builder` to package both an NSIS installer and a standalone portable `.exe`:
+Build the application:
 
 ```bash
-# Compile both frontend and backend
 npm.cmd run build
+```
 
-# Package Windows installer and portable .exe
+Create Windows installer and portable executable:
+
+```bash
 npm.cmd run build:win
 ```
 
-Output binaries will be generated in the `release/` directory:
-- `release/TaskPulse Setup 1.0.0.exe` (Full Windows installer with desktop shortcut and Start Menu entry)
-- `release/TaskPulse-Portable-1.0.0.exe` (Single standalone executable that runs without installation)
+The generated files will be available in:
 
----
-
-## 🎵 Custom Alarm Sounds
-
-TaskPulse comes with 5 synthesized alarm sound profiles that work with zero external dependencies:
-1. **Digital Alarm**: Classic rhythmic electronic beeper
-2. **Gentle Chime**: Harmonic crystalline bells
-3. **Radar Pulse**: Sonar ping with reverberation
-4. **Synth Bell**: Warm FM synthesizer chime
-5. **Classic Beep**: Rapid double alert beeps
-
-A standard sample audio file is included in:
-`assets/sounds/alarm.wav`
-
-To use custom `.wav` or `.mp3` files, place your audio files into `assets/sounds/` and reference them in the application settings.
-
----
-
-## 📂 Project Architecture
-
+```text
+release/
 ```
+
+Example output:
+
+```text
+release/TaskPulse Setup 1.0.0.exe
+release/TaskPulse-Portable-1.0.0.exe
+```
+
+## Alarm Sounds
+
+TaskPulse includes several built-in alarm sound profiles:
+
+1. Digital Alarm
+2. Gentle Chime
+3. Radar Pulse
+4. Synth Bell
+5. Classic Beep
+
+The default audio file is located at:
+
+```text
+assets/sounds/alarm.wav
+```
+
+Custom `.wav` and `.mp3` files can be added to:
+
+```text
+assets/sounds/
+```
+
+## Project Structure
+
+```text
 taskpulse/
 ├── electron/
-│   ├── main.ts              # Electron main process, single instance lock, IPC
-│   ├── preload.ts           # Context bridge exposing typed window.electronAPI
-│   ├── scheduler.ts         # 10s background alarm polling engine & powerMonitor
-│   ├── tray.ts              # System tray icon, context menu, minimize actions
+│   ├── main.ts
+│   ├── preload.ts
+│   ├── scheduler.ts
+│   ├── tray.ts
 │   ├── db/
-│   │   ├── database.ts      # SQLite storage engine using sql.js with disk persistence
-│   │   └── schema.ts        # Table schemas, indices, and default preferences
+│   │   ├── database.ts
+│   │   └── schema.ts
 │   └── windows/
-│       ├── mainWindow.ts    # Main application window
-│       └── alarmWindow.ts   # Always-on-top centered alarm popup window
+│       ├── mainWindow.ts
+│       └── alarmWindow.ts
+│
 ├── src/
-│   ├── index.html           # Main application HTML
-│   ├── alarm.html           # Dedicated alarm popup HTML
-│   ├── main.tsx             # React main mount
-│   ├── alarm.tsx            # Dedicated alarm popup React mount
-│   ├── App.tsx              # Application layout, sidebar, and routing
+│   ├── index.html
+│   ├── alarm.html
+│   ├── main.tsx
+│   ├── alarm.tsx
+│   ├── App.tsx
+│   │
 │   ├── components/
-│   │   ├── Heatmap.tsx      # 52-week contribution heatmap
-│   │   ├── StatsCard.tsx    # Streak and metric counters
-│   │   ├── TaskList.tsx     # Grouped task list (Today/Upcoming/Overdue/Done)
-│   │   ├── TaskCard.tsx     # Individual task item card
-│   │   ├── TaskModal.tsx    # Add / Edit task modal dialog
-│   │   └── AlarmPopup.tsx   # Alarm modal with snooze and dismiss controls
+│   │   ├── Heatmap.tsx
+│   │   ├── StatsCard.tsx
+│   │   ├── TaskList.tsx
+│   │   ├── TaskCard.tsx
+│   │   ├── TaskModal.tsx
+│   │   └── AlarmPopup.tsx
+│   │
 │   ├── pages/
-│   │   ├── DashboardPage.tsx# Heatmap + Today Agenda
-│   │   ├── TasksPage.tsx    # Task manager with filters and search
-│   │   └── SettingsPage.tsx # Audio preview, tray settings, JSON backup
+│   │   ├── DashboardPage.tsx
+│   │   ├── TasksPage.tsx
+│   │   └── SettingsPage.tsx
+│   │
 │   ├── services/
-│   │   ├── audioService.ts  # Web Audio API sound synthesizer with infinite loop
-│   │   └── api.ts           # Typed IPC wrapper with dev fallback
+│   │   ├── audioService.ts
+│   │   └── api.ts
+│   │
 │   ├── styles/
-│   │   └── index.css        # Tailwind and GitHub dark theme styles
+│   │   └── index.css
+│   │
 │   └── types/
-│       └── index.ts         # Data contracts & interfaces
+│       └── index.ts
+│
 ├── assets/
-│   ├── icon.ico             # Windows executable icon
-│   ├── icon.png             # Application logo
-│   ├── tray-icon.png        # System tray icon
-│   └── sounds/              # Audio files
-├── electron-builder.json     # Packaging config for Windows
+│   ├── icon.ico
+│   ├── icon.png
+│   ├── tray-icon.png
+│   └── sounds/
+│
+├── electron-builder.json
 └── package.json
 ```
 
----
+## License
 
-## 📄 License
 MIT License
