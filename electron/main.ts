@@ -212,7 +212,7 @@ ipcMain.handle('snooze-alarm', async (_event, { taskId, minutes }: { taskId: str
   console.log(`[Main] Snoozing task ${taskId} for ${minutes} minutes`);
   dbInstance.snoozeTask(taskId, minutes);
   closeAlarmWindow();
-  getMainWindow()?.webContents.send('tasks-changed');
+  broadcastTasksChanged();
 });
 
 ipcMain.handle('dismiss-alarm', async (_event, { taskId, markDone }: { taskId: string; markDone?: boolean }) => {
@@ -250,7 +250,7 @@ ipcMain.handle('dismiss-alarm', async (_event, { taskId, markDone }: { taskId: s
     }
   }
   closeAlarmWindow();
-  getMainWindow()?.webContents.send('tasks-changed');
+  broadcastTasksChanged();
 });
 
 // ==========================================
@@ -289,7 +289,7 @@ ipcMain.handle('import-data', async () => {
     const content = fs.readFileSync(filePaths[0], 'utf-8');
     const result = dbInstance.importBackup(content);
     scheduler?.checkDueTasks();
-    mainWin?.webContents.send('tasks-changed');
+    broadcastTasksChanged();
     return { success: true, count: result.count };
   } catch (err: any) {
     return { success: false, error: err.message };

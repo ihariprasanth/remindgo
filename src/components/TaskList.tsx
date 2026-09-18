@@ -1,5 +1,5 @@
 import React from 'react';
-import { format, isPast, isToday, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { CheckCircle, Clock, AlertCircle, Calendar } from 'lucide-react';
 import { Task } from '../types';
 import { TaskCard } from './TaskCard';
@@ -73,7 +73,7 @@ export const TaskList: React.FC<TaskListProps> = ({
         <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${titleColor}`}>
           {icon}
           <span>{title}</span>
-          <span className="bg-neutral-200 dark:bg-[#21262d] text-neutral-700 dark:text-[#8b949e] px-2 py-0.5 rounded-full text-[10px] font-mono">
+          <span className="bg-neutral-200 dark:bg-white/10 text-neutral-700 dark:text-white/60 px-2 py-0.5 rounded-full text-[10px] font-mono">
             {count}
           </span>
         </div>

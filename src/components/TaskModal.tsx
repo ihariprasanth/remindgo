@@ -84,7 +84,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="bg-white/95 dark:bg-[#121821]/90 backdrop-blur-3xl border border-neutral-200 dark:border-white/15 rounded-3xl w-full max-w-lg shadow-[0_20px_60px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-3xl border border-neutral-200 dark:border-white/15 rounded-3xl w-full max-w-lg shadow-[0_20px_60px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-white/10">
           <h2 className="text-sm font-bold text-neutral-900 dark:text-white tracking-wide">
@@ -171,11 +171,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3 py-2 text-sm text-neutral-900 dark:text-white focus:outline-none focus:border-[#0a84ff]"
               >
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c} className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">
+                  <option key={c} value={c} className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">
                     {c}
                   </option>
                 ))}
-                <option value="Other" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Custom...</option>
+                <option value="Other" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">Custom...</option>
               </select>
             </div>
 
@@ -202,9 +202,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   onChange={(e) => setRepeat(e.target.value as TaskRepeat)}
                   className="w-full bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 rounded-xl px-3 py-2 text-sm text-neutral-900 dark:text-white focus:outline-none focus:border-[#0a84ff]"
                 >
-                  <option value="none" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Does not repeat</option>
-                  <option value="daily" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Daily</option>
-                  <option value="weekly" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Weekly</option>
+                  <option value="none" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">Does not repeat</option>
+                  <option value="daily" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">Daily</option>
+                  <option value="weekly" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">Weekly</option>
                 </select>
               </div>
             )}

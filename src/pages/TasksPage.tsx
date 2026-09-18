@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, Plus } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import { Task } from '../types';
 import { TaskList } from '../components/TaskList';
 import { format } from 'date-fns';
@@ -181,9 +181,9 @@ export const TasksPage: React.FC<TasksPageProps> = ({
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 text-xs text-neutral-900 dark:text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a84ff]"
           >
-            <option value="all" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">All Categories</option>
+            <option value="all" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">All Categories</option>
             {categories.map((c) => (
-              <option key={c} value={c} className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">
+              <option key={c} value={c} className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">
                 {c}
               </option>
             ))}
@@ -198,10 +198,10 @@ export const TasksPage: React.FC<TasksPageProps> = ({
             onChange={(e) => setSelectedPriority(e.target.value)}
             className="bg-neutral-100 dark:bg-black/40 border border-neutral-300 dark:border-white/15 text-xs text-neutral-900 dark:text-white rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a84ff]"
           >
-            <option value="all" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">All Priorities</option>
-            <option value="high" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">High</option>
-            <option value="medium" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Medium</option>
-            <option value="low" className="bg-white text-neutral-900 dark:bg-[#121821] dark:text-white">Low</option>
+            <option value="all" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">All Priorities</option>
+            <option value="high" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">High</option>
+            <option value="medium" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">Medium</option>
+            <option value="low" className="bg-white text-neutral-900 dark:bg-[#141414] dark:text-white">Low</option>
           </select>
         </div>
       </div>

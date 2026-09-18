@@ -11,21 +11,21 @@
 /* Dark Mode Tokens (Pure Pitch-Black & Crystal Liquid Glass) */
 .dark {
   --bg-app: #000000;
-  --bg-glass-base: rgba(12, 12, 12, 0.85);
-  --bg-sidebar: rgba(8, 8, 8, 0.82);
-  --bg-card: rgba(18, 18, 18, 0.75);
-  --bg-card-hover: rgba(28, 28, 28, 0.90);
-  --border-glass: rgba(255, 255, 255, 0.10);
-  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --bg-glass-base: rgba(0, 0, 0, 0.90);
+  --bg-sidebar: rgba(4, 4, 4, 0.88);
+  --bg-card: rgba(12, 12, 12, 0.82);
+  --bg-card-hover: rgba(22, 22, 22, 0.95);
+  --border-glass: rgba(255, 255, 255, 0.09);
+  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   --text-main: #FFFFFF;
   --text-sub: #A1A1A6;
   --text-muted: #636366;
-  --input-bg: rgba(20, 20, 20, 0.85);
+  --input-bg: rgba(10, 10, 10, 0.90);
   --pill-active-bg: rgba(255, 255, 255, 0.14);
   --pill-active-border: rgba(255, 255, 255, 0.22);
   --pill-active-text: #FFFFFF;
   --pill-active-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  --status-bar-bg: rgba(6, 6, 6, 0.92);
+  --status-bar-bg: rgba(0, 0, 0, 0.95);
 }
 
 /* Light Mode Tokens (matching macOS System Settings reference) */
@@ -126,8 +126,8 @@ body {
 }
 
 .dark .liquid-glass-pill {
-  background: rgba(18, 18, 18, 0.90);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 10, 10, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
 }
 
@@ -138,7 +138,8 @@ body {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
-.liquid-nav-pill-active {
+.liquid-nav-pill-active,
+.liquid-glass-active-pill {
   background: var(--pill-active-bg);
   border: 1px solid var(--pill-active-border);
   color: var(--pill-active-text);

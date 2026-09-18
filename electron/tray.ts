@@ -2,6 +2,7 @@ import { Tray, Menu, nativeImage, app } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { getMainWindow, setQuitting } from './windows/mainWindow';
+import { toggleWidgetWindow } from './windows/widgetWindow';
 
 let trayInstance: Tray | null = null;
 
@@ -22,10 +23,10 @@ function getTrayIcon(): nativeImage {
       const idx = (y * size + x) * 4;
       const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
       if (dist <= radius) {
-        // #39d353: R=57, G=211, B=83, A=255
-        buffer[idx] = 57;
-        buffer[idx + 1] = 211;
-        buffer[idx + 2] = 83;
+        // #0a84ff: R=10, G=132, B=255, A=255
+        buffer[idx] = 10;
+        buffer[idx + 1] = 132;
+        buffer[idx + 2] = 255;
         buffer[idx + 3] = 255;
       } else {
         buffer[idx + 3] = 0; // transparent
@@ -59,7 +60,6 @@ export function setupTray(isDev: boolean, devServerUrl?: string): Tray {
     {
       label: 'Toggle Desktop Widget',
       click: () => {
-        const { toggleWidgetWindow } = require('./windows/widgetWindow');
         toggleWidgetWindow(isDev, devServerUrl);
       }
     },

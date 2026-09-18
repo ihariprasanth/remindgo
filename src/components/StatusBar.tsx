@@ -1,5 +1,5 @@
 import React from 'react';
-import { HardDrive, CheckCircle2, Code2, CloudOff } from 'lucide-react';
+import { HardDrive, CheckCircle2, Code2 } from 'lucide-react';
 import { Task, LeetCodeData } from '../types';
 
 interface StatusBarProps {

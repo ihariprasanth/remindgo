@@ -27,13 +27,13 @@ export function createOrShowWidgetWindow(isDev: boolean, devServerUrl?: string):
   }
 
   const primaryDisplay = screen.getPrimaryDisplay();
-  const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
+  const { x: workX, y: workY, width: screenWidth, height: screenHeight } = primaryDisplay.workArea;
   const winWidth = 380;
   const winHeight = 540;
 
   // Position nicely on the right side of the screen like a Windows widget
-  const x = Math.max(20, screenWidth - winWidth - 30);
-  const y = Math.max(40, Math.round((screenHeight - winHeight) / 2));
+  const x = Math.max(workX + 20, workX + screenWidth - winWidth - 30);
+  const y = Math.max(workY + 40, workY + Math.round((screenHeight - winHeight) / 2));
 
   const iconPath = isDev
     ? path.join(__dirname, '../../assets/icon.ico')
@@ -72,6 +72,18 @@ export function createOrShowWidgetWindow(isDev: boolean, devServerUrl?: string):
       widgetWindowInstance.show();
       widgetWindowInstance.focus();
     }
+  });
+
+  // Fallback to guarantee the widget shows immediately even if ready-to-show is delayed
+  setTimeout(() => {
+    if (widgetWindowInstance && !widgetWindowInstance.isDestroyed() && !widgetWindowInstance.isVisible()) {
+      widgetWindowInstance.show();
+      widgetWindowInstance.focus();
+    }
+  }, 400);
+
+  widgetWindowInstance.webContents.on('did-fail-load', (_event, errorCode, errorDesc) => {
+    console.error(`[WidgetWindow] Failed to load: ${errorCode} - ${errorDesc}`);
   });
 
   widgetWindowInstance.on('closed', () => {

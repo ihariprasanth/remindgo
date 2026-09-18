@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Sun, Moon, ChevronLeft, ChevronRight, Plus, Minus, Square, Copy, X, Pin } from 'lucide-react';
 import { api } from '../services/api';
-import logoSquircle from '../../assets/logo-squircle.png';
+import logoSquircle from '../assets/logo-squircle.png';
 
 interface HeaderProps {
   title: string;

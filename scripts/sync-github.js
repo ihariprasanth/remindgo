@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'ihariprasanth@users.noreply.github.com'
   };
 
-  const version = 'v2.5.0';
-  const commitMsg = `Update v2.5.0: Classical GitHub Green Heatmap, Light/Dark contrast overhaul, and Floating Windows Desktop Widget`;
+  const version = 'v2.5.1';
+  const commitMsg = `Release v2.5.1: Pure Pitch-Black Dark Mode, Robust Desktop Widget, and UI Bug Fixes`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

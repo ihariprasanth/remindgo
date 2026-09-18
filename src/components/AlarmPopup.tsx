@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Bell, Clock, Check, Volume2, X } from 'lucide-react';
+import { Clock, Check, X } from 'lucide-react';
 import { Task, Settings } from '../types';
 import { audioService } from '../services/audioService';
-import { api } from '../services/api';
 import logoCircle from '../assets/logo-circle.png';
 import logoSquircle from '../assets/logo-squircle.png';
 
@@ -108,25 +107,25 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
         <div className="grid grid-cols-4 gap-2">
           <button
             onClick={() => handleSnooze(5)}
-            className="py-1.5 px-2 bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] text-xs font-mono font-medium rounded-md border border-[#30363d] transition-colors cursor-pointer"
+            className="py-1.5 px-2 bg-[#161616] hover:bg-[#262626] text-white text-xs font-mono font-medium rounded-xl border border-white/10 transition-colors cursor-pointer"
           >
             +5 min
           </button>
           <button
             onClick={() => handleSnooze(10)}
-            className="py-1.5 px-2 bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] text-xs font-mono font-medium rounded-md border border-[#30363d] transition-colors cursor-pointer"
+            className="py-1.5 px-2 bg-[#161616] hover:bg-[#262626] text-white text-xs font-mono font-medium rounded-xl border border-white/10 transition-colors cursor-pointer"
           >
             +10 min
           </button>
           <button
             onClick={() => setShowCustom(!showCustom)}
-            className="py-1.5 px-2 bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] text-xs font-medium rounded-md border border-[#30363d] transition-colors cursor-pointer"
+            className="py-1.5 px-2 bg-[#161616] hover:bg-[#262626] text-white text-xs font-medium rounded-xl border border-white/10 transition-colors cursor-pointer"
           >
             Custom
           </button>
           <button
             onClick={() => handleDismiss(false)}
-            className="py-1.5 px-2 bg-[#21262d] hover:bg-[#da3633]/20 hover:text-[#f85149] text-[#8b949e] text-xs font-medium rounded-md border border-[#30363d] hover:border-[#f85149]/40 transition-colors cursor-pointer"
+            className="py-1.5 px-2 bg-[#161616] hover:bg-[#da3633]/20 hover:text-[#f85149] text-white/60 text-xs font-medium rounded-xl border border-white/10 hover:border-[#f85149]/40 transition-colors cursor-pointer"
           >
             Dismiss
           </button>

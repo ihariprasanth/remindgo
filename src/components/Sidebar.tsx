@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Clock, Settings as SettingsIcon, 
-  Code2, Search, HardDrive, Sparkles 
+  Code2, Search, HardDrive 
 } from 'lucide-react';
 import { Task } from '../types';
 import { format } from 'date-fns';
@@ -22,7 +22,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   tasks,
   hasLeetCodeUsername,
-  theme
+  theme: _theme
 }) => {
   const [filterText, setFilterText] = useState('');
   const todayStr = format(new Date(), 'yyyy-MM-dd');

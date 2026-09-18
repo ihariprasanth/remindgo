@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   Pin, Check, Plus, ExternalLink, X, Sun, Moon, 
-  Flame, Calendar, Code2, CheckCircle2, Trophy, Clock
+  Flame, Calendar, Code2, CheckCircle2, Clock
 } from 'lucide-react';
 import { format, subWeeks, startOfWeek, addDays, parseISO } from 'date-fns';
 import { Task, LeetCodeData, TaskPriority } from '../types';
@@ -596,7 +596,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ theme, onToggleThe
           <ExternalLink size={11} />
         </button>
         <span className="text-[10px] text-neutral-400 dark:text-white/40 font-mono">
-          v2.5.0
+          v2.5.1
         </span>
       </div>
     </div>
