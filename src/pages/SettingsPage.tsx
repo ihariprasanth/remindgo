@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, Check, Code2, Pin, ExternalLink } from 'lucide-react';
+import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, Check, Code2, Pin, ExternalLink, CheckSquare, Calendar } from 'lucide-react';
 import { Settings } from '../types';
 import { SOUND_OPTIONS, audioService } from '../services/audioService';
 import { api } from '../services/api';
@@ -378,7 +378,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
           <div className="p-3 rounded-xl bg-black/5 dark:bg-black/30 border border-[var(--border-glass)]">
             <div className="text-xs font-semibold text-[#0a84ff] flex items-center gap-1.5 mb-1">
-              <span>📋</span> To-Do Checklist
+              <CheckSquare size={13} /> To-Do Checklist
             </div>
             <div className="text-[11px] text-[var(--text-sub)]">
               Inline task toggle, view pending items, and add instant tasks for today.
@@ -387,7 +387,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
           <div className="p-3 rounded-xl bg-black/5 dark:bg-black/30 border border-[var(--border-glass)]">
             <div className="text-xs font-semibold text-[#22c55e] flex items-center gap-1.5 mb-1">
-              <span>🟩</span> GitHub Green Heatmap
+              <Calendar size={13} /> Activity Heatmap
             </div>
             <div className="text-[11px] text-[var(--text-sub)]">
               Compact 20-week green grid with current streaks and contribution count.
@@ -396,7 +396,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
           <div className="p-3 rounded-xl bg-black/5 dark:bg-black/30 border border-[var(--border-glass)]">
             <div className="text-xs font-semibold text-[#f59e0b] flex items-center gap-1.5 mb-1">
-              <span>⚡</span> LeetCode Daily
+              <Code2 size={13} /> LeetCode Daily
             </div>
             <div className="text-[11px] text-[var(--text-sub)]">
               Solved breakdown, ranking, and direct link to solve today's challenge.
@@ -450,12 +450,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-xl border border-white/20 mb-3 bg-white p-0.5">
           <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
         </div>
-        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.5 • Liquid Glass Edition</div>
+        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.5.4 • Liquid Glass Edition</div>
         <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
           Liquid Glass Architecture • LeetCode Integration • Local SQLite Engine
         </div>
         <div className="text-[10px] text-[var(--text-muted)] mt-1 font-mono">
-          Developed with ❤️ by Hariprasanth
+          Developed by Hariprasanth
         </div>
       </div>
     </div>

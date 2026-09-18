@@ -1,10 +1,10 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { CheckCircle, Clock, AlertCircle, Calendar } from 'lucide-react';
 import { Task } from '../types';
 import { TaskCard } from './TaskCard';
 import logoSquircle from '../assets/logo-squircle.png';
 import logoCircle from '../assets/logo-circle.png';
+import { getISTDate } from '../utils/istTime';
 
 interface TaskListProps {
   tasks: Task[];
@@ -21,7 +21,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   onDelete,
   filterSection = 'all'
 }) => {
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  const todayStr = getISTDate();
   const now = Date.now();
 
   const overdueTasks: Task[] = [];

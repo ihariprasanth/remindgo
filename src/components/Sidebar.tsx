@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Clock, Settings as SettingsIcon, 
-  Code2, Search, HardDrive 
+  Code2, Search 
 } from 'lucide-react';
 import { Task } from '../types';
-import { format } from 'date-fns';
-import logoSquircle from '../assets/logo-squircle.png';
+import { getISTDate } from '../utils/istTime';
 
 export type NavTab = 'dashboard' | 'tasks' | 'today' | 'leetcode' | 'settings';
 
@@ -25,7 +24,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   theme: _theme
 }) => {
   const [filterText, setFilterText] = useState('');
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  const todayStr = getISTDate();
   const todayPendingCount = tasks.filter((t) => t.status !== 'completed' && t.date === todayStr).length;
   const totalPendingCount = tasks.filter((t) => t.status !== 'completed').length;
 
@@ -80,21 +79,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className="w-56 liquid-glass-sidebar flex flex-col justify-between select-none p-3 z-20 transition-colors">
       <div>
-        {/* App Title Pill with RemindGo Soft Squircle Logo */}
-        <div className="flex items-center gap-2.5 px-2 py-1.5 mb-3">
-          <div className="w-8 h-8 rounded-[10px] overflow-hidden shadow-md border border-white/10 flex-shrink-0 bg-white">
-            <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover" />
-          </div>
-          <div>
-            <span className="font-bold text-xs tracking-wide text-[var(--text-main)] block leading-tight">
-              RemindGo
-            </span>
-            <span className="text-[10px] text-[var(--text-muted)] block leading-tight font-mono">
-              Liquid Glass Edition
-            </span>
-          </div>
-        </div>
-
         {/* Sidebar Search Bar (Apple System Style) */}
         <div className="relative mb-3.5">
           <Search size={13} className="absolute left-2.5 top-2.5 text-[var(--text-muted)]" />
@@ -158,17 +142,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </div>
       </div>
-
-      {/* Footer System Status Badge */}
-      <div className="p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-glass)] text-[11px] text-[var(--text-sub)] space-y-0.5">
-          <div className="flex items-center gap-2">
-            <HardDrive size={13} className="text-[#0a84ff]" />
-            <span className="font-semibold text-[var(--text-main)]">100% Offline SQLite</span>
-          </div>
-          <div className="text-[10px] text-[var(--text-muted)]">
-            Local Storage • No Telemetry
-          </div>
-        </div>
     </aside>
   );
 };

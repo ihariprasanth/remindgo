@@ -99,7 +99,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ tasks }) => {
     {
       title: 'Current Streak',
       value: `${stats.currentStreak} day${stats.currentStreak === 1 ? '' : 's'}`,
-      subtitle: stats.currentStreak > 0 ? 'Burning streak 🔥' : 'Complete a task today',
+      subtitle: stats.currentStreak > 0 ? 'Active continuous streak' : 'Complete a task today',
       icon: Flame,
       color: '#0a84ff',
       bgGradient: 'from-[#0a84ff]/20 to-[#0a84ff]/5',

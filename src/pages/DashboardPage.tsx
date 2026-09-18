@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { format } from 'date-fns';
 import { Plus, CheckCircle2, Clock, Calendar, Sparkles } from 'lucide-react';
 import { Task, LeetCodeData } from '../types';
 import { Heatmap } from '../components/Heatmap';
 import { StatsCard } from '../components/StatsCard';
 import { TaskCard } from '../components/TaskCard';
+import { getISTDate } from '../utils/istTime';
 
 interface DashboardPageProps {
   tasks: Task[];
@@ -25,7 +25,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  const todayStr = getISTDate();
 
   // Filter tasks if a date is selected from the heatmap
   const dateFilteredTasks = selectedDate

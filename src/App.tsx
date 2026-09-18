@@ -3,9 +3,9 @@ import { Task, Settings, LeetCodeData, TaskPriority } from './types';
 import { api } from './services/api';
 import { Sidebar, NavTab } from './components/Sidebar';
 import { Header } from './components/Header';
-import { StatusBar } from './components/StatusBar';
 import { TaskModal } from './components/TaskModal';
 import { AlarmPopup } from './components/AlarmPopup';
+import { getMillisUntilMidnightIST } from './utils/istTime';
 import { DashboardPage } from './pages/DashboardPage';
 import { TasksPage } from './pages/TasksPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -99,10 +99,23 @@ export const App: React.FC = () => {
     const handleFocus = () => loadData();
     window.addEventListener('focus', handleFocus);
 
+    // Exact 12:00 AM IST Midnight Auto-Reset
+    let midnightTimer: any;
+    const scheduleMidnight = () => {
+      const delay = getMillisUntilMidnightIST();
+      midnightTimer = setTimeout(() => {
+        console.log('[App] 12:00 AM IST hit - refreshing tasks for the new day');
+        loadData();
+        scheduleMidnight();
+      }, delay);
+    };
+    scheduleMidnight();
+
     return () => {
       cleanupTrayAction?.();
       cleanupAlarm();
       window.removeEventListener('focus', handleFocus);
+      if (midnightTimer) clearTimeout(midnightTimer);
     };
   }, [loadData]);
 
@@ -312,9 +325,6 @@ export const App: React.FC = () => {
             )}
           </main>
         </div>
-
-        {/* macOS Finder Bottom Status Bar */}
-        <StatusBar tasks={tasks} leetCodeData={leetCodeData} />
       </div>
 
       {/* Add / Edit Task Modal */}

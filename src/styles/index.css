@@ -4,8 +4,9 @@
 
 /* Apple San Francisco Typography & Liquid Glass Theme Tokens */
 :root {
-  --font-mac: 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mac: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'SF Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+  font-size: 14.5px;
 }
 
 /* Dark Mode Tokens (Pure Pitch-Black & Crystal Liquid Glass) */
@@ -56,6 +57,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: var(--font-mac);
+  font-size: 14px;
   letter-spacing: -0.015em;
   overflow: hidden;
   user-select: none;

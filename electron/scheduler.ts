@@ -2,10 +2,12 @@ import { Notification, powerMonitor } from 'electron';
 import { dbInstance } from './db/database';
 import { createOrShowAlarmWindow } from './windows/alarmWindow';
 import { getMainWindow } from './windows/mainWindow';
+import { getWidgetWindow } from './windows/widgetWindow';
 import { Task } from '../src/types';
 
 export class AlarmScheduler {
   private timer: NodeJS.Timeout | null = null;
+  private midnightTimer: NodeJS.Timeout | null = null;
   private intervalMs: number = 10000; // Check every 10 seconds for high precision
   private isDev: boolean;
   private devServerUrl?: string;
@@ -16,7 +18,7 @@ export class AlarmScheduler {
   }
 
   public start(): void {
-    console.log('[AlarmScheduler] Starting scheduler...');
+    console.log('[AlarmScheduler] Starting scheduler with IST (+5:30) precision...');
     // Initial check on startup
     this.checkDueTasks();
 
@@ -24,10 +26,14 @@ export class AlarmScheduler {
       this.checkDueTasks();
     }, this.intervalMs);
 
-    // Check missed alarms immediately when the system wakes up from sleep or screen is unlocked
+    // Schedule exact 12:00 AM IST midnight reset
+    this.scheduleMidnightResetIST();
+
+    // Check missed alarms immediately when system wakes up from sleep or screen is unlocked
     powerMonitor.on('resume', () => {
       console.log('[AlarmScheduler] System resumed from sleep. Checking missed alarms...');
       this.checkDueTasks();
+      this.scheduleMidnightResetIST();
     });
 
     powerMonitor.on('unlock-screen', () => {
@@ -41,6 +47,46 @@ export class AlarmScheduler {
       clearInterval(this.timer);
       this.timer = null;
     }
+    if (this.midnightTimer) {
+      clearTimeout(this.midnightTimer);
+      this.midnightTimer = null;
+    }
+  }
+
+  /**
+   * Schedules a timer to fire at the exact 12:00:00 AM IST midnight mark,
+   * broadcasting refresh signals to both main window and desktop widget.
+   */
+  private scheduleMidnightResetIST(): void {
+    if (this.midnightTimer) {
+      clearTimeout(this.midnightTimer);
+      this.midnightTimer = null;
+    }
+
+    const now = Date.now();
+    const istOffsetMs = 5.5 * 60 * 60 * 1000;
+    const elapsedTodayInIST = (now + istOffsetMs) % 86400000;
+    const delay = 86400000 - elapsedTodayInIST + 250;
+
+    console.log(`[AlarmScheduler] Next 12:00 AM IST midnight reset in ${Math.round(delay / 1000)}s`);
+
+    this.midnightTimer = setTimeout(() => {
+      console.log('[AlarmScheduler] 12:00 AM IST hit! Automatically tracking new day.');
+      const mainWin = getMainWindow();
+      if (mainWin && !mainWin.isDestroyed()) {
+        mainWin.webContents.send('midnight-reset');
+        mainWin.webContents.send('tasks-changed');
+      }
+
+      const widgetWin = getWidgetWindow();
+      if (widgetWin && !widgetWin.isDestroyed()) {
+        widgetWin.webContents.send('midnight-reset');
+        widgetWin.webContents.send('tasks-changed');
+      }
+
+      this.checkDueTasks();
+      this.scheduleMidnightResetIST();
+    }, delay);
   }
 
   public checkDueTasks(): void {
@@ -59,12 +105,12 @@ export class AlarmScheduler {
             isDue = true;
           }
         } else if (task.status === 'pending') {
-          // Parse local date + time
+          // Parse date + time strictly in Indian Standard Time (IST, UTC+05:30)
           const [year, month, day] = task.date.split('-').map(Number);
           const [hour, minute] = task.time.split(':').map(Number);
           if (!isNaN(year) && !isNaN(month) && !isNaN(day) && !isNaN(hour) && !isNaN(minute)) {
-            const scheduledDate = new Date(year, month - 1, day, hour, minute, 0, 0);
-            const scheduledTime = scheduledDate.getTime();
+            // Convert to exact UTC milliseconds based on UTC+05:30
+            const scheduledTime = Date.UTC(year, month - 1, day, hour, minute) - (5.5 * 60 * 60 * 1000);
 
             if (scheduledTime <= now) {
               // Check if we already notified for this scheduled occurrence
@@ -72,7 +118,6 @@ export class AlarmScheduler {
                 isDue = true;
               } else {
                 const lastNotifiedTime = new Date(task.last_notified_at).getTime();
-                // If last notified before the scheduled time, it hasn't fired for this occurrence yet
                 if (lastNotifiedTime < scheduledTime) {
                   isDue = true;
                 }
@@ -108,7 +153,7 @@ export class AlarmScheduler {
           title: `RemindGo: ${task.title}`,
           body: task.description ? `${task.description} - Due: ${task.time}` : `Scheduled at ${task.time}`,
           urgency: 'critical',
-          silent: true // The custom alarm popup handles looping sound
+          silent: true // Custom alarm popup handles looping sound
         });
         notif.on('click', () => {
           createOrShowAlarmWindow(task, this.isDev, this.devServerUrl);

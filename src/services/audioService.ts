@@ -1,4 +1,15 @@
-export type AlarmSoundId = 'digital-alarm' | 'gentle-chime' | 'radar-pulse' | 'synth-bell' | 'classic-beep';
+export type AlarmSoundId = 
+  | 'digital-alarm' 
+  | 'gentle-chime' 
+  | 'radar-pulse' 
+  | 'synth-bell' 
+  | 'classic-beep'
+  | 'crystal-drop'
+  | 'zen-bowl'
+  | 'marimba-alert'
+  | 'cosmic-beacon'
+  | 'harp-glissando'
+  | 'subtle-pulse';
 
 export interface SoundOption {
   id: AlarmSoundId;
@@ -12,6 +23,12 @@ export const SOUND_OPTIONS: SoundOption[] = [
   { id: 'radar-pulse', name: 'Radar Pulse', description: 'Deep sonar ping with reverberation' },
   { id: 'synth-bell', name: 'Synth Bell', description: 'Warm synthesizer chime tones' },
   { id: 'classic-beep', name: 'Classic Beep', description: 'Rapid double alert beeps' },
+  { id: 'crystal-drop', name: 'Crystal Drop', description: 'High-pitched pure crystalline water droplet arpeggio' },
+  { id: 'zen-bowl', name: 'Zen Singing Bowl', description: 'Deep harmonic Tibetan bronze bowl resonance' },
+  { id: 'marimba-alert', name: 'Marimba Alert', description: 'Warm acoustic wooden percussive melody' },
+  { id: 'cosmic-beacon', name: 'Cosmic Beacon', description: 'Ethereal interstellar shimmering pulse' },
+  { id: 'harp-glissando', name: 'Harp Glissando', description: 'Rapid ascending celestial harp arpeggio' },
+  { id: 'subtle-pulse', name: 'Subtle Pulse', description: 'Minimalist discreet executive double-thump' }
 ];
 
 class AudioService {
@@ -51,6 +68,137 @@ class AudioService {
       this.currentGainNode = masterGain;
 
       switch (soundId) {
+        case 'crystal-drop': {
+          // Pure high-pitch crystal droplet sequence (C6, E6, G6, C7)
+          const freqs = [1046.50, 1318.51, 1567.98, 2093.00];
+          freqs.forEach((freq, idx) => {
+            const startT = now + idx * 0.12;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, startT);
+
+            gain.gain.setValueAtTime(0.001, startT);
+            gain.gain.exponentialRampToValueAtTime(0.35 * this.volume, startT + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.45);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(startT);
+            osc.stop(startT + 0.48);
+          });
+          break;
+        }
+
+        case 'zen-bowl': {
+          // Warm harmonic singing bowl (216 Hz fundamental + 432 Hz + 648 Hz)
+          const harmonics = [216, 432, 648, 864];
+          harmonics.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+
+            const weight = 0.45 / (idx + 1);
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(weight * this.volume, now + 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(now);
+            osc.stop(now + 1.65);
+          });
+          break;
+        }
+
+        case 'marimba-alert': {
+          // Wooden acoustic marimba staccato notes (F5, A5, C6)
+          const notes = [698.46, 880.00, 1046.50, 1318.51];
+          notes.forEach((freq, idx) => {
+            const startT = now + idx * 0.14;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, startT);
+
+            gain.gain.setValueAtTime(0.001, startT);
+            gain.gain.exponentialRampToValueAtTime(0.4 * this.volume, startT + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.35);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(startT);
+            osc.stop(startT + 0.38);
+          });
+          break;
+        }
+
+        case 'cosmic-beacon': {
+          // Shimmering two-phase pulse
+          for (let p = 0; p < 2; p++) {
+            const startT = now + p * 0.45;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, startT);
+            osc.frequency.exponentialRampToValueAtTime(1760, startT + 0.25);
+
+            gain.gain.setValueAtTime(0.001, startT);
+            gain.gain.exponentialRampToValueAtTime(0.4 * this.volume, startT + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.4);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(startT);
+            osc.stop(startT + 0.42);
+          }
+          break;
+        }
+
+        case 'harp-glissando': {
+          // Celestial rapid upward harp sweep
+          const scale = [587.33, 739.99, 880.00, 1108.73, 1318.51, 1479.98];
+          scale.forEach((freq, idx) => {
+            const startT = now + idx * 0.07;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, startT);
+
+            gain.gain.setValueAtTime(0.001, startT);
+            gain.gain.exponentialRampToValueAtTime(0.3 * this.volume, startT + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.5);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(startT);
+            osc.stop(startT + 0.52);
+          });
+          break;
+        }
+
+        case 'subtle-pulse': {
+          // Discreet low-volume executive double-pulse
+          for (let i = 0; i < 2; i++) {
+            const startT = now + i * 0.22;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, startT);
+
+            gain.gain.setValueAtTime(0.001, startT);
+            gain.gain.linearRampToValueAtTime(0.25 * this.volume, startT + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.18);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(startT);
+            osc.stop(startT + 0.2);
+          }
+          break;
+        }
+
         case 'gentle-chime': {
           // Melodic sequence: C5 (523.25), E5 (659.25), G5 (783.99), C6 (1046.50)
           const notes = [523.25, 659.25, 783.99, 1046.50];

@@ -49,12 +49,12 @@ async function syncGit() {
 
   // Create commit
   const author = {
-    name: 'Hariprasanth',
-    email: 'ihariprasanth@users.noreply.github.com'
+    name: 'ihariprasanth',
+    email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.5.2';
-  const commitMsg = `Release v2.5.2: Standalone Desktop Heatmap Widget, Desktop-Level Placement, and Clean UI`;
+  const version = 'v2.5.4';
+  const commitMsg = `Release v2.5.4: Professional Clean UI, Locked Desktop Widget, +5:30 IST Engine, and Extended Tones`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

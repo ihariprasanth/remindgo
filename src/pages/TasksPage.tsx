@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, Plus } from 'lucide-react';
 import { Task } from '../types';
 import { TaskList } from '../components/TaskList';
-import { format } from 'date-fns';
+import { getISTDate } from '../utils/istTime';
 
 interface TasksPageProps {
   tasks: Task[];
@@ -26,7 +26,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedPriority, setSelectedPriority] = useState<string>('all');
 
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  const todayStr = getISTDate();
   const now = Date.now();
 
   const categories = useMemo(() => {

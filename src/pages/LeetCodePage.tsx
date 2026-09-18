@@ -157,18 +157,8 @@ export const LeetCodePage: React.FC<LeetCodePageProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* User Details */}
             <div className="liquid-glass-card rounded-2xl p-5 flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#f59e0b] to-[#fbbf24] p-0.5 shadow-[0_0_20px_rgba(245,158,11,0.25)] flex-shrink-0">
-                {leetCodeData.userAvatar ? (
-                  <img
-                    src={leetCodeData.userAvatar}
-                    alt={leetCodeData.username}
-                    className="w-full h-full object-cover rounded-[14px]"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-black/40 rounded-[14px] flex items-center justify-center text-lg font-bold text-[#f59e0b]">
-                    {leetCodeData.username.slice(0, 2).toUpperCase()}
-                  </div>
-                )}
+              <div className="w-12 h-12 rounded-2xl bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/30 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Code2 size={22} />
               </div>
               <div className="min-w-0">
                 <div className="text-base font-bold text-[var(--text-main)] truncate">

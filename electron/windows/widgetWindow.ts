@@ -69,16 +69,14 @@ export function createOrShowWidgetWindow(isDev: boolean, devServerUrl?: string):
 
   widgetWindowInstance.once('ready-to-show', () => {
     if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
-      widgetWindowInstance.show();
-      widgetWindowInstance.focus();
+      widgetWindowInstance.showInactive();
     }
   });
 
   // Fallback to guarantee the widget shows immediately even if ready-to-show is delayed
   setTimeout(() => {
     if (widgetWindowInstance && !widgetWindowInstance.isDestroyed() && !widgetWindowInstance.isVisible()) {
-      widgetWindowInstance.show();
-      widgetWindowInstance.focus();
+      widgetWindowInstance.showInactive();
     }
   }, 400);
 

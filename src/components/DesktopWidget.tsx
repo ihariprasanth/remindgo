@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   Check, Plus, ExternalLink, X, 
-  Calendar, CheckSquare
+  Calendar, CheckSquare, Lock, Unlock
 } from 'lucide-react';
 import { format, subWeeks, startOfWeek, addDays, parseISO } from 'date-fns';
 import { Task, LeetCodeData, TaskPriority } from '../types';
 import { api } from '../services/api';
+import { getISTDate, getMillisUntilMidnightIST } from '../utils/istTime';
 
 interface DesktopWidgetProps {
   theme: 'dark' | 'light';
@@ -20,7 +21,21 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ theme: _theme, onT
   const quickPriority: TaskPriority = 'medium';
   const [hoveredDay, setHoveredDay] = useState<{ dateStr: string; count: number; x: number; y: number } | null>(null);
 
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  // Widget Lock/Pin state - when locked, widget is strictly NOT draggable
+  const [isLocked, setIsLocked] = useState<boolean>(() => {
+    const saved = localStorage.getItem('remindgo_widget_locked');
+    return saved !== null ? saved === 'true' : true;
+  });
+
+  const toggleLock = () => {
+    setIsLocked((prev) => {
+      const next = !prev;
+      localStorage.setItem('remindgo_widget_locked', String(next));
+      return next;
+    });
+  };
+
+  const todayStr = getISTDate();
 
   const loadData = useCallback(async () => {
     try {
@@ -48,12 +63,25 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ theme: _theme, onT
       });
     }
 
+    // Exact 12:00 AM IST Midnight Auto-Reset
+    let midnightTimer: any;
+    const scheduleMidnight = () => {
+      const delay = getMillisUntilMidnightIST();
+      midnightTimer = setTimeout(() => {
+        console.log('[Widget] 12:00 AM IST hit - refreshing tasks');
+        loadData();
+        scheduleMidnight();
+      }, delay);
+    };
+    scheduleMidnight();
+
     // Polling fallback every 8 seconds to keep widget live
     const interval = setInterval(loadData, 8000);
 
     return () => {
       cleanup?.();
       clearInterval(interval);
+      if (midnightTimer) clearTimeout(midnightTimer);
     };
   }, [loadData]);
 
@@ -189,7 +217,9 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ theme: _theme, onT
     return (
       <div className="w-full h-full p-2 select-none">
         <div 
-          className="liquid-glass-card group relative p-3 rounded-2xl border border-[var(--border-glass)] shadow-2xl overflow-hidden titlebar-drag cursor-move transition-all"
+          className={`liquid-glass-card group relative p-3 rounded-2xl border border-[var(--border-glass)] shadow-2xl overflow-hidden transition-all ${
+            isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/50'
+          }`}
           style={{ backdropFilter: 'blur(30px) saturate(180%)' }}
         >
           {/* Top Row: Title + Discreet Hover Controls */}
@@ -200,6 +230,18 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ theme: _theme, onT
 
             {/* Hover Action Controls */}
             <div className="flex items-center gap-1.5 no-drag">
+              {/* Lock / Unlock Toggle (Pinned to Desktop) */}
+              <button
+                onClick={toggleLock}
+                title={isLocked ? "Pinned & Locked to Desktop (Non-draggable). Click to unlock." : "Unlocked (Draggable). Click to lock in place."}
+                className={`p-1 rounded-md transition-all cursor-pointer ${
+                  isLocked 
+                    ? 'text-neutral-400 dark:text-white/40 hover:text-neutral-800 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-white/15' 
+                    : 'text-[#f59e0b] bg-[#f59e0b]/20 hover:bg-[#f59e0b]/30'
+                }`}
+              >
+                {isLocked ? <Lock size={11} /> : <Unlock size={11} />}
+              </button>
               {/* Switch to Tasks Mode */}
               <button
                 onClick={() => switchMode('tasks')}
@@ -294,7 +336,9 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ theme: _theme, onT
         style={{ backdropFilter: 'blur(30px) saturate(180%)' }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-2.5 border-b border-[var(--border-glass)] titlebar-drag flex-shrink-0">
+        <div className={`flex items-center justify-between pb-2.5 border-b border-[var(--border-glass)] flex-shrink-0 ${
+          isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/40 rounded-lg p-0.5'
+        }`}>
           <div className="flex items-center gap-2">
             <span className="font-bold text-xs text-neutral-900 dark:text-white tracking-tight">
               Today's To-Do
@@ -306,6 +350,19 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ theme: _theme, onT
 
           {/* Controls */}
           <div className="flex items-center gap-1.5 no-drag">
+            {/* Lock / Unlock Toggle */}
+            <button
+              onClick={toggleLock}
+              title={isLocked ? "Pinned & Locked to Desktop (Non-draggable). Click to unlock." : "Unlocked (Draggable). Click to lock in place."}
+              className={`p-1 rounded-md transition-all cursor-pointer ${
+                isLocked 
+                  ? 'text-neutral-400 dark:text-white/40 hover:text-neutral-800 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-white/15' 
+                  : 'text-[#f59e0b] bg-[#f59e0b]/20 hover:bg-[#f59e0b]/30'
+              }`}
+            >
+              {isLocked ? <Lock size={12} /> : <Unlock size={12} />}
+            </button>
+
             {/* Switch to Heatmap */}
             <button
               onClick={() => switchMode('heatmap')}
