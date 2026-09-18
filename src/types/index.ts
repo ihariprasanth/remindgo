@@ -29,7 +29,7 @@ export interface Settings {
   theme: 'dark' | 'light';
   autoOpenWidget?: boolean;
   widgetAlwaysOnTop?: boolean;
-  widgetMode?: 'heatmap' | 'tasks';
+  widgetMode?: 'leetcode' | 'tasks-heatmap' | 'todo' | 'combined' | 'heatmap' | 'tasks';
 }
 
 export interface HeatmapDay {

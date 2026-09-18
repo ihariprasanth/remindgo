@@ -320,12 +320,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               </div>
             </div>
             <select
-              value={settings.widgetMode || 'heatmap'}
-              onChange={(e) => onUpdateSettings({ widgetMode: e.target.value as 'heatmap' | 'tasks' })}
-              className="bg-neutral-100 dark:bg-[#141414] border border-neutral-300 dark:border-white/15 text-xs text-neutral-900 dark:text-white rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#0a84ff]"
+              value={settings.widgetMode || 'leetcode'}
+              onChange={(e) => onUpdateSettings({ widgetMode: e.target.value as any })}
+              className="bg-black/40 border border-white/15 text-xs text-white rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#0a84ff]"
             >
-              <option value="heatmap">Classical Green Heatmap</option>
-              <option value="tasks">Today's To-Do Checklist</option>
+              <option value="leetcode">LeetCode Dedicated Heatmap & Stats</option>
+              <option value="tasks-heatmap">Task Completion History Heatmap</option>
+              <option value="todo">Today's To-Do Task Checklist</option>
+              <option value="combined">Combined Productivity Overview</option>
             </select>
           </div>
 
@@ -450,7 +452,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-xl border border-white/20 mb-3 bg-white p-0.5">
           <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
         </div>
-        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.5.5 • Liquid Glass Edition</div>
+        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.5.6 • Liquid Glass Edition</div>
         <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
           Liquid Glass Architecture • LeetCode Integration • Local SQLite Engine
         </div>

@@ -28,8 +28,8 @@ export function createOrShowWidgetWindow(isDev: boolean, devServerUrl?: string):
 
   const primaryDisplay = screen.getPrimaryDisplay();
   const { x: workX, y: workY, width: screenWidth, height: screenHeight } = primaryDisplay.workArea;
-  const winWidth = 390;
-  const winHeight = 185;
+  const winWidth = 415;
+  const winHeight = 210;
 
   // Position neatly on the top-right corner of the desktop wallpaper
   const x = Math.max(workX + 20, workX + screenWidth - winWidth - 25);

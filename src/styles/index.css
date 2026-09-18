@@ -4,8 +4,8 @@
 
 /* Apple San Francisco Typography & Liquid Glass Theme Tokens */
 :root {
-  --font-mac: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'SF Pro', sans-serif;
-  --font-mono: 'SF Mono', ui-monospace, monospace;
+  --font-mac: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "San Francisco", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
   font-size: 14.5px;
 }
 
@@ -29,28 +29,27 @@
   --status-bar-bg: rgba(0, 0, 0, 0.95);
 }
 
-/* Light Mode Tokens (matching macOS System Settings reference) */
-.light {
-  --bg-app: #f4f6f9;
-  --bg-glass-base: rgba(255, 255, 255, 0.90);
-  --bg-sidebar: rgba(243, 245, 248, 0.88);
-  --bg-card: rgba(255, 255, 255, 0.92);
-  --bg-card-hover: rgba(255, 255, 255, 1);
-  --border-glass: rgba(0, 0, 0, 0.09);
-  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  --text-main: #1d1d1f;
-  --text-sub: #515154;
-  --text-muted: #86868b;
-  --input-bg: rgba(255, 255, 255, 0.95);
-  --pill-active-bg: #007AFF;
-  --pill-active-border: #007AFF;
-  --pill-active-text: #ffffff;
-  --pill-active-shadow: 0 4px 14px rgba(0, 122, 255, 0.35);
-  --status-bar-bg: rgba(243, 245, 248, 0.90);
-}
-
 * {
   box-sizing: border-box;
+  font-family: var(--font-mac);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", sans-serif;
+  letter-spacing: -0.025em;
+}
+
+p, span, label, button, input, textarea, select {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", sans-serif;
+  letter-spacing: -0.012em;
+}
+
+code, kbd, samp, pre, .font-mono {
+  font-family: var(--font-mono) !important;
+  letter-spacing: normal;
 }
 
 body {
@@ -63,6 +62,7 @@ body {
   user-select: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Dark mode ambient body glow - 100% Pure Black, Zero Blue Tint */
