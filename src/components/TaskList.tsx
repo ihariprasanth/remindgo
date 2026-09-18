@@ -3,6 +3,8 @@ import { format, isPast, isToday, parseISO } from 'date-fns';
 import { CheckCircle, Clock, AlertCircle, Calendar } from 'lucide-react';
 import { Task } from '../types';
 import { TaskCard } from './TaskCard';
+import logoSquircle from '../assets/logo-squircle.png';
+import logoCircle from '../assets/logo-circle.png';
 
 interface TaskListProps {
   tasks: Task[];
@@ -86,11 +88,13 @@ export const TaskList: React.FC<TaskListProps> = ({
 
   if (tasks.length === 0) {
     return (
-      <div className="text-center py-12 px-4 border border-dashed border-[#30363d] rounded-xl bg-[#161b22]/50">
-        <Calendar size={36} className="mx-auto text-[#6e7681] mb-3" />
-        <h3 className="text-sm font-medium text-[#e6edf3]">No tasks found</h3>
-        <p className="text-xs text-[#8b949e] mt-1 max-w-sm mx-auto">
-          Add tasks with exact dates and reminder times. They will alert you with audio and popups offline.
+      <div className="text-center py-12 px-4 border border-dashed border-[var(--border-glass)] rounded-2xl liquid-glass-card">
+        <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-lg border border-white/10 mx-auto mb-4 bg-white p-0.5">
+          <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
+        </div>
+        <h3 className="text-sm font-semibold text-[var(--text-main)]">No reminders scheduled</h3>
+        <p className="text-xs text-[var(--text-sub)] mt-1 max-w-sm mx-auto">
+          Add tasks with exact dates and reminder times. RemindGo will alert you with audio and popups offline.
         </p>
       </div>
     );
@@ -101,7 +105,10 @@ export const TaskList: React.FC<TaskListProps> = ({
       <div>
         {renderSection('Today’s Tasks', todayTasks.length, todayTasks, <Clock size={14} />, 'text-[#58a6ff]')}
         {todayTasks.length === 0 && (
-          <div className="text-center py-8 text-xs text-[#8b949e]">No tasks scheduled for today. Great job!</div>
+          <div className="text-center py-8 text-xs text-[var(--text-sub)] flex flex-col items-center gap-2.5">
+            <img src={logoCircle} alt="RemindGo" className="w-9 h-9 rounded-full border border-white/10 shadow-sm" />
+            <span>No tasks scheduled for today. You are all caught up!</span>
+          </div>
         )}
       </div>
     );

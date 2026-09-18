@@ -3,6 +3,7 @@ import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, 
 import { Settings } from '../types';
 import { SOUND_OPTIONS, audioService } from '../services/audioService';
 import { api } from '../services/api';
+import logoSquircle from '../assets/logo-squircle.png';
 
 interface SettingsPageProps {
   settings: Settings;
@@ -329,10 +330,16 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       </div>
 
       {/* About Section */}
-      <div className="text-center text-xs text-white/40 pt-2">
-        <div className="font-semibold text-white/80">RemindGo v2.5 • macOS 26 Liquid Glass Edition</div>
-        <div className="text-[11px] text-white/40 mt-0.5">
+      <div className="text-center text-xs text-[var(--text-muted)] pt-6 pb-4 flex flex-col items-center">
+        <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-xl border border-white/20 mb-3 bg-white p-0.5">
+          <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
+        </div>
+        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.5 • macOS 26 Liquid Glass Edition</div>
+        <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
           macOS Liquid Glass UI • LeetCode Integration • Local SQLite Engine
+        </div>
+        <div className="text-[10px] text-[var(--text-muted)] mt-1 font-mono">
+          Developed with ❤️ by Hariprasanth
         </div>
       </div>
     </div>

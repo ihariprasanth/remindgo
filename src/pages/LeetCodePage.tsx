@@ -4,6 +4,7 @@ import {
   PlusCircle, AlertCircle, CheckCircle, UserCheck, ShieldAlert, Sparkles 
 } from 'lucide-react';
 import { LeetCodeData } from '../types';
+import logoSquircle from '../assets/logo-squircle.png';
 
 interface LeetCodePageProps {
   leetCodeData: LeetCodeData | null;
@@ -122,8 +123,15 @@ export const LeetCodePage: React.FC<LeetCodePageProps> = ({
 
       {/* If No Data Connected */}
       {!leetCodeData && !isLoading && (
-        <div className="liquid-glass-card rounded-2xl p-12 text-center border-dashed border-[var(--border-glass)]">
-          <Code2 size={44} className="mx-auto text-[#f59e0b] mb-3 opacity-80" />
+        <div className="liquid-glass-card rounded-2xl p-12 text-center border-dashed border-[var(--border-glass)] flex flex-col items-center">
+          <div className="relative mb-3">
+            <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-lg border border-white/20 bg-white p-0.5">
+              <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#f59e0b] border-2 border-[var(--card-bg)] flex items-center justify-center text-white shadow-sm">
+              <Code2 size={12} strokeWidth={2.5} />
+            </div>
+          </div>
           <h3 className="text-base font-semibold text-[var(--text-main)]">No LeetCode profile connected</h3>
           <p className="text-xs text-[var(--text-sub)] max-w-md mx-auto mt-1 mb-5">
             Enter your LeetCode username above to fetch your solved problem stats, global ranking, and today's daily coding challenge.

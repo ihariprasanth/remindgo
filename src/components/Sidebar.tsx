@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Task } from '../types';
 import { format } from 'date-fns';
+import logoSquircle from '../assets/logo-squircle.png';
 
 export type NavTab = 'dashboard' | 'tasks' | 'today' | 'leetcode' | 'settings';
 
@@ -79,12 +80,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className="w-56 liquid-glass-sidebar flex flex-col justify-between select-none p-3 z-20 transition-colors">
       <div>
-        {/* App Title Pill */}
+        {/* App Title Pill with RemindGo Soft Squircle Logo */}
         <div className="flex items-center gap-2.5 px-2 py-1.5 mb-3">
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#238636] to-[#39d353] p-0.5 shadow-sm flex items-center justify-center">
-            <div className="w-full h-full bg-black/40 rounded-[9px] flex items-center justify-center">
-              <Sparkles size={14} className="text-[#39d353]" />
-            </div>
+          <div className="w-8 h-8 rounded-[10px] overflow-hidden shadow-md border border-white/10 flex-shrink-0 bg-white">
+            <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover" />
           </div>
           <div>
             <span className="font-bold text-xs tracking-wide text-[var(--text-main)] block leading-tight">

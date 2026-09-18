@@ -3,6 +3,8 @@ import { Bell, Clock, Check, Volume2, X } from 'lucide-react';
 import { Task, Settings } from '../types';
 import { audioService } from '../services/audioService';
 import { api } from '../services/api';
+import logoCircle from '../assets/logo-circle.png';
+import logoSquircle from '../assets/logo-squircle.png';
 
 interface AlarmPopupProps {
   task: Task;
@@ -47,10 +49,11 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
     <div className="w-full h-full bg-[#0d1117] text-[#e6edf3] flex flex-col justify-between p-6 select-none border border-[#30363d] rounded-xl shadow-2xl overflow-hidden">
       {/* Top Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#39d353] animate-ping" />
+        <div className="flex items-center gap-2.5">
+          <img src={logoSquircle} alt="RemindGo" className="w-5 h-5 rounded-[6px] shadow-sm border border-white/20" />
+          <span className="w-2 h-2 rounded-full bg-[#39d353] animate-ping" />
           <span className="text-xs font-semibold uppercase tracking-wider text-[#39d353]">
-            Reminder Alarm
+            RemindGo Alarm
           </span>
         </div>
         <button
@@ -63,9 +66,9 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
 
       {/* Center Alarm Content */}
       <div className="my-auto text-center space-y-3">
-        {/* Pulsing Bell Icon */}
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#39d353]/15 text-[#39d353] alarm-pulse mb-1">
-          <Bell size={32} strokeWidth={2.5} />
+        {/* Pulsing RemindGo Circular Logo */}
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#39d353]/15 alarm-pulse p-1 border border-[#39d353]/30 shadow-[0_0_25px_rgba(57,211,83,0.3)] mb-1">
+          <img src={logoCircle} alt="RemindGo" className="w-full h-full object-cover rounded-full shadow-inner" />
         </div>
 
         <div>
