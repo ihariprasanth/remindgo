@@ -50,11 +50,11 @@ async function syncGit() {
   // Create commit
   const author = {
     name: 'Hariprasanth',
-    email: 'hariprasanth@remindgo.app'
+    email: 'ihariprasanth@users.noreply.github.com'
   };
 
   const version = 'v2.5.0';
-  const commitMsg = `Release ${version}: Rebrand to RemindGo, macOS 26 Liquid Glass UI, LeetCode sync, Apple SF Pro font`;
+  const commitMsg = `Release ${version}: Official RemindGo launch with macOS 26 Liquid Glass UI, LeetCode Tracker, and Apple SF Pro typography`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({
@@ -78,18 +78,37 @@ async function syncGit() {
     console.log(`[Git] Tag ${version} already exists or updated.`);
   }
 
+  // Ensure remote origin is configured for ihariprasanth/remindgo
+  try {
+    const remotes = await git.listRemotes({ fs, dir: projectDir });
+    const hasOrigin = remotes.some(r => r.remote === 'origin');
+    const targetUrl = 'https://github.com/ihariprasanth/remindgo.git';
+    if (hasOrigin) {
+      await git.deleteRemote({ fs, dir: projectDir, remote: 'origin' });
+    }
+    await git.addRemote({ fs, dir: projectDir, remote: 'origin', url: targetUrl });
+    console.log(`[Git] Remote origin configured: ${targetUrl}`);
+  } catch (remoteErr) {
+    console.log('[Git] Note on remote configuration:', remoteErr.message);
+  }
+
   console.log('\n=====================================================');
   console.log('SUCCESS: Local Git repository is fully up to date!');
   console.log('=====================================================');
-  console.log('\nTo connect and push to your GitHub account:');
-  console.log('1. Create a repository named "remindgo" on GitHub (https://github.com/new)');
-  console.log('2. Run these commands:');
-  console.log('   git remote add origin https://github.com/<YOUR_USERNAME>/remindgo.git');
-  console.log('   git branch -M main');
-  console.log('   git push -u origin main --tags');
+  console.log('\nGitHub Account: ihariprasanth');
+  console.log('Repository URL: https://github.com/ihariprasanth/remindgo');
+  console.log('Showcase Page:  https://ihariprasanth.github.io/remindgo/');
+  console.log('\nTo publish your repository:');
+  console.log('1. Open https://github.com/new and create a repository named: remindgo');
+  console.log('2. Push code directly with either:');
+  console.log('   a) If Git CLI is installed:');
+  console.log('      git push -u origin main --tags');
+  console.log('   b) Or using the Node script with your Personal Access Token:');
+  console.log('      node scripts/push-github.js <YOUR_PERSONAL_ACCESS_TOKEN>');
   console.log('\nGitHub Pages Hosting:');
-  console.log('   In your GitHub Repo Settings > Pages, select Source: "Deploy from a branch", Branch: "main", Folder: "/docs"');
-  console.log('   Your showcase landing website will be live at https://<YOUR_USERNAME>.github.io/remindgo/');
+  console.log('   Go to https://github.com/ihariprasanth/remindgo/settings/pages');
+  console.log('   Source: "Deploy from a branch", Branch: "main", Folder: "/docs"');
+  console.log('   Your showcase landing website will be live at: https://ihariprasanth.github.io/remindgo/');
 }
 
 syncGit().catch(console.error);
