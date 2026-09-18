@@ -1,6 +1,6 @@
 {
   "name": "taskpulse",
-  "version": "1.0.0",
+  "version": "2.5.0",
   "description": "Offline Windows Task Reminder App with GitHub-style UI",
   "main": "dist-electron/main.js",
   "author": "TaskPulse Team",
