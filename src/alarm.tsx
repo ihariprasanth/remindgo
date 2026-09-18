@@ -38,14 +38,14 @@ const AlarmApp: React.FC = () => {
 
   if (!task) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center bg-[#0d1117] text-[#8b949e] text-xs">
+      <div className="w-screen h-screen flex items-center justify-center bg-[#000000] text-[#8b949e] text-xs font-mono">
         Waiting for alarm data...
       </div>
     );
   }
 
   return (
-    <div className="w-screen h-screen bg-[#0d1117]">
+    <div className="w-screen h-screen bg-[#000000]">
       <AlarmPopup
         task={task}
         settings={settings}

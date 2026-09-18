@@ -66,7 +66,7 @@ if (fs.existsSync(docsIndexPath)) {
   
   // Replace version references in pill
   docsHtml = docsHtml.replace(/RemindGo v[\d\.]+ Liquid Glass/g, `RemindGo v${newVersion} Liquid Glass`);
-  docsHtml = docsHtml.replace(/v[\d\.]+ — macOS Liquid Glass/g, `v${newVersion} — macOS Liquid Glass`);
+  docsHtml = docsHtml.replace(/v[\d\.]+ — Liquid Glass/g, `v${newVersion} — Liquid Glass`);
   
   // Replace download links with direct GitHub Releases URLs
   const setupUrl = `https://github.com/ihariprasanth/remindgo/releases/download/v${newVersion}/RemindGo-Setup-${newVersion}.exe`;
@@ -97,13 +97,56 @@ try {
   console.log('Notice: electron-builder finished.');
 }
 
-// 6. Copy new binaries to Desktop folder
-if (fs.existsSync(desktopDir)) {
-  const releaseDir = path.join(projectDir, 'release');
-  const setupSrc = path.join(releaseDir, `RemindGo-Setup-${newVersion}.exe`);
-  const setupSrcAlt = path.join(releaseDir, `RemindGo Setup ${newVersion}.exe`);
-  const portableSrc = path.join(releaseDir, `RemindGo-Portable-${newVersion}.exe`);
+// 6. Copy new binaries to D:\PROJECTS\RemindGo\v<version>\ and Desktop folder
+const releaseDir = path.join(projectDir, 'release');
+const setupSrc = path.join(releaseDir, `RemindGo-Setup-${newVersion}.exe`);
+const setupSrcAlt = path.join(releaseDir, `RemindGo Setup ${newVersion}.exe`);
+const portableSrc = path.join(releaseDir, `RemindGo-Portable-${newVersion}.exe`);
 
+// D:\PROJECTS\RemindGo\v<version>\ target
+const dProjectsBase = 'D:\\PROJECTS\\RemindGo';
+const versionTargetDir = path.join(dProjectsBase, `v${newVersion}`);
+try {
+  fs.mkdirSync(versionTargetDir, { recursive: true });
+  const versionWebDir = path.join(versionTargetDir, 'Website');
+  fs.mkdirSync(versionWebDir, { recursive: true });
+
+  if (fs.existsSync(setupSrc)) {
+    fs.copyFileSync(setupSrc, path.join(versionTargetDir, `RemindGo-Setup-${newVersion}.exe`));
+  } else if (fs.existsSync(setupSrcAlt)) {
+    fs.copyFileSync(setupSrcAlt, path.join(versionTargetDir, `RemindGo-Setup-${newVersion}.exe`));
+  }
+
+  if (fs.existsSync(portableSrc)) {
+    fs.copyFileSync(portableSrc, path.join(versionTargetDir, `RemindGo-Portable-${newVersion}.exe`));
+  }
+
+  // Copy docs to Website folder
+  const docsDir = path.join(projectDir, 'docs');
+  if (fs.existsSync(docsDir)) {
+    const docFiles = fs.readdirSync(docsDir);
+    for (const f of docFiles) {
+      fs.copyFileSync(path.join(docsDir, f), path.join(versionWebDir, f));
+    }
+  }
+
+  // Write Quick-Guide
+  fs.writeFileSync(path.join(versionTargetDir, 'Quick-Guide.txt'), `RemindGo v${newVersion}
+===================================================
+1. RemindGo-Setup-${newVersion}.exe: Full Windows Installer.
+   - Installs to local AppData.
+   - Automatically creates Desktop Shortcut and registers in Windows Start Menu / App list.
+2. RemindGo-Portable-${newVersion}.exe: Standalone Portable Executable.
+   - Run directly without installation.
+3. Website/: Complete showcase landing page and assets.
+`, 'utf8');
+
+  console.log(`✓ Copied updated binaries to D: Projects: ${versionTargetDir}`);
+} catch (e) {
+  console.log('Notice: Could not copy to D:\\PROJECTS\\RemindGo:', e.message);
+}
+
+if (fs.existsSync(desktopDir)) {
   if (fs.existsSync(setupSrc)) {
     fs.copyFileSync(setupSrc, path.join(desktopDir, `RemindGo-Setup-${newVersion}.exe`));
     fs.copyFileSync(setupSrc, path.join(desktopDir, `RemindGo Setup ${newVersion}.exe`));

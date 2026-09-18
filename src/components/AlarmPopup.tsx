@@ -46,7 +46,7 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
   };
 
   return (
-    <div className="w-full h-full bg-[#0d1117] text-[#e6edf3] flex flex-col justify-between p-6 select-none border border-[#30363d] rounded-xl shadow-2xl overflow-hidden">
+    <div className="w-full h-full bg-[#000000] text-white flex flex-col justify-between p-6 select-none border border-white/15 rounded-2xl shadow-2xl overflow-hidden">
       {/* Top Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -58,7 +58,7 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
         </div>
         <button
           onClick={() => handleDismiss(false)}
-          className="text-[#8b949e] hover:text-[#e6edf3] p-1 rounded hover:bg-[#21262d] transition-colors"
+          className="text-white/60 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
         >
           <X size={16} />
         </button>
@@ -72,7 +72,7 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
         </div>
 
         <div>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-[#21262d] text-[#8b949e] border border-[#30363d]">
+          <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-white/80 border border-white/10">
             {task.category}
           </span>
         </div>
@@ -141,12 +141,12 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
               max="120"
               value={customSnooze}
               onChange={(e) => setCustomSnooze(e.target.value)}
-              className="w-20 px-2 py-1 bg-[#161b22] border border-[#30363d] rounded text-xs text-[#e6edf3] font-mono focus:outline-none focus:border-[#39d353]"
+              className="w-20 px-2.5 py-1 macos-input text-xs font-mono"
             />
-            <span className="text-xs text-[#8b949e]">minutes</span>
+            <span className="text-xs text-white/60">minutes</span>
             <button
               onClick={() => handleSnooze(parseInt(customSnooze, 10) || 15)}
-              className="ml-auto px-3 py-1 bg-[#30363d] hover:bg-[#39d353] hover:text-black text-xs font-medium rounded transition-colors"
+              className="ml-auto px-3.5 py-1 macos-btn macos-btn-secondary text-xs font-medium cursor-pointer"
             >
               Apply Snooze
             </button>

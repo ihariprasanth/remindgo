@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Quick New Task Button */}
         <button
           onClick={onOpenAddTask}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#238636] to-[#2ea043] hover:from-[#2ea043] hover:to-[#39d353] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 macos-btn macos-btn-primary text-xs font-semibold cursor-pointer"
         >
           <Plus size={13} strokeWidth={2.5} />
           <span className="hidden md:inline">New Task</span>
@@ -118,7 +118,7 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onToggleTheme}
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-          className="p-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 border border-[var(--border-glass)] text-[var(--text-main)] transition-colors cursor-pointer flex items-center justify-center"
+          className="p-2 macos-btn bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 border border-[var(--border-glass)] text-[var(--text-main)] cursor-pointer flex items-center justify-center shadow-sm"
         >
           {theme === 'dark' ? (
             <Sun size={14} className="text-[#f59e0b]" />

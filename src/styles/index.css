@@ -8,44 +8,44 @@
   --font-mono: 'SF Mono', 'JetBrains Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Dark Mode Tokens */
+/* Dark Mode Tokens (Pure Pitch-Black & Crystal Liquid Glass) */
 .dark {
-  --bg-app: #080c14;
-  --bg-glass-base: rgba(14, 20, 30, 0.80);
-  --bg-sidebar: rgba(10, 14, 22, 0.68);
-  --bg-card: rgba(22, 30, 44, 0.62);
-  --bg-card-hover: rgba(30, 41, 59, 0.78);
-  --border-glass: rgba(255, 255, 255, 0.12);
-  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  --text-main: #f8fafc;
-  --text-sub: #94a3b8;
-  --text-muted: #64748b;
-  --input-bg: rgba(0, 0, 0, 0.45);
-  --pill-active-bg: rgba(57, 211, 83, 0.18);
-  --pill-active-border: rgba(57, 211, 83, 0.45);
-  --pill-active-text: #39d353;
-  --pill-active-shadow: 0 0 16px rgba(57, 211, 83, 0.25);
-  --status-bar-bg: rgba(10, 14, 22, 0.75);
+  --bg-app: #000000;
+  --bg-glass-base: rgba(12, 12, 12, 0.85);
+  --bg-sidebar: rgba(8, 8, 8, 0.82);
+  --bg-card: rgba(18, 18, 18, 0.75);
+  --bg-card-hover: rgba(28, 28, 28, 0.90);
+  --border-glass: rgba(255, 255, 255, 0.10);
+  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --text-main: #FFFFFF;
+  --text-sub: #A1A1A6;
+  --text-muted: #636366;
+  --input-bg: rgba(20, 20, 20, 0.85);
+  --pill-active-bg: rgba(255, 255, 255, 0.14);
+  --pill-active-border: rgba(255, 255, 255, 0.22);
+  --pill-active-text: #FFFFFF;
+  --pill-active-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --status-bar-bg: rgba(6, 6, 6, 0.92);
 }
 
 /* Light Mode Tokens (matching macOS System Settings reference) */
 .light {
-  --bg-app: #eef2f7;
-  --bg-glass-base: rgba(255, 255, 255, 0.88);
-  --bg-sidebar: rgba(243, 246, 250, 0.85);
-  --bg-card: rgba(255, 255, 255, 0.90);
+  --bg-app: #f4f6f9;
+  --bg-glass-base: rgba(255, 255, 255, 0.90);
+  --bg-sidebar: rgba(243, 245, 248, 0.88);
+  --bg-card: rgba(255, 255, 255, 0.92);
   --bg-card-hover: rgba(255, 255, 255, 1);
-  --border-glass: rgba(0, 0, 0, 0.08);
-  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  --text-main: #0f172a;
-  --text-sub: #475569;
-  --text-muted: #94a3b8;
-  --input-bg: rgba(255, 255, 255, 0.9);
+  --border-glass: rgba(0, 0, 0, 0.09);
+  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --text-main: #1d1d1f;
+  --text-sub: #515154;
+  --text-muted: #86868b;
+  --input-bg: rgba(255, 255, 255, 0.95);
   --pill-active-bg: #007AFF;
   --pill-active-border: #007AFF;
   --pill-active-text: #ffffff;
   --pill-active-shadow: 0 4px 14px rgba(0, 122, 255, 0.35);
-  --status-bar-bg: rgba(243, 246, 250, 0.88);
+  --status-bar-bg: rgba(243, 245, 248, 0.90);
 }
 
 * {
@@ -63,56 +63,55 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dark mode ambient body glow */
+/* Dark mode ambient body glow - 100% Pure Black, Zero Blue Tint */
 .dark body, body.dark {
-  background-color: var(--bg-app);
+  background-color: #000000;
   background-image: 
-    radial-gradient(circle at 10% 10%, rgba(57, 211, 83, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 90% 20%, rgba(88, 166, 255, 0.10) 0%, transparent 45%),
-    radial-gradient(circle at 50% 85%, rgba(188, 140, 255, 0.08) 0%, transparent 50%);
+    radial-gradient(ellipse 90% 40% at 50% -5%, rgba(255, 255, 255, 0.05) 0%, transparent 65%),
+    radial-gradient(circle at 10% 95%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
   background-attachment: fixed;
-  color: #f8fafc;
+  color: #FFFFFF;
 }
 
 /* Light mode ambient body glow */
 .light body, body.light {
-  background-color: #eef2f7;
+  background-color: #f4f6f9;
   background-image: 
-    radial-gradient(circle at 20% 20%, rgba(0, 122, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(57, 211, 83, 0.06) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(0, 122, 255, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(52, 199, 89, 0.05) 0%, transparent 50%);
   background-attachment: fixed;
-  color: #0f172a;
+  color: #1d1d1f;
 }
 
 /* Liquid Glass Elements */
 .liquid-glass-base {
   background: var(--bg-glass-base);
-  backdrop-filter: blur(36px) saturate(200%);
-  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  backdrop-filter: blur(40px) saturate(190%);
+  -webkit-backdrop-filter: blur(40px) saturate(190%);
   border: 1px solid var(--border-glass);
-  box-shadow: var(--border-specular), 0 20px 50px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--border-specular), 0 24px 60px rgba(0, 0, 0, 0.7);
 }
 
 .liquid-glass-sidebar {
   background: var(--bg-sidebar);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  backdrop-filter: blur(36px) saturate(190%);
+  -webkit-backdrop-filter: blur(36px) saturate(190%);
   border-right: 1px solid var(--border-glass);
 }
 
 .liquid-glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
   border: 1px solid var(--border-glass);
-  box-shadow: var(--border-specular), 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--border-specular), 0 10px 30px rgba(0, 0, 0, 0.4);
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .liquid-glass-card:hover {
   background: var(--bg-card-hover);
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: var(--border-specular), 0 12px 32px rgba(0, 0, 0, 0.14);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: var(--border-specular), 0 14px 40px rgba(0, 0, 0, 0.55);
 }
 
 .liquid-nav-pill-active {
@@ -120,6 +119,55 @@ body {
   border: 1px solid var(--pill-active-border);
   color: var(--pill-active-text);
   box-shadow: var(--pill-active-shadow);
+}
+
+/* Apple-style Soft Corner Controls */
+.macos-btn {
+  border-radius: 12px;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.macos-btn:active {
+  transform: scale(0.97);
+}
+
+.macos-btn-primary {
+  background: linear-gradient(180deg, #2ea043 0%, #238636 100%);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 2px 8px rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+}
+
+.macos-btn-primary:hover {
+  background: linear-gradient(180deg, #38b74e 0%, #29933d 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 4px 14px rgba(46, 160, 67, 0.4);
+}
+
+.macos-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.macos-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.macos-input {
+  border-radius: 10px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.macos-input:focus {
+  outline: none;
+  border-color: #0A84FF;
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
 }
 
 /* iOS/macOS Style Toggle Switch */

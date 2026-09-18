@@ -25,7 +25,7 @@ export function createMainWindow(isDev: boolean, devServerUrl?: string): Browser
     minHeight: 640,
     title: 'RemindGo',
     frame: false, // Clean custom frameless titlebar with GitHub theme
-    backgroundColor: '#0d1117',
+    backgroundColor: '#000000',
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

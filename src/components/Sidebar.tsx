@@ -90,12 +90,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
               RemindGo
             </span>
             <span className="text-[10px] text-[var(--text-muted)] block leading-tight font-mono">
-              macOS 26 Edition
+              Liquid Glass Edition
             </span>
           </div>
         </div>
 
-        {/* Sidebar Search Bar (matching macOS System Settings / Finder search) */}
+        {/* Sidebar Search Bar (Apple System Style) */}
         <div className="relative mb-3.5">
           <Search size={13} className="absolute left-2.5 top-2.5 text-[var(--text-muted)]" />
           <input
@@ -103,7 +103,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             placeholder="Search views..."
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
-            className="w-full pl-8 pr-2.5 py-1.5 bg-black/5 dark:bg-white/5 border border-[var(--border-glass)] rounded-xl text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#007AFF] dark:focus:border-[#39d353] transition-colors"
+            className="w-full pl-8 pr-2.5 py-1.5 macos-input text-xs placeholder-[var(--text-muted)]"
           />
         </div>
 

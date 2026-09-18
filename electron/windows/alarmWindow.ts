@@ -35,7 +35,7 @@ export function createOrShowAlarmWindow(task: Task, isDev: boolean, devServerUrl
     alwaysOnTop: true,
     skipTaskbar: false,
     show: false,
-    backgroundColor: '#0d1117',
+    backgroundColor: '#000000',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
