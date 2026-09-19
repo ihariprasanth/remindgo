@@ -17,7 +17,7 @@ export function getMainWindow(): BrowserWindow | null {
   return mainWindowInstance;
 }
 
-export function createMainWindow(isDev: boolean, devServerUrl?: string): BrowserWindow {
+export function createMainWindow(isDev: boolean, devServerUrl?: string, startHidden: boolean = false): BrowserWindow {
   const iconPath = isDev
     ? path.join(__dirname, '../../assets/icon.ico')
     : path.join(__dirname, '../assets/icon.ico');
@@ -47,7 +47,7 @@ export function createMainWindow(isDev: boolean, devServerUrl?: string): Browser
   }
 
   mainWindowInstance.once('ready-to-show', () => {
-    if (mainWindowInstance) {
+    if (mainWindowInstance && !startHidden) {
       mainWindowInstance.show();
       mainWindowInstance.focus();
     }

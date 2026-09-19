@@ -42,7 +42,6 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [leetCodeData, setLeetCodeData] = useState<LeetCodeData | null>(null);
   const [quickTitle, setQuickTitle] = useState('');
-  const [hoveredDay, setHoveredDay] = useState<{ dateStr: string; count: number; x: number; y: number } | null>(null);
 
   // Per-widget lock state: when locked, widget cannot be accidentally dragged
   const [isLocked, setIsLocked] = useState<boolean>(() => {
@@ -401,45 +400,19 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   );
 
   // Render 20-week green grid
-  const renderHeatmapGrid = (weeksGrid: { dateStr: string; count: number; level: number }[][], label: string, colorType: 'green' | 'amber' = 'green') => (
-    <>
-      <div className="flex gap-[3px] justify-center no-drag pb-0.5">
-        {weeksGrid.map((wk, wIdx) => (
-          <div key={wIdx} className="flex flex-col gap-[3px]">
-            {wk.map((day, dIdx) => (
-              <div
-                key={dIdx}
-                onMouseEnter={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  setHoveredDay({
-                    dateStr: day.dateStr,
-                    count: day.count,
-                    x: rect.left + rect.width / 2,
-                    y: rect.top - 8
-                  });
-                }}
-                onMouseLeave={() => setHoveredDay(null)}
-                className={`w-[11px] h-[11px] rounded-[2px] border transition-all cursor-pointer hover:scale-125 ${getCellColor(day.level, colorType)}`}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-
-      {hoveredDay && (
-        <div
-          style={{ 
-            left: Math.max(90, Math.min(hoveredDay.x, 325)), 
-            top: Math.max(35, hoveredDay.y) 
-          }}
-          className="fixed z-50 transform -translate-x-1/2 -translate-y-full pointer-events-none bg-[#0d1117] text-white text-[10px] font-mono px-2.5 py-1 rounded-md shadow-2xl border border-white/20 whitespace-nowrap"
-        >
-          {hoveredDay.count === 0 
-            ? `No ${label} on ${hoveredDay.dateStr}` 
-            : `${hoveredDay.count} ${label} on ${hoveredDay.dateStr}`}
+  const renderHeatmapGrid = (weeksGrid: { dateStr: string; count: number; level: number }[][], _label: string, colorType: 'green' | 'amber' = 'green') => (
+    <div className="flex gap-[3px] justify-center no-drag pb-0.5">
+      {weeksGrid.map((wk, wIdx) => (
+        <div key={wIdx} className="flex flex-col gap-[3px]">
+          {wk.map((day, dIdx) => (
+            <div
+              key={dIdx}
+              className={`w-[11px] h-[11px] rounded-[2px] border transition-all ${getCellColor(day.level, colorType)}`}
+            />
+          ))}
         </div>
-      )}
-    </>
+      ))}
+    </div>
   );
 
   const containerClasses = `w-full h-full p-1.5 select-none font-sans bg-transparent`;
@@ -818,7 +791,6 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
                 {wk.slice(0, 4).map((day, dIdx) => (
                   <div
                     key={dIdx}
-                    title={`${day.dateStr}: ${day.count} tasks`}
                     className={`w-[7px] h-[7px] rounded-[1px] border ${getCellColor(day.level, 'green')}`}
                   />
                 ))}

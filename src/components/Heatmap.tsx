@@ -25,11 +25,6 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks = [], leetCodeData, onSe
   const [dataSource, setDataSource] = useState<'all' | 'tasks' | 'leetcode'>(
     mode === 'tasks-only' ? 'tasks' : mode === 'leetcode-only' ? 'leetcode' : 'all'
   );
-  const [hoveredCell, setHoveredCell] = useState<{
-    cell: CellData;
-    x: number;
-    y: number;
-  } | null>(null);
 
   // Map of completed_at date (YYYY-MM-DD) -> task count
   const taskMap = useMemo(() => {
@@ -282,15 +277,6 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks = [], leetCodeData, onSe
                       <div
                         key={dIdx}
                         onClick={() => onSelectDate?.(cell.dateStr)}
-                        onMouseEnter={(e) => {
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          setHoveredCell({
-                            cell,
-                            x: rect.left + rect.width / 2,
-                            y: rect.top
-                          });
-                        }}
-                        onMouseLeave={() => setHoveredCell(null)}
                         className={`w-[12px] h-[12px] rounded-[3px] border transition-all cursor-pointer ${getCellColor(
                           cell.level,
                           isSelected
@@ -329,49 +315,6 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks = [], leetCodeData, onSe
         </div>
       </div>
 
-      {/* Tooltip */}
-      {hoveredCell && (() => {
-        const isNearTop = hoveredCell.y < 90;
-        const safeX = typeof window !== 'undefined' 
-          ? Math.max(120, Math.min(hoveredCell.x, window.innerWidth - 120))
-          : hoveredCell.x;
-        const safeY = isNearTop ? hoveredCell.y + 20 : hoveredCell.y - 10;
-
-        return (
-          <div
-            className={`fixed z-50 transform -translate-x-1/2 ${
-              isNearTop ? '' : '-translate-y-full'
-            } pointer-events-none bg-[#0d1117] text-white text-xs px-3.5 py-2 rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.8)] border border-white/20 whitespace-nowrap text-center font-sans transition-opacity`}
-            style={{
-              left: `${safeX}px`,
-              top: `${safeY}px`
-            }}
-          >
-            <div className="font-bold text-[#39d353]">
-              {mode === 'tasks-only'
-                ? hoveredCell.cell.taskCount === 0
-                  ? 'No tasks completed'
-                  : `${hoveredCell.cell.taskCount} task${hoveredCell.cell.taskCount === 1 ? '' : 's'} completed`
-                : mode === 'leetcode-only'
-                ? hoveredCell.cell.leetcodeCount === 0
-                  ? 'No submissions'
-                  : `${hoveredCell.cell.leetcodeCount} LeetCode submission${hoveredCell.cell.leetcodeCount === 1 ? '' : 's'}`
-                : hoveredCell.cell.count === 0
-                ? 'No activity'
-                : `${hoveredCell.cell.count} total contribution${hoveredCell.cell.count === 1 ? '' : 's'}`}
-            </div>
-            <div className="text-white/60 text-[11px] font-mono mt-0.5">
-              {format(hoveredCell.cell.date, 'EEEE, MMM d, yyyy')}
-            </div>
-            {mode === 'all' && (hoveredCell.cell.taskCount > 0 || hoveredCell.cell.leetcodeCount > 0) && (
-              <div className="text-[10px] text-white/50 pt-1 border-t border-white/10 mt-1 flex justify-center gap-3 font-mono">
-                <span>Tasks: <strong className="text-white">{hoveredCell.cell.taskCount}</strong></span>
-                <span>LeetCode: <strong className="text-[#f59e0b]">{hoveredCell.cell.leetcodeCount}</strong></span>
-              </div>
-            )}
-          </div>
-        );
-      })()}
     </div>
   );
 };

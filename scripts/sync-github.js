@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.8.5';
-  const commitMsg = `Release v2.8.5: Persistent Desktop Widget Coordinates & Visual Studio Code Official Showcase Website`;
+  const version = 'v2.9.0';
+  const commitMsg = `Release v2.9.0: Startup Background Widgets Mode, Clean Heatmap (No Tooltips), and Navbar-Free Website`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

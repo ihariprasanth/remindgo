@@ -67,8 +67,12 @@ app.on('second-instance', () => {
   }
 });
 
+const isStartupLaunch = process.argv.includes('--startup') ||
+                        process.argv.includes('--hidden') ||
+                        Boolean(app.getLoginItemSettings && app.getLoginItemSettings().wasOpenedAtLogin);
+
 app.whenReady().then(async () => {
-  console.log('[Main] App ready. Initializing database...');
+  console.log(`[Main] App ready. Initializing database... (startup mode: ${isStartupLaunch})`);
   await dbInstance.init();
 
   // Apply startWithWindows setting
@@ -76,22 +80,23 @@ app.whenReady().then(async () => {
   try {
     app.setLoginItemSettings({
       openAtLogin: initialSettings.startWithWindows,
-      path: process.execPath
+      path: process.execPath,
+      args: ['--startup']
     });
   } catch (err) {
     console.warn('[Main] Could not set login item settings:', err);
   }
 
-  // Create main window & tray
-  createMainWindow(isDev, devServerUrl);
+  // Create main window & tray (remain hidden on startup boot so only desktop widgets show)
+  createMainWindow(isDev, devServerUrl, isStartupLaunch);
   setupTray(isDev, devServerUrl);
 
   // Start alarm scheduler
   scheduler = new AlarmScheduler(isDev, devServerUrl);
   scheduler.start();
 
-  // Auto-open Desktop Widgets if configured
-  if (initialSettings.autoOpenWidget) {
+  // Auto-open Desktop Widgets: activate widgets on startup or if autoOpenWidget is enabled
+  if (initialSettings.autoOpenWidget || isStartupLaunch) {
     launchAllPreferredWidgets(isDev, devServerUrl);
   }
 
@@ -269,7 +274,8 @@ ipcMain.handle('update-settings', async (_event, partialSettings: Partial<Settin
     try {
       app.setLoginItemSettings({
         openAtLogin: partialSettings.startWithWindows,
-        path: process.execPath
+        path: process.execPath,
+        args: ['--startup']
       });
     } catch (err) {
       console.warn('[Main] Failed to update login item settings:', err);
