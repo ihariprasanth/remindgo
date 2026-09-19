@@ -36,45 +36,39 @@ export const Header: React.FC<HeaderProps> = () => {
       onDoubleClick={handleMaximize}
       className="h-10 border-b border-white/10 flex items-center justify-end px-4 select-none titlebar-drag flex-shrink-0 z-30 bg-black/60 backdrop-blur-xl"
     >
-      {/* Right Side: Clean Standard Window Controls */}
-      <div className="flex items-center no-drag">
-        {/* Minimize */}
+      {/* Right Side: Authentic macOS Traffic Light Window Controls */}
+      <div className="flex items-center gap-2.5 no-drag">
+        {/* Yellow: Minimize */}
         <button
           onClick={handleMinimize}
           title="Minimize"
-          className="w-11 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors rounded-sm cursor-pointer"
+          className="w-[14px] h-[14px] rounded-full bg-[#ffbd2e] border border-[#d89e24] shadow-[inset_0_1px_1px_rgba(255,255,255,0.35)] hover:brightness-110 flex items-center justify-center group cursor-pointer transition-all active:scale-90"
         >
-          <svg width="10" height="1" viewBox="0 0 10 1">
-            <rect width="10" height="1" fill="currentColor" />
-          </svg>
+          <span className="opacity-0 group-hover:opacity-100 text-[#5c3c00] text-[9px] font-extrabold leading-none select-none transition-opacity">
+            &minus;
+          </span>
         </button>
 
-        {/* Maximize / Restore */}
+        {/* Green: Maximize / Restore */}
         <button
           onClick={handleMaximize}
           title={isMax ? "Restore" : "Maximize"}
-          className="w-11 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors rounded-sm cursor-pointer"
+          className="w-[14px] h-[14px] rounded-full bg-[#27c93f] border border-[#1aab29] shadow-[inset_0_1px_1px_rgba(255,255,255,0.35)] hover:brightness-110 flex items-center justify-center group cursor-pointer transition-all active:scale-90"
         >
-          {isMax ? (
-            <svg width="10" height="10" viewBox="0 0 10 10">
-              <path d="M2.5,0.5 H9.5 V7.5 H7.5 V9.5 H0.5 V2.5 H2.5 Z M2.5,2.5 H7.5 V7.5" fill="none" stroke="currentColor" strokeWidth="1" />
-            </svg>
-          ) : (
-            <svg width="10" height="10" viewBox="0 0 10 10">
-              <rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="currentColor" strokeWidth="1" />
-            </svg>
-          )}
+          <span className="opacity-0 group-hover:opacity-100 text-[#074710] text-[9px] font-extrabold leading-none select-none transition-opacity">
+            +
+          </span>
         </button>
 
-        {/* Close */}
+        {/* Red: Close */}
         <button
           onClick={handleClose}
           title="Close"
-          className="w-11 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-[#e81123] active:bg-[#bf0f1d] transition-colors rounded-sm cursor-pointer"
+          className="w-[14px] h-[14px] rounded-full bg-[#ff5f56] border border-[#e0443e] shadow-[inset_0_1px_1px_rgba(255,255,255,0.35)] hover:brightness-110 flex items-center justify-center group cursor-pointer transition-all active:scale-90"
         >
-          <svg width="10" height="10" viewBox="0 0 10 10">
-            <path d="M1,1 L9,9 M9,1 L1,9" stroke="currentColor" strokeWidth="1.2" />
-          </svg>
+          <span className="opacity-0 group-hover:opacity-100 text-[#4d0000] text-[10px] font-extrabold leading-none select-none transition-opacity">
+            &times;
+          </span>
         </button>
       </div>
     </header>

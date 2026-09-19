@@ -39,8 +39,6 @@ app.commandLine.appendSwitch('disable-translate');
 app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
 app.commandLine.appendSwitch('metrics-recording-only');
 app.commandLine.appendSwitch('no-first-run');
-app.commandLine.appendSwitch('process-per-site');
-app.commandLine.appendSwitch('renderer-process-limit', '2');
 app.commandLine.appendSwitch('js-flags', '--lite-mode --max-old-space-size=96 --expose-gc');
 
 // Ensure single instance

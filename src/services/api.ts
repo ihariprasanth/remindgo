@@ -136,7 +136,7 @@ const mockAPI: ElectronAPI = {
     return true;
   },
   ensureDailyTasks: async () => true,
-  getAppVersion: async () => '2.7.0',
+  getAppVersion: async () => '2.8.0',
   toggleWidget: async (_variant?: any) => {},
   openWidget: async (_variant: any) => {},
   closeWidget: async (_variant: any) => {},

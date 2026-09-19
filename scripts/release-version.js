@@ -134,7 +134,7 @@ try {
   fs.writeFileSync(path.join(versionTargetDir, 'Quick-Guide.txt'), `RemindGo v${newVersion}
 ===================================================
 1. RemindGo-Setup-${newVersion}.exe: Full Windows Installer.
-   - Installs to local AppData.
+   - Installs machine-wide for All Users (Program Files\RemindGo).
    - Automatically creates Desktop Shortcut and registers in Windows Start Menu / App list.
 2. RemindGo-Portable-${newVersion}.exe: Standalone Portable Executable.
    - Run directly without installation.

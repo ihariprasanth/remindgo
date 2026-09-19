@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark widget-transparent">
+<html lang="en" class="dark widget-transparent" style="background: transparent !important; background-color: transparent !important;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,9 +8,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+    <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html, body {
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+        user-select: none !important;
+      }
+      #widget-root {
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+      }
+    </style>
   </head>
-  <body class="widget-transparent text-white antialiased overflow-hidden select-none m-0 p-0 bg-transparent">
-    <div id="widget-root"></div>
+  <body class="widget-transparent text-white antialiased overflow-hidden select-none m-0 p-0" style="background: transparent !important; background-color: transparent !important;">
+    <div id="widget-root" style="background: transparent !important; background-color: transparent !important;"></div>
     <script type="module" src="/src/widget.tsx"></script>
   </body>
 </html>

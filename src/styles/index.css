@@ -86,12 +86,15 @@ body {
 }
 
 /* Transparent Desktop Widget Window Background */
+html.widget-transparent,
 body.widget-transparent,
 .widget-transparent,
-.widget-transparent body {
+.widget-transparent body,
+.widget-transparent #widget-root {
   background: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
+  box-shadow: none !important;
 }
 
 /* Liquid Glass Elements */

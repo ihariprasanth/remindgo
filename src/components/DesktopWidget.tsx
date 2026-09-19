@@ -91,7 +91,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
         api.resizeWidget(360, 205);
         break;
       case 'mini-pill':
-        api.resizeWidget(320, 85);
+        api.resizeWidget(320, 65);
         break;
       case 'leetcode':
       case 'tasks-heatmap':
@@ -442,8 +442,8 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     </>
   );
 
-  const containerClasses = `w-full h-full p-2 select-none font-sans`;
-  const cardClasses = `group relative p-3 rounded-2xl border border-white/15 shadow-2xl overflow-hidden transition-all bg-[#000000] text-white ${
+  const containerClasses = `w-full h-full p-1.5 select-none font-sans bg-transparent`;
+  const cardClasses = `group relative p-3 rounded-2xl border border-[#222222] shadow-2xl overflow-hidden transition-all bg-[#000000] text-white flex flex-col justify-between h-full ${
     isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/50'
   }`;
 
@@ -503,7 +503,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
           )}
 
           {/* Scrollable list */}
-          <div className="space-y-1.5 max-h-[225px] overflow-y-auto no-drag pr-1 py-1">
+          <div className="space-y-1.5 flex-1 min-h-[140px] max-h-[225px] overflow-y-auto no-drag pr-1 py-1">
             {todayTasks.length === 0 ? (
               <div className="text-center py-6 text-xs text-white/40 border border-dashed border-white/10 rounded-xl">
                 No tasks scheduled for today.
@@ -799,9 +799,9 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   if (variant === 'mini-pill') {
     const miniWeeks = buildWeeksGrid(taskMap, 12);
     return (
-      <div className="w-full h-full p-1 select-none font-sans">
+      <div className="w-full h-full p-1 select-none font-sans bg-transparent">
         <div 
-          className={`group flex items-center justify-between gap-2 p-2 rounded-xl border border-white/15 shadow-2xl bg-[#000000] text-white ${
+          className={`group flex items-center justify-between gap-2 p-2 rounded-xl border border-[#222222] shadow-2xl bg-[#000000] text-white h-full ${
             isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/50'
           }`}
           style={{ backgroundColor: '#000000' }}

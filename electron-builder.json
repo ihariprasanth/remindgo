@@ -1,6 +1,7 @@
 {
   "appId": "com.remindgo.app",
   "productName": "RemindGo",
+  "copyright": "Copyright © 2026 HARIPRASANTH T",
   "directories": {
     "output": "release"
   },
@@ -36,14 +37,17 @@
         "arch": ["x64"]
       }
     ],
-    "icon": "assets/icon.ico"
+    "icon": "assets/icon.ico",
+    "publisherName": "HARIPRASANTH T"
   },
   "nsis": {
     "oneClick": false,
-    "perMachine": false,
+    "perMachine": true,
+    "allowElevation": true,
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": "always",
     "createStartMenuShortcut": true,
+    "runAfterFinish": true,
     "shortcutName": "RemindGo",
     "uninstallDisplayName": "RemindGo",
     "artifactName": "RemindGo-Setup-${version}.exe"

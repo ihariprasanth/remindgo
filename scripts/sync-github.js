@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.7.0';
-  const commitMsg = `Release v2.7.0 Final: Simultaneous Multi-Widget Desktop Engine, Windows Low-RAM Architecture (~70MB), and GitHub Pages CI/CD`;
+  const version = 'v2.8.0';
+  const commitMsg = `Release v2.8.0: Zero-Border Transparent Desktop Widgets, macOS Traffic Light Controls, and Silent All-Users Machine Installer`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

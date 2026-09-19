@@ -19,7 +19,7 @@ export function getWidgetDimensions(variant: WidgetVariant): { width: number; he
     case 'leetcode-streak':
       return { width: 360, height: 205 };
     case 'mini-pill':
-      return { width: 320, height: 85 };
+      return { width: 320, height: 65 };
     case 'leetcode':
     case 'tasks-heatmap':
     default:
