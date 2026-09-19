@@ -130,8 +130,13 @@ const mockAPI: ElectronAPI = {
   minimizeWindow: () => {},
   maximizeWindow: () => {},
   closeWindow: () => {},
-  isMaximized: async () => false,
-  getAppVersion: async () => '2.5.6',
+  markAllTodayTasksDone: async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    mockTasks = mockTasks.map((t) => (t.date === today ? { ...t, status: 'completed', completed_at: new Date().toISOString() } : t));
+    return true;
+  },
+  ensureDailyTasks: async () => true,
+  getAppVersion: async () => '2.6.0',
   toggleWidget: async () => {},
   openMainWindow: async () => {},
   setWidgetAlwaysOnTop: async () => {},

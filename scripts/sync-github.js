@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.5.6';
-  const commitMsg = `Release v2.5.6: Enlarged macOS Traffic Lights, Multi-Variant Desktop Widgets, and Native Apple SF Pro Typography`;
+  const version = 'v2.6.0';
+  const commitMsg = `Release v2.6.0: 6 Standalone Desktop Widgets (Pure Black), Standard Window Controls, 8PM Daily Reminder & 10PM Warning`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

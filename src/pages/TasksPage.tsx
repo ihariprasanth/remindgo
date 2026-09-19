@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, CheckCircle2, Sparkles } from 'lucide-react';
 import { Task } from '../types';
 import { TaskList } from '../components/TaskList';
 import { getISTDate } from '../utils/istTime';
@@ -130,6 +130,64 @@ export const TasksPage: React.FC<TasksPageProps> = ({
           <Plus size={15} strokeWidth={2.5} />
           <span>New Task</span>
         </button>
+      </div>
+
+      {/* Daily Developer Routine Quick Checklist */}
+      <div className="liquid-glass-card rounded-2xl p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Sparkles size={15} className="text-[#39d353]" />
+            <h3 className="text-xs font-bold text-neutral-900 dark:text-white uppercase tracking-wider">
+              Daily Developer Routine
+            </h3>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#0a84ff]/10 text-[#0a84ff] border border-[#0a84ff]/20">
+              8:00 PM Reminder • 10:00 PM Warning
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2">
+          {[
+            { title: 'Daily LeetCode Problem', tag: 'LeetCode' },
+            { title: 'CodeChef Contest / Practice', tag: 'CodeChef' },
+            { title: 'GeeksForGeeks Problem of the Day', tag: 'GFG POTD' },
+            { title: 'JavaScript Learning & Practice', tag: 'Core JS' },
+            { title: 'Project Work & Development', tag: 'Project' }
+          ].map((item) => {
+            const matchedTask = tasks.find(
+              (t) => t.date === todayStr && t.title.toLowerCase().includes(item.title.toLowerCase().slice(0, 14))
+            );
+            const isDone = matchedTask?.status === 'completed';
+
+            return (
+              <div
+                key={item.title}
+                onClick={() => {
+                  if (matchedTask) onToggleTask(matchedTask.id);
+                }}
+                className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                  isDone
+                    ? 'bg-[#238636]/15 border-[#238636]/40 text-white'
+                    : 'bg-black/5 dark:bg-white/5 border-neutral-200 dark:border-white/10 hover:border-[#0a84ff]/50'
+                }`}
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="text-[9px] font-mono text-neutral-500 dark:text-white/50">{item.tag}</div>
+                  <div className={`text-xs font-semibold truncate ${isDone ? 'line-through text-neutral-400 dark:text-white/50' : 'text-neutral-900 dark:text-white'}`}>
+                    {item.title}
+                  </div>
+                </div>
+                <div
+                  className={`w-4 h-4 rounded-[4px] border flex items-center justify-center flex-shrink-0 transition-all ${
+                    isDone ? 'bg-[#39d353] border-[#39d353] text-black' : 'border-neutral-400 dark:border-white/30'
+                  }`}
+                >
+                  {isDone && <CheckCircle2 size={12} strokeWidth={3} />}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Filter Tabs */}

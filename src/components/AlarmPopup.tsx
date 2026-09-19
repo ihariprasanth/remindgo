@@ -31,9 +31,21 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
     };
   }, [settings]);
 
-  const handleThankYou = () => {
+  const isDailyReminder = task.id.startsWith('daily-reminder') || task.id.startsWith('daily-warning') || task.title.includes('Complete Today Tasks');
+
+  const handlePrimaryAction = async () => {
     // 1. Immediately silence audio
     audioService.stopLoop();
+
+    // If it's a daily reminder / warning, complete today's pending tasks in DB
+    if (isDailyReminder && api.markAllTodayTasksDone) {
+      try {
+        await api.markAllTodayTasksDone();
+      } catch (err) {
+        console.error('Failed to mark all today tasks done:', err);
+      }
+    }
+
     // 2. Mark as completed and close
     onDismiss(true);
   };
@@ -58,7 +70,7 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
           <img src={logoSquircle} alt="RemindGo" className="w-5 h-5 rounded-[6px] shadow-sm border border-white/20" />
           <span className="w-2 h-2 rounded-full bg-[#0a84ff] animate-ping" />
           <span className="text-xs font-semibold uppercase tracking-wider text-[#0a84ff]">
-            RemindGo Alarm
+            {isDailyReminder ? 'Daily Task Reminder' : 'RemindGo Alarm'}
           </span>
         </div>
         <button
@@ -99,15 +111,15 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
         </div>
       </div>
 
-      {/* Action Controls - Exactly 4 options as requested */}
+      {/* Action Controls */}
       <div className="space-y-3 pt-2">
-        {/* Option 1: "THANK YOU I WILL DO IT NOW" (Primary button) */}
+        {/* Primary Action Button: "Mark as Done" or "Thank you I will do it now" */}
         <button
-          onClick={handleThankYou}
+          onClick={handlePrimaryAction}
           className="w-full py-3 px-4 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] active:scale-[0.99] text-white text-sm font-semibold rounded-xl shadow-[0_4px_16px_rgba(10,132,255,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wide text-xs"
         >
           <Check size={16} strokeWidth={3} />
-          <span>Thank you I will do it now</span>
+          <span>{isDailyReminder ? 'Mark as Done' : 'Thank you I will do it now'}</span>
         </button>
 
         {/* Options 2, 3, 4: "5MIN", "10MIN", "15MIN" Snooze Buttons */}

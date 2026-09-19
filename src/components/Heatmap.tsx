@@ -4,10 +4,11 @@ import { Task, LeetCodeData } from '../types';
 import { Sparkles, Code2, CheckCircle2 } from 'lucide-react';
 
 interface HeatmapProps {
-  tasks: Task[];
+  tasks?: Task[];
   leetCodeData?: LeetCodeData | null;
   onSelectDate?: (dateStr: string) => void;
   selectedDate?: string | null;
+  mode?: 'tasks-only' | 'leetcode-only' | 'all';
 }
 
 interface CellData {
@@ -19,9 +20,11 @@ interface CellData {
   leetcodeCount: number;
 }
 
-export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectDate, selectedDate }) => {
+export const Heatmap: React.FC<HeatmapProps> = ({ tasks = [], leetCodeData, onSelectDate, selectedDate, mode = 'all' }) => {
   const [viewMode, setViewMode] = useState<'last12Months' | 'currentYear'>('last12Months');
-  const [dataSource, setDataSource] = useState<'all' | 'tasks' | 'leetcode'>('all');
+  const [dataSource, setDataSource] = useState<'all' | 'tasks' | 'leetcode'>(
+    mode === 'tasks-only' ? 'tasks' : mode === 'leetcode-only' ? 'leetcode' : 'all'
+  );
   const [hoveredCell, setHoveredCell] = useState<{
     cell: CellData;
     x: number;
@@ -164,10 +167,14 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-semibold text-neutral-900 dark:text-white tracking-wide">
-            {totalCount} contribution{totalCount === 1 ? '' : 's'} in{' '}
-            {viewMode === 'currentYear' ? new Date().getFullYear() : 'the last year'}
+            {mode === 'tasks-only'
+              ? `${totalCount} task completion${totalCount === 1 ? '' : 's'}`
+              : mode === 'leetcode-only'
+              ? `${totalCount} submission${totalCount === 1 ? '' : 's'}`
+              : `${totalCount} contribution${totalCount === 1 ? '' : 's'}`}{' '}
+            in {viewMode === 'currentYear' ? new Date().getFullYear() : 'the last year'}
           </span>
-          {leetCodeData && (
+          {mode === 'all' && leetCodeData && (
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#f59e0b]/15 text-[#b45309] dark:text-[#f59e0b] border border-[#f59e0b]/30">
               +{leetCodeData.totalSolved} LeetCode
             </span>
@@ -176,8 +183,8 @@ export const Heatmap: React.FC<HeatmapProps> = ({ tasks, leetCodeData, onSelectD
 
         {/* Data Source & Year Toggles */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Source filter */}
-          {leetCodeData && (
+          {/* Source filter - only visible when mode is 'all' */}
+          {mode === 'all' && leetCodeData && (
             <div className="flex items-center bg-neutral-200/70 dark:bg-black/40 p-1 rounded-xl border border-neutral-300/80 dark:border-white/10 text-xs">
               <button
                 onClick={() => setDataSource('all')}

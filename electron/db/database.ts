@@ -58,6 +58,97 @@ export class TaskDatabase {
 
     this.db.run(SCHEMA_SQL);
     this.initDefaultSettings();
+    this.ensureDailyDeveloperTasks();
+    this.save();
+  }
+
+  public getCurrentISTDate(): string {
+    const now = new Date();
+    const istTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+    return istTime.toISOString().slice(0, 10);
+  }
+
+  public ensureDailyDeveloperTasks(dateStr?: string): void {
+    if (!this.db) return;
+    const targetDate = dateStr || this.getCurrentISTDate();
+
+    const defaultRoutineTasks = [
+      {
+        title: 'Daily LeetCode Problem',
+        description: 'Solve today\'s daily coding challenge to maintain problem-solving streak.',
+        category: 'LeetCode',
+        time: '20:00',
+        priority: 'high'
+      },
+      {
+        title: 'CodeChef Contest / Practice',
+        description: 'Practice competitive programming problems or contest challenges on CodeChef.',
+        category: 'Coding',
+        time: '20:00',
+        priority: 'medium'
+      },
+      {
+        title: 'GeeksForGeeks Problem of the Day',
+        description: 'Solve GFG POTD daily algorithmic puzzle and review data structures.',
+        category: 'Coding',
+        time: '20:00',
+        priority: 'medium'
+      },
+      {
+        title: 'JavaScript Learning & Practice',
+        description: 'Daily JavaScript/TypeScript practice, modern ES concepts, algorithms, or framework work.',
+        category: 'Learning',
+        time: '20:00',
+        priority: 'high'
+      },
+      {
+        title: 'Project Work & Development',
+        description: 'Commit code, implement new features, test components, and push to GitHub.',
+        category: 'Project',
+        time: '20:00',
+        priority: 'high'
+      }
+    ];
+
+    for (const item of defaultRoutineTasks) {
+      const stmt = this.db.prepare('SELECT id FROM tasks WHERE title = ? AND date = ?');
+      stmt.bind([item.title, targetDate]);
+      const exists = stmt.step();
+      stmt.free();
+
+      if (!exists) {
+        const id = `daily-${item.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${targetDate}`;
+        const nowIso = new Date().toISOString();
+        const insertStmt = this.db.prepare(`
+          INSERT INTO tasks (id, title, description, category, date, time, repeat, status, priority, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, 'daily', 'pending', ?, ?)
+        `);
+        insertStmt.run([
+          id,
+          item.title,
+          item.description,
+          item.category,
+          targetDate,
+          item.time,
+          item.priority,
+          nowIso
+        ]);
+        insertStmt.free();
+      }
+    }
+    this.save();
+  }
+
+  public markAllTodayTasksDone(dateStr?: string): void {
+    if (!this.db) return;
+    const targetDate = dateStr || this.getCurrentISTDate();
+    const nowIso = new Date().toISOString();
+    const stmt = this.db.prepare(`
+      UPDATE tasks SET status = 'completed', completed_at = ?
+      WHERE date = ? AND status != 'completed'
+    `);
+    stmt.run([nowIso, targetDate]);
+    stmt.free();
     this.save();
   }
 

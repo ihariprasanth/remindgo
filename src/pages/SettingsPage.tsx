@@ -308,27 +308,59 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           The Desktop Widget is a lightweight, frameless floating card that sits on your Windows desktop wallpaper. By default, it stays behind active applications (browsers, IDEs) so it never blocks your tabs or work.
         </p>
 
+        {/* Individual Desktop Widgets Selection */}
         <div className="space-y-3">
-          {/* Default Widget Mode */}
-          <div className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--border-glass)] bg-black/5 dark:bg-black/20">
-            <div>
-              <div className="text-xs font-semibold text-[var(--text-main)]">
-                Default Desktop Widget View
-              </div>
-              <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
-                Choose what the desktop companion widget displays initially.
+          <div className="p-3.5 rounded-xl border border-[var(--border-glass)] bg-black/5 dark:bg-black/20">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <div className="text-xs font-semibold text-[var(--text-main)]">
+                  Active Desktop Widget Variant
+                </div>
+                <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
+                  Select which standalone widget runs on your desktop with pure pitch-black background.
+                </div>
               </div>
             </div>
-            <select
-              value={settings.widgetMode || 'leetcode'}
-              onChange={(e) => onUpdateSettings({ widgetMode: e.target.value as any })}
-              className="bg-black/40 border border-white/15 text-xs text-white rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#0a84ff]"
-            >
-              <option value="leetcode">LeetCode Dedicated Heatmap & Stats</option>
-              <option value="tasks-heatmap">Task Completion History Heatmap</option>
-              <option value="todo">Today's To-Do Task Checklist</option>
-              <option value="combined">Combined Productivity Overview</option>
-            </select>
+
+            {/* 6 Visual Cards for Individual Widgets */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+              {[
+                { id: 'tasks-heatmap', name: 'Task Activity Matrix', desc: '20-week to-do tasks heatmap & streak', color: 'text-[#39d353]' },
+                { id: 'todo', name: 'Today\'s Daily Checklist', desc: '1-click checkoff for routine & to-dos', color: 'text-[#0a84ff]' },
+                { id: 'leetcode', name: 'LeetCode Activity', desc: 'Submissions heatmap & solved problem stats', color: 'text-[#f59e0b]' },
+                { id: 'coding-platforms', name: 'Coding Platforms Hub', desc: 'LeetCode, CodeChef, GFG & GitHub tracker', color: 'text-[#38bdf8]' },
+                { id: 'routine-progress', name: 'Routine & Streak Meter', desc: 'Daily progress bar, 8PM & 10PM status', color: 'text-[#bc8cff]' },
+                { id: 'mini-pill', name: 'Minimalist Compact Pill', desc: 'Ultra-compact mini heatmap desktop strip', color: 'text-[#f43f5e]' },
+              ].map((opt) => {
+                const isSelected = (settings.widgetMode || 'tasks-heatmap') === opt.id;
+                return (
+                  <div
+                    key={opt.id}
+                    onClick={() => {
+                      localStorage.setItem('remindgo_widget_variant', opt.id);
+                      onUpdateSettings({ widgetMode: opt.id as any });
+                    }}
+                    className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+                      isSelected
+                        ? 'bg-[#0a84ff]/15 border-[#0a84ff] text-white shadow-[0_0_12px_rgba(10,132,255,0.25)]'
+                        : 'bg-black/20 border-white/10 hover:border-white/25 text-white/80'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-1 mb-1.5">
+                      <span className={`text-xs font-bold ${opt.color}`}>{opt.name}</span>
+                      <div
+                        className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
+                          isSelected ? 'border-[#0a84ff] bg-[#0a84ff]' : 'border-white/30'
+                        }`}
+                      >
+                        {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-white/50 leading-relaxed">{opt.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Always on top toggle */}
@@ -452,7 +484,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-xl border border-white/20 mb-3 bg-white p-0.5">
           <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
         </div>
-        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.5.6 • Liquid Glass Edition</div>
+        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.6.0 • Liquid Glass Edition</div>
         <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
           Liquid Glass Architecture • LeetCode Integration • Local SQLite Engine
         </div>

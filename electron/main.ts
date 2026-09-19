@@ -172,6 +172,19 @@ ipcMain.handle('toggle-task-status', async (_event, id: string) => {
   return result;
 });
 
+ipcMain.handle('mark-all-today-tasks-done', async () => {
+  dbInstance.markAllTodayTasksDone();
+  broadcastTasksChanged();
+  broadcastAlarmDismissed();
+  return true;
+});
+
+ipcMain.handle('ensure-daily-tasks', async () => {
+  dbInstance.ensureDailyDeveloperTasks();
+  broadcastTasksChanged();
+  return true;
+});
+
 // ==========================================
 // IPC Handlers - LeetCode
 // ==========================================

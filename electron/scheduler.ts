@@ -57,6 +57,9 @@ export class AlarmScheduler {
    * Schedules a timer to fire at the exact 12:00:00 AM IST midnight mark,
    * broadcasting refresh signals to both main window and desktop widget.
    */
+  private notified8pmDates: Set<string> = new Set<string>();
+  private notified10pmDates: Set<string> = new Set<string>();
+
   private scheduleMidnightResetIST(): void {
     if (this.midnightTimer) {
       clearTimeout(this.midnightTimer);
@@ -72,6 +75,8 @@ export class AlarmScheduler {
 
     this.midnightTimer = setTimeout(() => {
       console.log('[AlarmScheduler] 12:00 AM IST hit! Automatically tracking new day.');
+      dbInstance.ensureDailyDeveloperTasks();
+
       const mainWin = getMainWindow();
       if (mainWin && !mainWin.isDestroyed()) {
         mainWin.webContents.send('midnight-reset');
@@ -94,6 +99,17 @@ export class AlarmScheduler {
       const allTasks = dbInstance.getAllTasks();
       const now = Date.now();
 
+      // Current IST Date & Time
+      const istOffsetMs = 5.5 * 60 * 60 * 1000;
+      const istNowObj = new Date(now + istOffsetMs);
+      const istDateStr = istNowObj.toISOString().slice(0, 10);
+      const istHour = istNowObj.getUTCHours();
+      const istMinute = istNowObj.getUTCMinutes();
+
+      // Ensure today's core developer routine tasks are present in DB
+      dbInstance.ensureDailyDeveloperTasks(istDateStr);
+
+      // Check standard scheduled tasks
       for (const task of allTasks) {
         if (task.status === 'completed') continue;
 
@@ -113,7 +129,6 @@ export class AlarmScheduler {
             const scheduledTime = Date.UTC(year, month - 1, day, hour, minute) - (5.5 * 60 * 60 * 1000);
 
             if (scheduledTime <= now) {
-              // Check if we already notified for this scheduled occurrence
               if (!task.last_notified_at) {
                 isDue = true;
               } else {
@@ -128,6 +143,51 @@ export class AlarmScheduler {
 
         if (isDue) {
           this.triggerAlarm(task);
+        }
+      }
+
+      // 1. Daily 8:00 PM IST Reminder: "Complete Today Tasks"
+      if ((istHour === 20 || (istHour > 20 && istHour < 22)) && !this.notified8pmDates.has(istDateStr)) {
+        const todayPending = allTasks.filter((t) => t.date === istDateStr && t.status !== 'completed');
+        if (todayPending.length > 0) {
+          this.notified8pmDates.add(istDateStr);
+          const taskSummary = todayPending.slice(0, 3).map((t) => t.title).join(', ');
+          const reminderTask: Task = {
+            id: `daily-reminder-8pm-${istDateStr}`,
+            title: 'Complete Today Tasks',
+            description: `${todayPending.length} task${todayPending.length > 1 ? 's' : ''} remaining: ${taskSummary}${todayPending.length > 3 ? '...' : ''}. Finish them now to protect your daily streak!`,
+            category: 'Daily Routine',
+            date: istDateStr,
+            time: '20:00',
+            repeat: 'none',
+            status: 'pending',
+            priority: 'high',
+            created_at: new Date().toISOString()
+          };
+          console.log(`[AlarmScheduler] 8:00 PM IST triggered: "Complete Today Tasks" (${todayPending.length} tasks remaining)`);
+          this.triggerAlarm(reminderTask);
+        }
+      }
+
+      // 2. Daily 10:00 PM IST Warning: Incomplete Tasks Alert
+      if (istHour >= 22 && !this.notified10pmDates.has(istDateStr)) {
+        const todayPending = allTasks.filter((t) => t.date === istDateStr && t.status !== 'completed');
+        if (todayPending.length > 0) {
+          this.notified10pmDates.add(istDateStr);
+          const warningTask: Task = {
+            id: `daily-warning-10pm-${istDateStr}`,
+            title: 'Warning: Incomplete Tasks Pending!',
+            description: `You have ${todayPending.length} incomplete task(s) remaining for today! Complete them before midnight (12:00 AM) to maintain your daily streak.`,
+            category: 'Streak Warning',
+            date: istDateStr,
+            time: '22:00',
+            repeat: 'none',
+            status: 'pending',
+            priority: 'high',
+            created_at: new Date().toISOString()
+          };
+          console.log(`[AlarmScheduler] 10:00 PM IST Warning triggered: ${todayPending.length} incomplete tasks remaining`);
+          this.triggerAlarm(warningTask);
         }
       }
     } catch (err) {

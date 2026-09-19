@@ -8,6 +8,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateTask: (task: Task) => ipcRenderer.invoke('update-task', task),
   deleteTask: (id: string) => ipcRenderer.invoke('delete-task', id),
   toggleTaskStatus: (id: string) => ipcRenderer.invoke('toggle-task-status', id),
+  markAllTodayTasksDone: () => ipcRenderer.invoke('mark-all-today-tasks-done'),
+  ensureDailyTasks: () => ipcRenderer.invoke('ensure-daily-tasks'),
 
   // Settings
   getSettings: () => ipcRenderer.invoke('get-settings'),

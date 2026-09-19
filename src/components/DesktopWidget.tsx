@@ -2,33 +2,41 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   Check, Plus, ExternalLink, X, 
   Calendar, CheckSquare, Lock, Unlock,
-  Code2, Flame, Layers
+  Code2, Flame, LayoutGrid,
+  Clock, Sparkles, Terminal
 } from 'lucide-react';
 import { format, subWeeks, startOfWeek, addDays, parseISO } from 'date-fns';
-import { Task, LeetCodeData, TaskPriority } from '../types';
+import { Task, LeetCodeData, WidgetVariant } from '../types';
 import { api } from '../services/api';
 import { getISTDate, getMillisUntilMidnightIST } from '../utils/istTime';
-
-export type WidgetMode = 'leetcode' | 'tasks-heatmap' | 'todo' | 'combined';
 
 interface DesktopWidgetProps {
   theme?: 'dark' | 'light';
   onToggleTheme?: () => void;
 }
 
+export const WIDGET_OPTIONS: { id: WidgetVariant; name: string; subtitle: string; icon: any }[] = [
+  { id: 'tasks-heatmap', name: 'Task Activity Matrix', subtitle: '20-week to-do tasks heatmap & streak', icon: Calendar },
+  { id: 'todo', name: 'Today\'s Daily Checklist', subtitle: '1-click checkoff for routine & to-dos', icon: CheckSquare },
+  { id: 'leetcode', name: 'LeetCode Activity', subtitle: 'Submissions heatmap & solved problem stats', icon: Code2 },
+  { id: 'coding-platforms', name: 'Coding Platforms Hub', subtitle: 'LeetCode, CodeChef, GFG & GitHub tracker', icon: Terminal },
+  { id: 'routine-progress', name: 'Routine & Streak Meter', subtitle: 'Daily progress bar, 8PM & 10PM status', icon: Sparkles },
+  { id: 'mini-pill', name: 'Minimalist Compact Pill', subtitle: 'Ultra-compact mini heatmap desktop strip', icon: Flame },
+];
+
 export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
-  const [mode, setMode] = useState<WidgetMode>(() => {
-    const saved = localStorage.getItem('remindgo_widget_variant') as WidgetMode;
-    if (saved && ['leetcode', 'tasks-heatmap', 'todo', 'combined'].includes(saved)) {
+  const [variant, setVariant] = useState<WidgetVariant>(() => {
+    const saved = localStorage.getItem('remindgo_widget_variant') as WidgetVariant;
+    if (saved && WIDGET_OPTIONS.some((o) => o.id === saved)) {
       return saved;
     }
-    return 'leetcode';
+    return 'tasks-heatmap';
   });
 
+  const [showMenu, setShowMenu] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [leetCodeData, setLeetCodeData] = useState<LeetCodeData | null>(null);
   const [quickTitle, setQuickTitle] = useState('');
-  const quickPriority: TaskPriority = 'medium';
   const [hoveredDay, setHoveredDay] = useState<{ dateStr: string; count: number; x: number; y: number } | null>(null);
 
   // Widget Lock state - when locked, widget is strictly non-draggable
@@ -62,17 +70,39 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     }
   }, []);
 
+  const adjustWindowSize = useCallback((v: WidgetVariant) => {
+    if (!api.resizeWidget) return;
+    switch (v) {
+      case 'todo':
+        api.resizeWidget(380, 360);
+        break;
+      case 'coding-platforms':
+        api.resizeWidget(380, 270);
+        break;
+      case 'routine-progress':
+        api.resizeWidget(380, 230);
+        break;
+      case 'mini-pill':
+        api.resizeWidget(320, 85);
+        break;
+      case 'leetcode':
+      case 'tasks-heatmap':
+      default:
+        api.resizeWidget(415, 205);
+        break;
+    }
+  }, []);
+
+  const selectVariant = (newVariant: WidgetVariant) => {
+    setVariant(newVariant);
+    localStorage.setItem('remindgo_widget_variant', newVariant);
+    adjustWindowSize(newVariant);
+    setShowMenu(false);
+  };
+
   useEffect(() => {
     loadData();
-
-    // Resize appropriately on initial load
-    if (api.resizeWidget) {
-      if (mode === 'todo') {
-        api.resizeWidget(360, 360);
-      } else {
-        api.resizeWidget(415, 210);
-      }
-    }
+    adjustWindowSize(variant);
 
     // Listen for real-time task mutations from main app
     let cleanup: (() => void) | undefined;
@@ -87,7 +117,6 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     const scheduleMidnight = () => {
       const delay = getMillisUntilMidnightIST();
       midnightTimer = setTimeout(() => {
-        console.log('[Widget] 12:00 AM IST hit - refreshing tasks');
         loadData();
         scheduleMidnight();
       }, delay);
@@ -98,57 +127,13 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     const interval = setInterval(loadData, 8000);
 
     return () => {
-      cleanup?.();
+      if (cleanup) cleanup();
+      clearTimeout(midnightTimer);
       clearInterval(interval);
-      if (midnightTimer) clearTimeout(midnightTimer);
     };
-  }, [loadData, mode]);
+  }, [loadData, adjustWindowSize, variant]);
 
-  // Switch mode and resize window dynamically
-  const switchMode = async (nextMode: WidgetMode) => {
-    setMode(nextMode);
-    localStorage.setItem('remindgo_widget_variant', nextMode);
-    if (api.resizeWidget) {
-      if (nextMode === 'todo') {
-        await api.resizeWidget(360, 360);
-      } else {
-        await api.resizeWidget(415, 210);
-      }
-    }
-  };
-
-  const handleOpenFullApp = () => {
-    api.openMainWindow();
-  };
-
-  const handleClose = () => {
-    api.closeWindow();
-  };
-
-  const handleToggleTask = async (id: string) => {
-    await api.toggleTaskStatus(id);
-    await loadData();
-  };
-
-  const handleQuickAdd = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!quickTitle.trim()) return;
-
-    await api.createTask({
-      title: quickTitle.trim(),
-      description: '',
-      category: 'General',
-      date: todayStr,
-      time: format(new Date(), 'HH:mm'),
-      repeat: 'none',
-      priority: quickPriority
-    });
-
-    setQuickTitle('');
-    await loadData();
-  };
-
-  // Today's tasks for to-do mode
+  // Tasks filter for today
   const todayTasks = useMemo(() => {
     return tasks.filter((t) => t.date === todayStr);
   }, [tasks, todayStr]);
@@ -161,13 +146,17 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     return tasks.filter((t) => t.status === 'completed').length;
   }, [tasks]);
 
-  // Build task map
+  // Build task map for completions
   const taskMap = useMemo(() => {
     const map = new Map<string, number>();
     for (const t of tasks) {
       if (t.status === 'completed' && t.completed_at) {
-        const d = format(parseISO(t.completed_at), 'yyyy-MM-dd');
-        map.set(d, (map.get(d) || 0) + 1);
+        try {
+          const d = format(parseISO(t.completed_at), 'yyyy-MM-dd');
+          map.set(d, (map.get(d) || 0) + 1);
+        } catch {
+          // ignore
+        }
       } else if (t.status === 'completed' && t.date) {
         map.set(t.date, (map.get(t.date) || 0) + 1);
       }
@@ -190,18 +179,6 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     return map;
   }, [leetCodeData]);
 
-  // Build Combined map
-  const combinedMap = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const [d, count] of taskMap.entries()) {
-      map.set(d, (map.get(d) || 0) + count);
-    }
-    for (const [d, count] of leetCodeMap.entries()) {
-      map.set(d, (map.get(d) || 0) + count);
-    }
-    return map;
-  }, [taskMap, leetCodeMap]);
-
   // Task Streak calculation
   const taskStreak = useMemo(() => {
     let streak = 0;
@@ -223,14 +200,14 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     return streak;
   }, [taskMap]);
 
-  // Helper to build 20-week grid (140 days) from any count map
-  const buildWeeksGrid = useCallback((map: Map<string, number>) => {
+  // Helper to build 20-week grid (140 days) from map
+  const buildWeeksGrid = useCallback((map: Map<string, number>, weekCount = 20) => {
     const now = new Date();
-    const startDate = startOfWeek(subWeeks(now, 19), { weekStartsOn: 0 });
+    const startDate = startOfWeek(subWeeks(now, weekCount - 1), { weekStartsOn: 0 });
     const weeksGrid: { dateStr: string; count: number; level: number }[][] = [];
     let iter = startDate;
 
-    for (let w = 0; w < 20; w++) {
+    for (let w = 0; w < weekCount; w++) {
       const days: { dateStr: string; count: number; level: number }[] = [];
       for (let d = 0; d < 7; d++) {
         const dStr = format(iter, 'yyyy-MM-dd');
@@ -251,108 +228,144 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     return weeksGrid;
   }, []);
 
-  const leetCodeWeeks = useMemo(() => buildWeeksGrid(leetCodeMap), [buildWeeksGrid, leetCodeMap]);
-  const taskWeeks = useMemo(() => buildWeeksGrid(taskMap), [buildWeeksGrid, taskMap]);
-  const combinedWeeks = useMemo(() => buildWeeksGrid(combinedMap), [buildWeeksGrid, combinedMap]);
+  const getCellColor = (level: number, colorType: 'green' | 'amber' = 'green') => {
+    if (colorType === 'amber') {
+      switch (level) {
+        case 1:
+          return 'bg-[#78350f] border-[#92400e]';
+        case 2:
+          return 'bg-[#b45309] border-[#d97706] shadow-[0_0_4px_rgba(245,158,11,0.3)]';
+        case 3:
+          return 'bg-[#d97706] border-[#f59e0b] shadow-[0_0_6px_rgba(245,158,11,0.5)]';
+        case 4:
+          return 'bg-[#f59e0b] border-[#fcd34d] shadow-[0_0_8px_rgba(245,158,11,0.7)]';
+        default:
+          return 'bg-[#161b22] border-[#21262d]';
+      }
+    }
 
-  const getCellColor = (level: number) => {
     switch (level) {
       case 1:
-        return 'bg-[#0e4429] border-[#006d32]/70';
+        return 'bg-[#0e4429] border-[#006d32]';
       case 2:
-        return 'bg-[#006d32] border-[#26a641]/70';
+        return 'bg-[#006d32] border-[#26a641] shadow-[0_0_4px_rgba(38,166,65,0.3)]';
       case 3:
-        return 'bg-[#26a641] border-[#39d353]/70';
+        return 'bg-[#26a641] border-[#39d353] shadow-[0_0_6px_rgba(46,160,67,0.5)]';
       case 4:
-        return 'bg-[#39d353] border-[#56e36d] shadow-[0_0_6px_rgba(57,211,83,0.6)]';
-      case 0:
+        return 'bg-[#39d353] border-[#56e36d] shadow-[0_0_8px_rgba(57,211,83,0.7)]';
       default:
-        return 'bg-white/[0.05] border-white/[0.07]';
+        return 'bg-[#161b22] border-[#21262d]';
     }
   };
 
-  // Render common top bar with segmented mode selector and right action controls
-  const renderTopBar = (currentTitle: string, rightTag?: React.ReactNode) => (
-    <div className="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-white/10">
-      {/* Segmented Mode Switcher */}
-      <div className="flex items-center bg-black/60 border border-white/10 rounded-lg p-0.5 text-[10px] gap-0.5 no-drag">
-        <button
-          onClick={() => switchMode('leetcode')}
-          title="Dedicated LeetCode Submissions Heatmap"
-          className={`flex items-center gap-1 px-2 py-0.5 rounded-md transition-all cursor-pointer ${
-            mode === 'leetcode'
-              ? 'bg-[#f59e0b] text-black font-bold shadow-sm'
-              : 'text-white/60 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <Code2 size={10} />
-          <span>LeetCode</span>
-        </button>
+  const handleToggleTask = async (id: string) => {
+    try {
+      await api.toggleTaskStatus(id);
+      loadData();
+    } catch (err) {
+      console.error('[Widget] Failed to toggle task:', err);
+    }
+  };
 
-        <button
-          onClick={() => switchMode('tasks-heatmap')}
-          title="Dedicated Task Completion Heatmap"
-          className={`flex items-center gap-1 px-2 py-0.5 rounded-md transition-all cursor-pointer ${
-            mode === 'tasks-heatmap'
-              ? 'bg-[#22c55e] text-black font-bold shadow-sm'
-              : 'text-white/60 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <Calendar size={10} />
-          <span>Tasks</span>
-        </button>
+  const handleQuickAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickTitle.trim()) return;
 
-        <button
-          onClick={() => switchMode('todo')}
-          title="Today's To-Do Task Checklist"
-          className={`flex items-center gap-1 px-2 py-0.5 rounded-md transition-all cursor-pointer ${
-            mode === 'todo'
-              ? 'bg-[#0a84ff] text-white font-bold shadow-sm'
-              : 'text-white/60 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <CheckSquare size={10} />
-          <span>To-Do</span>
-        </button>
+    try {
+      await api.createTask({
+        title: quickTitle.trim(),
+        category: 'Quick Note',
+        date: todayStr,
+        time: '20:00',
+        repeat: 'none',
+        priority: 'medium'
+      });
+      setQuickTitle('');
+      loadData();
+    } catch (err) {
+      console.error('[Widget] Failed to add task:', err);
+    }
+  };
 
-        <button
-          onClick={() => switchMode('combined')}
-          title="Combined Productivity Overview"
-          className={`flex items-center gap-1 px-2 py-0.5 rounded-md transition-all cursor-pointer ${
-            mode === 'combined'
-              ? 'bg-[#bc8cff] text-black font-bold shadow-sm'
-              : 'text-white/60 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <Layers size={10} />
-          <span>All</span>
-        </button>
+  const handleOpenFullApp = () => {
+    if (api.openMainWindow) {
+      api.openMainWindow();
+    }
+  };
+
+  const handleClose = () => {
+    if (api.toggleWidget) {
+      api.toggleWidget();
+    }
+  };
+
+  // Common Header for Standalone Widgets
+  const renderHeader = (title: string, iconNode: React.ReactNode, rightContent?: React.ReactNode) => (
+    <div className="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-white/10 relative">
+      <div className="flex items-center gap-1.5">
+        <span className="text-[#39d353] flex-shrink-0">{iconNode}</span>
+        <span className="font-bold text-xs text-white tracking-wide truncate">{title}</span>
       </div>
 
-      {/* Right Controls: Lock, Open Full App, Close */}
-      <div className="flex items-center gap-1.5 no-drag">
-        {rightTag}
+      <div className="flex items-center gap-1 no-drag">
+        {rightContent}
 
-        {/* Lock / Unlock Toggle */}
+        {/* Widget Selector Menu Button */}
+        <div className="relative">
+          <button
+            onClick={() => setShowMenu((prev) => !prev)}
+            title="Switch Widget Option"
+            className="p-1 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+          >
+            <LayoutGrid size={12} />
+          </button>
+
+          {/* Dropdown Menu */}
+          {showMenu && (
+            <div className="absolute right-0 top-6 z-50 w-52 bg-[#0d1117] border border-white/20 rounded-xl shadow-2xl p-1 text-xs">
+              <div className="px-2 py-1 text-[10px] font-mono text-white/40 uppercase tracking-wider border-b border-white/10 mb-1">
+                Individual Widgets
+              </div>
+              {WIDGET_OPTIONS.map((opt) => {
+                const IconComp = opt.icon;
+                const isSelected = variant === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => selectVariant(opt.id)}
+                    className={`w-full text-left px-2 py-1.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                      isSelected ? 'bg-[#0a84ff] text-white font-bold' : 'text-white/70 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <IconComp size={13} className={isSelected ? 'text-white' : 'text-white/50'} />
+                    <div className="truncate">
+                      <div className="leading-tight text-[11px]">{opt.name}</div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Lock/Unlock Dragging */}
         <button
           onClick={toggleLock}
-          title={isLocked ? "Pinned & Locked to Desktop (Non-draggable). Click to unlock." : "Unlocked (Draggable). Click to lock in place."}
+          title={isLocked ? 'Widget is Locked (Non-Draggable)' : 'Widget is Unlocked (Click & Drag)'}
           className={`p-1 rounded-md transition-all cursor-pointer ${
-            isLocked 
-              ? 'text-white/40 hover:text-white hover:bg-white/10' 
-              : 'text-[#f59e0b] bg-[#f59e0b]/20 hover:bg-[#f59e0b]/30'
+            isLocked ? 'text-white/40 hover:text-white hover:bg-white/10' : 'text-[#f59e0b] bg-[#f59e0b]/20 hover:bg-[#f59e0b]/30'
           }`}
         >
-          {isLocked ? <Lock size={11} /> : <Unlock size={11} />}
+          {isLocked ? <Lock size={12} /> : <Unlock size={12} />}
         </button>
 
-        {/* Open Main App */}
+        {/* Open Full App */}
         <button
           onClick={handleOpenFullApp}
-          title="Open RemindGo Full App"
+          title="Open RemindGo App"
           className="p-1 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
         >
-          <ExternalLink size={11} />
+          <ExternalLink size={12} />
         </button>
 
         {/* Close Widget */}
@@ -361,14 +374,14 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
           title="Close Widget"
           className="p-1 rounded-md text-white/50 hover:text-white hover:bg-red-500 transition-all cursor-pointer"
         >
-          <X size={11} />
+          <X size={12} />
         </button>
       </div>
     </div>
   );
 
-  // Render 20-week green grid component
-  const renderHeatmapGrid = (weeksGrid: { dateStr: string; count: number; level: number }[][], label: string) => (
+  // Render 20-week green grid
+  const renderHeatmapGrid = (weeksGrid: { dateStr: string; count: number; level: number }[][], label: string, colorType: 'green' | 'amber' = 'green') => (
     <>
       <div className="flex gap-[3px] justify-center no-drag pb-0.5">
         {weeksGrid.map((wk, wIdx) => (
@@ -386,7 +399,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
                   });
                 }}
                 onMouseLeave={() => setHoveredDay(null)}
-                className={`w-[11px] h-[11px] rounded-[2px] border transition-all cursor-pointer hover:scale-125 ${getCellColor(day.level)}`}
+                className={`w-[11px] h-[11px] rounded-[2px] border transition-all cursor-pointer hover:scale-125 ${getCellColor(day.level, colorType)}`}
               />
             ))}
           </div>
@@ -404,57 +417,168 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     </>
   );
 
+  const containerClasses = `w-full h-full p-2 select-none font-sans`;
+  const cardClasses = `group relative p-3 rounded-2xl border border-white/15 shadow-2xl overflow-hidden transition-all bg-[#000000] text-white ${
+    isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/50'
+  }`;
+
   // =========================================================================
-  // VARIANT 1: DEDICATED LEETCODE HEATMAP & STATS WIDGET
+  // 1. DEDICATED TO-DO TASKS HEATMAP WIDGET
   // =========================================================================
-  if (mode === 'leetcode') {
+  if (variant === 'tasks-heatmap') {
+    const weeksGrid = buildWeeksGrid(taskMap, 20);
     return (
-      <div className="w-full h-full p-2 select-none">
-        <div 
-          className={`liquid-glass-card group relative p-3 rounded-2xl border border-white/10 shadow-2xl overflow-hidden transition-all ${
-            isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#f59e0b]/50'
-          }`}
-          style={{ backdropFilter: 'blur(30px) saturate(180%)' }}
-        >
-          {renderTopBar(
-            'LeetCode Activity',
-            leetCodeData?.streak ? (
-              <span className="flex items-center gap-1 text-[10px] font-mono text-[#f43f5e] bg-[#f43f5e]/15 px-1.5 py-0.5 rounded-md font-semibold">
-                <Flame size={10} />
-                <span>{leetCodeData.streak}d</span>
+      <div className={containerClasses}>
+        <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
+          {renderHeader(
+            'Task Activity Matrix',
+            <Calendar size={13} className="text-[#39d353]" />,
+            <div className="flex items-center gap-1.5 mr-1 font-mono text-[10px]">
+              <span className="flex items-center gap-1 text-[#f43f5e]">
+                <Flame size={11} />
+                <span className="font-bold">{taskStreak}d</span>
               </span>
-            ) : null
+              <span className="text-white/40">•</span>
+              <span className="text-[#39d353]">{completedTodayCount} done</span>
+            </div>
           )}
 
-          {/* Subheader: Username & Solved Stats */}
-          <div className="flex items-center justify-between text-[11px] font-mono mb-2">
-            <span className="text-white/80 font-semibold truncate max-w-[200px]">
-              {leetCodeData?.username ? `@${leetCodeData.username}` : 'LeetCode Submissions'}
-            </span>
-            <div className="flex items-center gap-2 text-[10px]">
-              <span className="text-[#39d353] font-medium">E:{leetCodeData?.easySolved || 0}</span>
-              <span className="text-[#f59e0b] font-medium">M:{leetCodeData?.mediumSolved || 0}</span>
-              <span className="text-[#f43f5e] font-medium">H:{leetCodeData?.hardSolved || 0}</span>
-              <span className="text-white/60 font-bold">{leetCodeData?.totalSolved || 0} Solved</span>
+          {renderHeatmapGrid(weeksGrid, 'completed tasks', 'green')}
+
+          <div className="flex items-center justify-between text-[10px] text-white/50 pt-1.5 font-mono">
+            <span>{totalCompleted} total tasks finished</span>
+            <div className="flex items-center gap-1">
+              <span>Less</span>
+              <div className="flex gap-1">
+                {[0, 1, 2, 3, 4].map((l) => (
+                  <div key={l} className={`w-2 h-2 rounded-[1px] border ${getCellColor(l, 'green')}`} />
+                ))}
+              </div>
+              <span>More</span>
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
 
-          {/* 20-Week LeetCode Submissions Heatmap Grid */}
-          {renderHeatmapGrid(leetCodeWeeks, 'submissions')}
+  // =========================================================================
+  // 2. DEDICATED TODAY'S TO-DO DAILY CHECKLIST WIDGET
+  // =========================================================================
+  if (variant === 'todo') {
+    return (
+      <div className={containerClasses}>
+        <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
+          {renderHeader(
+            'Daily Checklist',
+            <CheckSquare size={13} className="text-[#0a84ff]" />,
+            <span className="text-[10px] font-mono text-[#0a84ff] mr-1">
+              {completedTodayCount}/{todayTasks.length} Done
+            </span>
+          )}
 
-          {/* Bottom Bar: Daily Challenge link */}
-          <div className="flex items-center justify-between text-[10px] text-white/50 pt-2 border-t border-white/10 mt-2 font-mono">
-            <span>Rank: #{leetCodeData?.ranking?.toLocaleString() || 'N/A'}</span>
-            {leetCodeData?.dailyChallenge ? (
-              <button
-                onClick={handleOpenFullApp}
-                title="View Daily Challenge in RemindGo"
-                className="text-[#f59e0b] hover:text-[#fbbf24] font-medium truncate max-w-[220px] transition-colors cursor-pointer"
-              >
-                Today: {leetCodeData.dailyChallenge.title}
-              </button>
+          {/* Scrollable list */}
+          <div className="space-y-1.5 max-h-[225px] overflow-y-auto no-drag pr-1 py-1">
+            {todayTasks.length === 0 ? (
+              <div className="text-center py-6 text-xs text-white/40 border border-dashed border-white/10 rounded-xl">
+                No tasks scheduled for today.
+              </div>
             ) : (
-              <span>20-Week Submissions</span>
+              todayTasks.map((t) => {
+                const isCompleted = t.status === 'completed';
+                return (
+                  <div
+                    key={t.id}
+                    onClick={() => handleToggleTask(t.id)}
+                    className={`flex items-center gap-2 p-2 rounded-xl border transition-all cursor-pointer ${
+                      isCompleted
+                        ? 'bg-white/[0.03] border-white/5 text-white/40'
+                        : 'bg-white/[0.06] border-white/10 hover:border-[#0a84ff]/60 text-white'
+                    }`}
+                  >
+                    <button
+                      className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all flex-shrink-0 ${
+                        isCompleted
+                          ? 'bg-[#39d353] border-[#39d353] text-black'
+                          : 'border-white/30 hover:border-[#0a84ff]'
+                      }`}
+                    >
+                      {isCompleted && <Check size={11} strokeWidth={3} />}
+                    </button>
+                    <div className="flex-1 min-w-0">
+                      <div className={`text-xs truncate ${isCompleted ? 'line-through text-white/40' : 'font-medium text-white'}`}>
+                        {t.title}
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-mono text-white/40 flex-shrink-0">
+                      {t.time}
+                    </span>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Quick-add task input */}
+          <form onSubmit={handleQuickAdd} className="mt-2 pt-2 border-t border-white/10 flex items-center gap-1.5 no-drag">
+            <input
+              type="text"
+              placeholder="Add to-do for today..."
+              value={quickTitle}
+              onChange={(e) => setQuickTitle(e.target.value)}
+              className="flex-1 px-2.5 py-1.5 bg-white/5 border border-white/15 rounded-lg text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#0a84ff]"
+            />
+            <button
+              type="submit"
+              disabled={!quickTitle.trim()}
+              className="p-1.5 rounded-lg bg-[#0a84ff] hover:bg-[#0066d6] disabled:opacity-40 text-white cursor-pointer transition-all"
+            >
+              <Plus size={13} />
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // 3. DEDICATED LEETCODE SUBMISSIONS HEATMAP WIDGET
+  // =========================================================================
+  if (variant === 'leetcode') {
+    const weeksGrid = buildWeeksGrid(leetCodeMap, 20);
+    return (
+      <div className={containerClasses}>
+        <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
+          {renderHeader(
+            'LeetCode Activity',
+            <Code2 size={13} className="text-[#f59e0b]" />,
+            leetCodeData && (
+              <div className="flex items-center gap-1.5 mr-1 font-mono text-[10px]">
+                <span className="flex items-center gap-1 text-[#f43f5e]">
+                  <Flame size={11} />
+                  <span className="font-bold">{leetCodeData.streak}d</span>
+                </span>
+                <span className="text-white/40">•</span>
+                <span className="text-[#f59e0b]">#{leetCodeData.ranking ? leetCodeData.ranking.toLocaleString() : 'N/A'}</span>
+              </div>
+            )
+          )}
+
+          {renderHeatmapGrid(weeksGrid, 'submissions', 'amber')}
+
+          {/* Solved breakdown */}
+          <div className="flex items-center justify-between text-[10px] text-white/50 pt-1.5 font-mono">
+            {leetCodeData ? (
+              <>
+                <span className="text-white font-bold">{leetCodeData.totalSolved} Solved</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[#39d353]">E: {leetCodeData.easySolved}</span>
+                  <span className="text-[#f59e0b]">M: {leetCodeData.mediumSolved}</span>
+                  <span className="text-[#f43f5e]">H: {leetCodeData.hardSolved}</span>
+                </div>
+              </>
+            ) : (
+              <span>Connect LeetCode username in App</span>
             )}
           </div>
         </div>
@@ -463,200 +587,175 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
   }
 
   // =========================================================================
-  // VARIANT 2: DEDICATED TASKS COMPLETION HEATMAP WIDGET
+  // 4. CODING PLATFORMS TRACKER WIDGET
   // =========================================================================
-  if (mode === 'tasks-heatmap') {
+  if (variant === 'coding-platforms') {
+    const platforms = [
+      { name: 'LeetCode Daily Problem', key: 'leetcode', icon: Code2, color: 'text-[#f59e0b]' },
+      { name: 'CodeChef Contest / Practice', key: 'codechef', icon: Terminal, color: 'text-[#0a84ff]' },
+      { name: 'GeeksForGeeks POTD', key: 'gfg', icon: Sparkles, color: 'text-[#39d353]' },
+      { name: 'JavaScript & Projects', key: 'projects', icon: CheckSquare, color: 'text-[#bc8cff]' },
+    ];
+
     return (
-      <div className="w-full h-full p-2 select-none">
-        <div 
-          className={`liquid-glass-card group relative p-3 rounded-2xl border border-white/10 shadow-2xl overflow-hidden transition-all ${
-            isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#22c55e]/50'
-          }`}
-          style={{ backdropFilter: 'blur(30px) saturate(180%)' }}
-        >
-          {renderTopBar(
-            'Task History',
-            taskStreak > 0 ? (
-              <span className="flex items-center gap-1 text-[10px] font-mono text-[#22c55e] bg-[#22c55e]/15 px-1.5 py-0.5 rounded-md font-semibold">
-                <Flame size={10} />
-                <span>{taskStreak}d streak</span>
-              </span>
-            ) : null
+      <div className={containerClasses}>
+        <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
+          {renderHeader(
+            'Coding Platforms Hub',
+            <Terminal size={13} className="text-[#0a84ff]" />,
+            <span className="text-[10px] font-mono text-[#39d353] mr-1">Active</span>
           )}
 
-          {/* Subheader: Task Metrics */}
-          <div className="flex items-center justify-between text-[11px] font-mono mb-2">
-            <span className="text-white/80 font-semibold">
-              Tasks Completed Over Time
-            </span>
-            <span className="text-[10px] text-white/60">
-              <strong className="text-[#22c55e]">{totalCompleted}</strong> tasks completed
-            </span>
-          </div>
+          <div className="space-y-1.5 no-drag py-1">
+            {platforms.map((p) => {
+              const matched = tasks.find((t) => t.date === todayStr && t.title.toLowerCase().includes(p.name.toLowerCase().slice(0, 10)));
+              const isDone = matched?.status === 'completed';
+              const IconComp = p.icon;
 
-          {/* 20-Week Task Completion Heatmap Grid */}
-          {renderHeatmapGrid(taskWeeks, 'tasks completed')}
-
-          {/* Bottom Bar: Today stats & legend */}
-          <div className="flex items-center justify-between text-[10px] text-white/50 pt-2 border-t border-white/10 mt-2 font-mono">
-            <span>Today: {completedTodayCount} done</span>
-            <div className="flex items-center gap-1">
-              <span>Less</span>
-              <span className="w-2 h-2 rounded-[2px] bg-white/[0.05] border border-white/[0.08]" />
-              <span className="w-2 h-2 rounded-[2px] bg-[#0e4429] border border-[#006d32]/60" />
-              <span className="w-2 h-2 rounded-[2px] bg-[#006d32] border border-[#26a641]/60" />
-              <span className="w-2 h-2 rounded-[2px] bg-[#26a641] border border-[#39d353]/60" />
-              <span className="w-2 h-2 rounded-[2px] bg-[#39d353] border border-[#56e36d]" />
-              <span>More</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // =========================================================================
-  // VARIANT 3: COMBINED PRODUCTIVITY OVERVIEW WIDGET
-  // =========================================================================
-  if (mode === 'combined') {
-    return (
-      <div className="w-full h-full p-2 select-none">
-        <div 
-          className={`liquid-glass-card group relative p-3 rounded-2xl border border-white/10 shadow-2xl overflow-hidden transition-all ${
-            isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#bc8cff]/50'
-          }`}
-          style={{ backdropFilter: 'blur(30px) saturate(180%)' }}
-        >
-          {renderTopBar('All Activity')}
-
-          {/* Subheader: Summary pills */}
-          <div className="flex items-center justify-between text-[11px] font-mono mb-2">
-            <span className="text-white/80 font-semibold">
-              Tasks + LeetCode Submissions
-            </span>
-            <div className="flex items-center gap-2 text-[10px]">
-              <span className="text-[#38bdf8] font-medium">{todayTasks.length - completedTodayCount} Pending</span>
-              <span className="text-[#bc8cff] font-medium">{leetCodeData?.streak || 0}d LC Streak</span>
-            </div>
-          </div>
-
-          {/* 20-Week Combined Heatmap Grid */}
-          {renderHeatmapGrid(combinedWeeks, 'total items')}
-
-          {/* Bottom Bar: Legend */}
-          <div className="flex items-center justify-between text-[10px] text-white/50 pt-2 border-t border-white/10 mt-2 font-mono">
-            <span>20-Week Unified Heatmap</span>
-            <div className="flex items-center gap-1">
-              <span>Less</span>
-              <span className="w-2 h-2 rounded-[2px] bg-white/[0.05] border border-white/[0.08]" />
-              <span className="w-2 h-2 rounded-[2px] bg-[#0e4429] border border-[#006d32]/60" />
-              <span className="w-2 h-2 rounded-[2px] bg-[#006d32] border border-[#26a641]/60" />
-              <span className="w-2 h-2 rounded-[2px] bg-[#26a641] border border-[#39d353]/60" />
-              <span className="w-2 h-2 rounded-[2px] bg-[#39d353] border border-[#56e36d]" />
-              <span>More</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // =========================================================================
-  // VARIANT 4: DEDICATED TODAY'S TO-DO TASK CHECKLIST WIDGET
-  // =========================================================================
-  return (
-    <div className="w-full h-full p-2 select-none">
-      <div 
-        className={`liquid-glass-card h-full flex flex-col justify-between p-3.5 rounded-2xl border border-white/10 shadow-2xl overflow-hidden transition-all ${
-          isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/40'
-        }`}
-        style={{ backdropFilter: 'blur(30px) saturate(180%)' }}
-      >
-        {/* Header with segmented switch */}
-        <div className="flex-shrink-0">
-          {renderTopBar(
-            "Today's To-Do",
-            <span className="text-[10px] font-mono bg-white/10 px-1.5 py-0.5 rounded-md text-white/80 font-bold">
-              {completedTodayCount}/{todayTasks.length}
-            </span>
-          )}
-        </div>
-
-        {/* Task List Items */}
-        <div className="flex-1 overflow-y-auto py-1.5 space-y-1.5 pr-1 my-1">
-          {todayTasks.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center p-3 text-white/40">
-              <CheckSquare size={22} className="mb-1 text-[#0a84ff]/70" />
-              <div className="text-xs font-semibold text-white/70">All tasks completed today!</div>
-              <div className="text-[10px] mt-0.5">Type below to add a task</div>
-            </div>
-          ) : (
-            todayTasks.map((t) => {
-              const isDone = t.status === 'completed';
               return (
                 <div
-                  key={t.id}
-                  onClick={() => handleToggleTask(t.id)}
-                  className={`flex items-center gap-2 p-2 rounded-xl border transition-all cursor-pointer ${
+                  key={p.name}
+                  onClick={() => {
+                    if (matched) handleToggleTask(matched.id);
+                  }}
+                  className={`flex items-center justify-between p-2 rounded-xl border transition-all cursor-pointer ${
                     isDone
-                      ? 'bg-white/[0.03] border-transparent opacity-60'
-                      : 'bg-white/[0.07] border-white/10 hover:border-[#0a84ff]/50'
+                      ? 'bg-[#238636]/15 border-[#238636]/40 text-white'
+                      : 'bg-white/[0.05] border-white/10 hover:border-white/25 text-white'
                   }`}
                 >
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleTask(t.id);
-                    }}
-                    className={`w-4 h-4 rounded-md flex items-center justify-center border transition-all flex-shrink-0 ${
-                      isDone
-                        ? 'bg-[#0a84ff] border-[#0a84ff] text-white'
-                        : 'border-white/30 hover:border-[#0a84ff]'
-                    }`}
-                  >
-                    {isDone && <Check size={11} strokeWidth={3} />}
-                  </button>
-
-                  <span
-                    className={`text-xs flex-1 truncate ${
-                      isDone
-                        ? 'line-through text-white/40'
-                        : 'text-white font-medium'
-                    }`}
-                  >
-                    {t.title}
-                  </span>
-
-                  {t.time && (
-                    <span className="text-[10px] font-mono text-white/40 flex-shrink-0">
-                      {t.time}
+                  <div className="flex items-center gap-2 truncate">
+                    <IconComp size={14} className={p.color} />
+                    <span className={`text-xs truncate ${isDone ? 'line-through text-white/50' : 'font-medium'}`}>
+                      {p.name}
                     </span>
-                  )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all ${
+                        isDone ? 'bg-[#39d353] border-[#39d353] text-black' : 'border-white/30'
+                      }`}
+                    >
+                      {isDone && <Check size={11} strokeWidth={3} />}
+                    </div>
+                  </div>
                 </div>
               );
-            })
-          )}
+            })}
+          </div>
+
+          <div className="pt-2 mt-1 border-t border-white/10 flex items-center justify-between text-[10px] text-white/50 font-mono">
+            <span>Daily Coding Goals</span>
+            <span className="text-[#39d353]">8:00 PM IST Notification</span>
+          </div>
         </div>
-
-        {/* Quick Add Bar */}
-        <form onSubmit={handleQuickAdd} className="flex gap-1.5 pt-2 border-t border-white/10 flex-shrink-0 no-drag">
-          <input
-            type="text"
-            value={quickTitle}
-            onChange={(e) => setQuickTitle(e.target.value)}
-            placeholder="Add task for today..."
-            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#0a84ff]"
-          />
-          <button
-            type="submit"
-            disabled={!quickTitle.trim()}
-            className="px-3 py-1.5 bg-[#0a84ff] hover:bg-[#0066d6] disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-1"
-          >
-            <Plus size={13} strokeWidth={2.5} />
-          </button>
-        </form>
       </div>
-    </div>
-  );
-};
+    );
+  }
 
+  // =========================================================================
+  // 5. DAILY ROUTINE & STREAK PROGRESS WIDGET
+  // =========================================================================
+  if (variant === 'routine-progress') {
+    const totalToday = todayTasks.length;
+    const pct = totalToday > 0 ? Math.round((completedTodayCount / totalToday) * 100) : 0;
+
+    return (
+      <div className={containerClasses}>
+        <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
+          {renderHeader(
+            'Daily Routine Meter',
+            <Sparkles size={13} className="text-[#39d353]" />,
+            <span className="text-[10px] font-mono text-[#f43f5e] flex items-center gap-1 mr-1">
+              <Flame size={11} /> {taskStreak}d streak
+            </span>
+          )}
+
+          <div className="py-2 space-y-2.5 no-drag">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-white/70">Today's Progress</span>
+              <span className="text-xs font-mono font-bold text-[#39d353]">{pct}% ({completedTodayCount}/{totalToday})</span>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-[#0a84ff] to-[#39d353] rounded-full transition-all duration-500"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-[10px] font-mono pt-1">
+              <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                <div className="text-white/40">8:00 PM IST</div>
+                <div className="text-white font-semibold mt-0.5">Tasks Reminder</div>
+              </div>
+              <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                <div className="text-white/40">10:00 PM IST</div>
+                <div className="text-[#f59e0b] font-semibold mt-0.5">Warning Cutoff</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // 6. MINIMALIST COMPACT HEATMAP PILL WIDGET
+  // =========================================================================
+  if (variant === 'mini-pill') {
+    const miniWeeks = buildWeeksGrid(taskMap, 12);
+    return (
+      <div className="w-full h-full p-1 select-none font-sans">
+        <div 
+          className={`group flex items-center justify-between gap-2 p-2 rounded-xl border border-white/15 shadow-2xl bg-[#000000] text-white ${
+            isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/50'
+          }`}
+          style={{ backgroundColor: '#000000' }}
+        >
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <span className="text-[#f43f5e]"><Flame size={12} /></span>
+            <span className="font-mono text-xs font-bold text-white">{taskStreak}d</span>
+          </div>
+
+          {/* Mini 12-week strip */}
+          <div className="flex gap-[2px] no-drag">
+            {miniWeeks.map((wk, wIdx) => (
+              <div key={wIdx} className="flex flex-col gap-[2px]">
+                {wk.slice(0, 4).map((day, dIdx) => (
+                  <div
+                    key={dIdx}
+                    title={`${day.dateStr}: ${day.count} tasks`}
+                    className={`w-[7px] h-[7px] rounded-[1px] border ${getCellColor(day.level, 'green')}`}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1 no-drag">
+            <span className="text-[10px] font-mono text-[#39d353]">{completedTodayCount} done</span>
+            <button
+              onClick={() => selectVariant('tasks-heatmap')}
+              title="Expand to Full Widget"
+              className="p-1 rounded text-white/40 hover:text-white hover:bg-white/10 cursor-pointer"
+            >
+              <ExternalLink size={11} />
+            </button>
+            <button
+              onClick={handleClose}
+              title="Close"
+              className="p-1 rounded text-white/40 hover:text-white hover:bg-red-500 cursor-pointer"
+            >
+              <X size={11} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};

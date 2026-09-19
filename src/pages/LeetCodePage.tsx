@@ -4,6 +4,7 @@ import {
   PlusCircle, AlertCircle, CheckCircle, UserCheck, ShieldAlert, Sparkles 
 } from 'lucide-react';
 import { LeetCodeData } from '../types';
+import { Heatmap } from '../components/Heatmap';
 import logoSquircle from '../assets/logo-squircle.png';
 
 interface LeetCodePageProps {
@@ -362,6 +363,17 @@ export const LeetCodePage: React.FC<LeetCodePageProps> = ({
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Dedicated LeetCode Submissions Heatmap */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles size={16} className="text-[#f59e0b]" />
+              <h3 className="text-sm font-bold text-[var(--text-main)]">
+                LeetCode Submissions Calendar
+              </h3>
+            </div>
+            <Heatmap leetCodeData={leetCodeData} mode="leetcode-only" />
           </div>
         </>
       )}

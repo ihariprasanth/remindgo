@@ -29,8 +29,10 @@ export interface Settings {
   theme: 'dark' | 'light';
   autoOpenWidget?: boolean;
   widgetAlwaysOnTop?: boolean;
-  widgetMode?: 'leetcode' | 'tasks-heatmap' | 'todo' | 'combined' | 'heatmap' | 'tasks';
+  widgetMode?: 'tasks-heatmap' | 'todo' | 'leetcode' | 'coding-platforms' | 'routine-progress' | 'mini-pill' | 'combined';
 }
+
+export type WidgetVariant = 'tasks-heatmap' | 'todo' | 'leetcode' | 'coding-platforms' | 'routine-progress' | 'mini-pill';
 
 export interface HeatmapDay {
   date: string; // YYYY-MM-DD
@@ -85,6 +87,8 @@ export interface ElectronAPI {
   updateTask: (task: Task) => Promise<Task>;
   deleteTask: (id: string) => Promise<boolean>;
   toggleTaskStatus: (id: string) => Promise<Task>;
+  markAllTodayTasksDone?: () => Promise<boolean>;
+  ensureDailyTasks?: () => Promise<boolean>;
   
   // Settings management
   getSettings: () => Promise<Settings>;
