@@ -65,7 +65,7 @@
       <!-- Tag Pill -->
       <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full liquid-glass-pill text-xs font-medium text-white/90 mb-6 shadow-sm">
         <span class="w-2 h-2 rounded-full bg-[#0a84ff] shadow-[0_0_8px_#0a84ff]"></span>
-        <span>RemindGo v2.6.1 Professional Edition</span>
+        <span>RemindGo v2.7.0 Final • Multi-Widget & Low-RAM Edition</span>
         <span class="text-white/40">• Windows Desktop Offline App</span>
       </div>
 
@@ -75,12 +75,12 @@
       </h1>
 
       <p class="text-base sm:text-lg text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-        High-precision exact-time looping alarms, 52-week activity heatmap, multi-variant desktop widgets, and offline-cached LeetCode tracking — built 100% private with local SQLite for Windows.
+        Simultaneous multi-widget desktop companion, Windows low-RAM engine (~70MB), looping alarms, activity heatmaps, and offline LeetCode tracking — built 100% private with local SQLite.
       </p>
 
       <!-- CTA Buttons -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.6.1/RemindGo-Setup-2.6.1.exe" class="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] text-white font-semibold py-3 px-6 rounded-2xl shadow-[0_6px_24px_rgba(10,132,255,0.45)] text-sm transition-all hover:-translate-y-0.5">
+        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.7.0/RemindGo-Setup-2.7.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] text-white font-semibold py-3 px-6 rounded-2xl shadow-[0_6px_24px_rgba(10,132,255,0.45)] text-sm transition-all hover:-translate-y-0.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
           <span>Download RemindGo Setup (.exe)</span>
         </a>
@@ -301,21 +301,37 @@
       </div>
 
       <div class="space-y-4">
-        <!-- v2.6.1 -->
+        <!-- v2.7.0 Final -->
         <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-[#0a84ff]">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.6.1 — Green LeetCode Heatmap, Dedicated Streak Widget, Consolidated Multi-Task Alarms & Tooltip Alignment</span>
+              <span class="font-bold text-sm text-white">v2.7.0 Final — Simultaneous Multi-Widget Desktop Engine & 65% Windows Low-RAM Architecture</span>
               <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0a84ff]/20 text-[#0a84ff]">Latest Release</span>
             </div>
             <span class="text-xs text-white/40 font-mono">Current</span>
           </div>
           <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Classical Green LeetCode Heatmap: Replaced amber squares with authentic GitHub green blocks on pure pitch-black background; removed Hard/Medium/Easy breakdown for a sleek, minimal interface.</li>
-            <li>Dedicated LeetCode Daily Streak Flame Widget: New standalone widget option highlighting active days streak, global ranking, and 1-click POTD solve launcher.</li>
-            <li>Consolidated Same-Time Multi-Task Alarms: If multiple reminders fall on the exact same minute, RemindGo batches them into a single alarm window with single audio playback and a unified "Mark All as Done" action.</li>
-            <li>Precision Clamped Tooltip Alignment: Heatmap hover tooltips are intelligently aligned and screen-clamped, displaying clean notes like "N task(s) completed on YYYY-MM-DD".</li>
-            <li>Expanded Standalone Desktop Widget Gallery: 7 selectable widgets available directly from Preferences.</li>
+            <li>Simultaneous Multi-Widget Desktop Engine: Run multiple independent standalone widgets simultaneously across your Windows desktop wallpaper (e.g. Task Activity Matrix, LeetCode Streak, Daily Checklist in different corners).</li>
+            <li>Independent Drag & Drop Coordinates: Each widget can be freely dragged, placed anywhere, and remembers its exact desktop coordinates across app restarts.</li>
+            <li>Windows Low-RAM Engine: Memory consumption reduced by over 65% (down from ~250MB+ to ~70–90MB) using shared-renderer process limits, heap capping, and automatic idle V8 garbage collection.</li>
+            <li>Desktop Multi-Widget Hub: Interactive 1-click toggles in Preferences and Windows System Tray to launch, close, or mass-launch any combination of widgets.</li>
+            <li>Automated GitHub Pages Deployment: Official CI/CD GitHub Actions workflow ensures the live showcase website updates immediately on every commit.</li>
+          </ul>
+        </div>
+
+        <!-- v2.6.1 -->
+        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-white">v2.6.1 — Green LeetCode Heatmap, Dedicated Streak Widget & Consolidated Alarms</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
+            </div>
+            <span class="text-xs text-white/40 font-mono">v2.6.1</span>
+          </div>
+          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
+            <li>Classical Green LeetCode Heatmap: Replaced amber squares with authentic GitHub green blocks on pure pitch-black background.</li>
+            <li>Dedicated LeetCode Daily Streak Flame Widget: Pulsing streak counter, rank, and 1-click POTD solve launcher.</li>
+            <li>Consolidated Multi-Task Alarms: Automatically combines all tasks due at the same minute into a single alarm window with unified single-audio playback.</li>
           </ul>
         </div>
 
@@ -400,12 +416,12 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.6.1/RemindGo-Setup-2.6.1.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0a84ff] hover:bg-[#0066d6] text-white font-semibold py-3 px-6 rounded-2xl shadow-lg text-xs transition-all hover:scale-105">
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.7.0/RemindGo-Setup-2.7.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0a84ff] hover:bg-[#0066d6] text-white font-semibold py-3 px-6 rounded-2xl shadow-lg text-xs transition-all hover:scale-105">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             <span>Download RemindGo Setup (.exe)</span>
             <span class="text-white/50 text-[10px]">~91 MB</span>
           </a>
-          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.6.1/RemindGo-Portable-2.6.1.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/15 text-white font-semibold py-3 px-6 rounded-2xl text-xs transition-all hover:scale-105">
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.7.0/RemindGo-Portable-2.7.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/15 text-white font-semibold py-3 px-6 rounded-2xl text-xs transition-all hover:scale-105">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             <span>Download RemindGo Portable (.exe)</span>
             <span class="text-white/50 text-[10px]">~91 MB</span>

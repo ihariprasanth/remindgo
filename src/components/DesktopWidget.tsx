@@ -11,6 +11,7 @@ import { api } from '../services/api';
 import { getISTDate, getMillisUntilMidnightIST } from '../utils/istTime';
 
 interface DesktopWidgetProps {
+  initialVariant?: WidgetVariant;
   theme?: 'dark' | 'light';
   onToggleTheme?: () => void;
 }
@@ -25,8 +26,11 @@ export const WIDGET_OPTIONS: { id: WidgetVariant; name: string; subtitle: string
   { id: 'mini-pill', name: 'Minimalist Compact Pill', subtitle: 'Ultra-compact mini heatmap desktop strip', icon: Flame },
 ];
 
-export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
+export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) => {
   const [variant, setVariant] = useState<WidgetVariant>(() => {
+    if (initialVariant && WIDGET_OPTIONS.some((o) => o.id === initialVariant)) {
+      return initialVariant;
+    }
     const saved = localStorage.getItem('remindgo_widget_variant') as WidgetVariant;
     if (saved && WIDGET_OPTIONS.some((o) => o.id === saved)) {
       return saved;
@@ -40,16 +44,16 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
   const [quickTitle, setQuickTitle] = useState('');
   const [hoveredDay, setHoveredDay] = useState<{ dateStr: string; count: number; x: number; y: number } | null>(null);
 
-  // Widget Lock state - when locked, widget is strictly non-draggable
+  // Per-widget lock state: when locked, widget cannot be accidentally dragged
   const [isLocked, setIsLocked] = useState<boolean>(() => {
-    const saved = localStorage.getItem('remindgo_widget_locked');
+    const saved = localStorage.getItem(`remindgo_widget_locked_${variant}`);
     return saved !== null ? saved === 'true' : true;
   });
 
   const toggleLock = () => {
     setIsLocked((prev) => {
       const next = !prev;
-      localStorage.setItem('remindgo_widget_locked', String(next));
+      localStorage.setItem(`remindgo_widget_locked_${variant}`, String(next));
       return next;
     });
   };
@@ -97,13 +101,6 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     }
   }, []);
 
-  const selectVariant = (newVariant: WidgetVariant) => {
-    setVariant(newVariant);
-    localStorage.setItem('remindgo_widget_variant', newVariant);
-    adjustWindowSize(newVariant);
-    setShowMenu(false);
-  };
-
   useEffect(() => {
     loadData();
     adjustWindowSize(variant);
@@ -127,8 +124,8 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
     };
     scheduleMidnight();
 
-    // Polling fallback every 8 seconds to keep widget live
-    const interval = setInterval(loadData, 8000);
+    // Low-overhead polling fallback (instant updates handled via api.onTasksChanged)
+    const interval = setInterval(loadData, 20000);
 
     return () => {
       if (cleanup) cleanup();
@@ -298,8 +295,27 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
   };
 
   const handleClose = () => {
-    if (api.toggleWidget) {
-      api.toggleWidget();
+    if (api.closeWidget) {
+      api.closeWidget(variant);
+    } else if (api.toggleWidget) {
+      api.toggleWidget(variant);
+    }
+  };
+
+  const selectVariant = (newVariant: WidgetVariant) => {
+    if (newVariant === variant) {
+      setShowMenu(false);
+      return;
+    }
+    // Launch requested widget instance on desktop
+    if (api.openWidget) {
+      api.openWidget(newVariant);
+      setShowMenu(false);
+    } else {
+      setVariant(newVariant);
+      localStorage.setItem('remindgo_widget_variant', newVariant);
+      adjustWindowSize(newVariant);
+      setShowMenu(false);
     }
   };
 

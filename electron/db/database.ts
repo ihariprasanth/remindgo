@@ -332,7 +332,10 @@ export class TaskDatabase {
       leetcodeUsername: settingsMap.leetcodeUsername || '',
       theme: 'dark',
       autoOpenWidget: settingsMap.autoOpenWidget !== undefined ? settingsMap.autoOpenWidget === 'true' : true,
-      widgetAlwaysOnTop: settingsMap.widgetAlwaysOnTop === 'true'
+      widgetAlwaysOnTop: settingsMap.widgetAlwaysOnTop === 'true',
+      widgetMode: (settingsMap.widgetMode as any) || 'tasks-heatmap',
+      activeWidgets: settingsMap.activeWidgets ? JSON.parse(settingsMap.activeWidgets) : ['tasks-heatmap'],
+      widgetPositions: settingsMap.widgetPositions ? JSON.parse(settingsMap.widgetPositions) : {}
     };
   }
 
@@ -341,7 +344,8 @@ export class TaskDatabase {
     const stmt = this.db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)');
     for (const [k, v] of Object.entries(partial)) {
       if (v !== undefined) {
-        stmt.run([k, String(v)]);
+        const valStr = typeof v === 'object' ? JSON.stringify(v) : String(v);
+        stmt.run([k, valStr]);
       }
     }
     stmt.free();

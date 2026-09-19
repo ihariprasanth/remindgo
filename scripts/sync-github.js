@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.6.1';
-  const commitMsg = `Release v2.6.1: Green LeetCode Heatmap, Dedicated Streak Widget, Consolidated Multi-Task Alarms, and Website Refinements`;
+  const version = 'v2.7.0';
+  const commitMsg = `Release v2.7.0 Final: Simultaneous Multi-Widget Desktop Engine, Windows Low-RAM Architecture (~70MB), and GitHub Pages CI/CD`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

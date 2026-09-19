@@ -30,6 +30,8 @@ export interface Settings {
   autoOpenWidget?: boolean;
   widgetAlwaysOnTop?: boolean;
   widgetMode?: 'tasks-heatmap' | 'todo' | 'leetcode' | 'leetcode-streak' | 'coding-platforms' | 'routine-progress' | 'mini-pill' | 'combined';
+  activeWidgets?: WidgetVariant[];
+  widgetPositions?: Record<string, { x: number; y: number }>;
 }
 
 export type WidgetVariant = 'tasks-heatmap' | 'todo' | 'leetcode' | 'leetcode-streak' | 'coding-platforms' | 'routine-progress' | 'mini-pill';
@@ -121,8 +123,14 @@ export interface ElectronAPI {
   onOpenAddTask?: (callback: () => void) => () => void;
   onTasksChanged?: (callback: () => void) => () => void;
 
-  // Desktop Widget
-  toggleWidget: () => Promise<void>;
+  // Desktop Widget (Multi-Widget Desktop Manager)
+  toggleWidget: (variant?: WidgetVariant) => Promise<void>;
+  openWidget?: (variant: WidgetVariant) => Promise<void>;
+  closeWidget?: (variant: WidgetVariant) => Promise<void>;
+  getActiveWidgets?: () => Promise<WidgetVariant[]>;
+  closeAllWidgets?: () => Promise<void>;
+  launchAllWidgets?: () => Promise<void>;
+  onActiveWidgetsChanged?: (callback: (active: WidgetVariant[]) => void) => () => void;
   openMainWindow: () => Promise<void>;
   setWidgetAlwaysOnTop: (pinned: boolean) => Promise<void>;
   isWidgetPinned: () => Promise<boolean>;

@@ -4,11 +4,44 @@ import fs from 'fs';
 import { dbInstance } from './db/database';
 import { createMainWindow, getMainWindow, setQuitting } from './windows/mainWindow';
 import { createOrShowAlarmWindow, closeAlarmWindow } from './windows/alarmWindow';
-import { toggleWidgetWindow, getWidgetWindow, setWidgetAlwaysOnTop, isWidgetAlwaysOnTop, createOrShowWidgetWindow, resizeWidgetWindow } from './windows/widgetWindow';
+import {
+  toggleWidgetWindow,
+  getAllWidgetWindows,
+  setWidgetAlwaysOnTop,
+  isWidgetAlwaysOnTop,
+  createOrShowWidgetWindow,
+  closeWidgetWindow,
+  closeAllWidgetWindows,
+  launchAllPreferredWidgets,
+  getActiveWidgetVariants,
+  resizeWidgetWindow
+} from './windows/widgetWindow';
 import { setupTray, destroyTray } from './tray';
 import { AlarmScheduler } from './scheduler';
 import { fetchLeetCodeData } from './leetcode';
-import { Task, Settings } from '../src/types';
+import { Task, Settings, WidgetVariant } from '../src/types';
+
+// Windows Low-RAM & Resource Optimization Engine (Chromium Switches)
+app.commandLine.appendSwitch('disable-background-networking');
+app.commandLine.appendSwitch('disable-background-timer-throttling');
+app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
+app.commandLine.appendSwitch('disable-breakpad');
+app.commandLine.appendSwitch('disable-component-update');
+app.commandLine.appendSwitch('disable-domain-reliability');
+app.commandLine.appendSwitch('disable-extensions');
+app.commandLine.appendSwitch('disable-features', 'AutofillServerCommunication,CalculateNativeWinOcclusion,InterestFeedContentSuggestions');
+app.commandLine.appendSwitch('disable-hang-monitor');
+app.commandLine.appendSwitch('disable-ipc-flooding-protection');
+app.commandLine.appendSwitch('disable-popup-blocking');
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+app.commandLine.appendSwitch('disable-sync');
+app.commandLine.appendSwitch('disable-translate');
+app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
+app.commandLine.appendSwitch('metrics-recording-only');
+app.commandLine.appendSwitch('no-first-run');
+app.commandLine.appendSwitch('process-per-site');
+app.commandLine.appendSwitch('renderer-process-limit', '2');
+app.commandLine.appendSwitch('js-flags', '--lite-mode --max-old-space-size=96 --expose-gc');
 
 // Ensure single instance
 const gotLock = app.requestSingleInstanceLock();
@@ -58,10 +91,17 @@ app.whenReady().then(async () => {
   scheduler = new AlarmScheduler(isDev, devServerUrl);
   scheduler.start();
 
-  // Auto-open Desktop Widget if configured
+  // Auto-open Desktop Widgets if configured
   if (initialSettings.autoOpenWidget) {
-    createOrShowWidgetWindow(isDev, devServerUrl);
+    launchAllPreferredWidgets(isDev, devServerUrl);
   }
+
+  // Periodic memory trimming & garbage collection to keep RAM ultra low
+  setInterval(() => {
+    try {
+      if (global.gc) global.gc();
+    } catch {}
+  }, 60000);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -91,12 +131,20 @@ app.on('window-all-closed', () => {
 
 function broadcastTasksChanged() {
   getMainWindow()?.webContents.send('tasks-changed');
-  getWidgetWindow()?.webContents.send('tasks-changed');
+  for (const win of getAllWidgetWindows()) {
+    if (!win.isDestroyed()) {
+      win.webContents.send('tasks-changed');
+    }
+  }
 }
 
 function broadcastAlarmDismissed() {
   getMainWindow()?.webContents.send('alarm-dismissed');
-  getWidgetWindow()?.webContents.send('alarm-dismissed');
+  for (const win of getAllWidgetWindows()) {
+    if (!win.isDestroyed()) {
+      win.webContents.send('alarm-dismissed');
+    }
+  }
 }
 
 // ==========================================
@@ -368,10 +416,30 @@ ipcMain.handle('get-app-version', () => {
 });
 
 // ==========================================
-// IPC Handlers - Desktop Widget
+// IPC Handlers - Desktop Widget (Multi-Widget Desktop Manager)
 // ==========================================
-ipcMain.handle('toggle-widget', async () => {
-  toggleWidgetWindow(isDev, devServerUrl);
+ipcMain.handle('open-widget', async (_event, variant: WidgetVariant) => {
+  createOrShowWidgetWindow(variant, isDev, devServerUrl);
+});
+
+ipcMain.handle('close-widget', async (_event, variant: WidgetVariant) => {
+  closeWidgetWindow(variant);
+});
+
+ipcMain.handle('toggle-widget', async (_event, variant?: WidgetVariant) => {
+  toggleWidgetWindow(variant || 'tasks-heatmap', isDev, devServerUrl);
+});
+
+ipcMain.handle('get-active-widgets', async () => {
+  return getActiveWidgetVariants();
+});
+
+ipcMain.handle('close-all-widgets', async () => {
+  closeAllWidgetWindows();
+});
+
+ipcMain.handle('launch-all-widgets', async () => {
+  launchAllPreferredWidgets(isDev, devServerUrl);
 });
 
 ipcMain.handle('widget-set-always-on-top', async (_event, pinned: boolean) => {
@@ -382,8 +450,10 @@ ipcMain.handle('widget-is-pinned', async () => {
   return isWidgetAlwaysOnTop();
 });
 
-ipcMain.handle('widget-resize', async (_event, { width, height }: { width: number; height: number }) => {
-  resizeWidgetWindow(width, height);
+ipcMain.handle('widget-resize', async (_event, { variant, width, height }: { variant?: WidgetVariant; width: number; height: number }) => {
+  if (variant) {
+    resizeWidgetWindow(variant, width, height);
+  }
 });
 
 ipcMain.handle('open-main-window', async () => {

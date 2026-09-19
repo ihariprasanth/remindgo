@@ -68,10 +68,22 @@ contextBridge.exposeInMainWorld('electronAPI', {
     };
   },
 
-  // Desktop Widget
-  toggleWidget: () => ipcRenderer.invoke('toggle-widget'),
+  // Desktop Widget (Multi-Widget Desktop Manager)
+  toggleWidget: (variant?: any) => ipcRenderer.invoke('toggle-widget', variant),
+  openWidget: (variant: any) => ipcRenderer.invoke('open-widget', variant),
+  closeWidget: (variant: any) => ipcRenderer.invoke('close-widget', variant),
+  getActiveWidgets: () => ipcRenderer.invoke('get-active-widgets'),
+  closeAllWidgets: () => ipcRenderer.invoke('close-all-widgets'),
+  launchAllWidgets: () => ipcRenderer.invoke('launch-all-widgets'),
+  onActiveWidgetsChanged: (callback: (active: any[]) => void) => {
+    const handler = (_event: any, active: any[]) => callback(active);
+    ipcRenderer.on('active-widgets-changed', handler);
+    return () => {
+      ipcRenderer.removeListener('active-widgets-changed', handler);
+    };
+  },
   openMainWindow: () => ipcRenderer.invoke('open-main-window'),
   setWidgetAlwaysOnTop: (pinned: boolean) => ipcRenderer.invoke('widget-set-always-on-top', pinned),
   isWidgetPinned: () => ipcRenderer.invoke('widget-is-pinned'),
-  resizeWidget: (width: number, height: number) => ipcRenderer.invoke('widget-resize', { width, height })
+  resizeWidget: (width: number, height: number, variant?: any) => ipcRenderer.invoke('widget-resize', { variant, width, height })
 });

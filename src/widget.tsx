@@ -4,8 +4,21 @@ import { DesktopWidget } from './components/DesktopWidget';
 import { api } from './services/api';
 import './styles/index.css';
 
+import { WidgetVariant } from './types';
+
 const WidgetApp: React.FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // Retrieve initial variant from URL query param (e.g. ?variant=leetcode-streak)
+  const [initialVariant] = useState<WidgetVariant | undefined>(() => {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      const v = p.get('variant') as WidgetVariant;
+      return v || undefined;
+    } catch {
+      return undefined;
+    }
+  });
 
   useEffect(() => {
     api.getSettings().then((s) => {
@@ -36,7 +49,7 @@ const WidgetApp: React.FC = () => {
 
   return (
     <div className={`w-screen h-screen overflow-hidden ${theme}`}>
-      <DesktopWidget theme={theme} onToggleTheme={handleToggleTheme} />
+      <DesktopWidget initialVariant={initialVariant} theme={theme} onToggleTheme={handleToggleTheme} />
     </div>
   );
 };

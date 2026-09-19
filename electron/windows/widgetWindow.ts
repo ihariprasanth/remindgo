@@ -1,11 +1,47 @@
 import { BrowserWindow, screen } from 'electron';
 import path from 'path';
+import { dbInstance } from '../db/database';
+import { WidgetVariant } from '../../src/types';
+import { getMainWindow } from './mainWindow';
 
-let widgetWindowInstance: BrowserWindow | null = null;
+// Active standalone widget instances mapped by variant
+const activeWidgetWindows = new Map<WidgetVariant, BrowserWindow>();
 let isPinned = false;
 
-export function getWidgetWindow(): BrowserWindow | null {
-  return widgetWindowInstance;
+export function getWidgetDimensions(variant: WidgetVariant): { width: number; height: number } {
+  switch (variant) {
+    case 'todo':
+      return { width: 380, height: 360 };
+    case 'coding-platforms':
+      return { width: 380, height: 270 };
+    case 'routine-progress':
+      return { width: 380, height: 230 };
+    case 'leetcode-streak':
+      return { width: 360, height: 205 };
+    case 'mini-pill':
+      return { width: 320, height: 85 };
+    case 'leetcode':
+    case 'tasks-heatmap':
+    default:
+      return { width: 415, height: 205 };
+  }
+}
+
+export function getWidgetWindow(variant?: WidgetVariant): BrowserWindow | null {
+  if (variant) {
+    return activeWidgetWindows.get(variant) || null;
+  }
+  // If none specified, return the first active widget window or null
+  const first = activeWidgetWindows.values().next();
+  return first.done ? null : first.value;
+}
+
+export function getAllWidgetWindows(): BrowserWindow[] {
+  return Array.from(activeWidgetWindows.values()).filter((w) => !w.isDestroyed());
+}
+
+export function getActiveWidgetVariants(): WidgetVariant[] {
+  return Array.from(activeWidgetWindows.keys());
 }
 
 export function isWidgetAlwaysOnTop(): boolean {
@@ -14,105 +50,239 @@ export function isWidgetAlwaysOnTop(): boolean {
 
 export function setWidgetAlwaysOnTop(pinned: boolean): void {
   isPinned = pinned;
-  if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
-    widgetWindowInstance.setAlwaysOnTop(pinned);
+  for (const win of activeWidgetWindows.values()) {
+    if (win && !win.isDestroyed()) {
+      win.setAlwaysOnTop(pinned);
+    }
   }
 }
 
-export function createOrShowWidgetWindow(isDev: boolean, devServerUrl?: string): BrowserWindow {
-  if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
-    widgetWindowInstance.show();
-    widgetWindowInstance.focus();
-    return widgetWindowInstance;
+function broadcastActiveWidgets(): void {
+  const active = getActiveWidgetVariants();
+  const mainWin = getMainWindow();
+  if (mainWin && !mainWin.isDestroyed()) {
+    mainWin.webContents.send('active-widgets-changed', active);
   }
+}
 
+function calculateDefaultPosition(variant: WidgetVariant, width: number, height: number): { x: number; y: number } {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { x: workX, y: workY, width: screenWidth, height: screenHeight } = primaryDisplay.workArea;
-  const winWidth = 415;
-  const winHeight = 210;
 
-  // Position neatly on the top-right corner of the desktop wallpaper
-  const x = Math.max(workX + 20, workX + screenWidth - winWidth - 25);
-  const y = workY + 25;
+  switch (variant) {
+    case 'tasks-heatmap':
+      return {
+        x: Math.max(workX + 20, workX + screenWidth - width - 25),
+        y: workY + 25
+      };
+    case 'todo':
+      return {
+        x: Math.max(workX + 20, workX + screenWidth - width - 25),
+        y: workY + 245
+      };
+    case 'leetcode-streak':
+      return {
+        x: workX + 25,
+        y: workY + 25
+      };
+    case 'leetcode':
+      return {
+        x: workX + 25,
+        y: workY + 245
+      };
+    case 'coding-platforms':
+      return {
+        x: Math.max(workX + 20, workX + screenWidth - width - 425),
+        y: workY + 25
+      };
+    case 'routine-progress':
+      return {
+        x: Math.max(workX + 20, workX + screenWidth - width - 25),
+        y: Math.max(workY + 20, workY + screenHeight - height - 40)
+      };
+    case 'mini-pill':
+      return {
+        x: workX + Math.floor((screenWidth - width) / 2),
+        y: workY + 25
+      };
+    default:
+      return {
+        x: Math.max(workX + 20, workX + screenWidth - width - 25),
+        y: workY + 25
+      };
+  }
+}
+
+export function createOrShowWidgetWindow(
+  variant: WidgetVariant = 'tasks-heatmap',
+  isDev: boolean = false,
+  devServerUrl?: string
+): BrowserWindow {
+  // If already open, focus it
+  const existing = activeWidgetWindows.get(variant);
+  if (existing && !existing.isDestroyed()) {
+    if (!existing.isVisible()) {
+      existing.showInactive();
+    }
+    return existing;
+  }
+
+  const { width: winWidth, height: winHeight } = getWidgetDimensions(variant);
+
+  // Position retrieval: load saved or default
+  const settings = dbInstance.getSettings();
+  const savedPos = settings.widgetPositions ? settings.widgetPositions[variant] : undefined;
+
+  let x: number;
+  let y: number;
+
+  if (savedPos && typeof savedPos.x === 'number' && typeof savedPos.y === 'number') {
+    x = savedPos.x;
+    y = savedPos.y;
+  } else {
+    const computed = calculateDefaultPosition(variant, winWidth, winHeight);
+    x = computed.x;
+    y = computed.y;
+  }
 
   const iconPath = isDev
     ? path.join(__dirname, '../../assets/icon.ico')
     : path.join(__dirname, '../assets/icon.ico');
 
-  widgetWindowInstance = new BrowserWindow({
+  const win = new BrowserWindow({
     width: winWidth,
     height: winHeight,
     x,
     y,
-    title: 'RemindGo Desktop Widget',
+    title: `RemindGo Widget • ${variant}`,
     icon: iconPath,
     frame: false,
     transparent: true,
     backgroundColor: '#00000000',
     hasShadow: false,
     resizable: false,
-    alwaysOnTop: isPinned,
+    alwaysOnTop: isPinned || Boolean(settings.widgetAlwaysOnTop),
     skipTaskbar: true,
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
-      contextIsolation: true
+      contextIsolation: true,
+      backgroundThrottling: false
     }
   });
 
+  activeWidgetWindows.set(variant, win);
+
+  // Load URL with variant query param
   if (isDev && devServerUrl) {
-    widgetWindowInstance.loadURL(`${devServerUrl}/widget.html`);
+    win.loadURL(`${devServerUrl}/widget.html?variant=${variant}`);
   } else {
-    widgetWindowInstance.loadFile(path.join(__dirname, '../dist/widget.html'));
+    win.loadFile(path.join(__dirname, '../dist/widget.html'), { query: { variant } });
   }
 
-  widgetWindowInstance.once('ready-to-show', () => {
-    if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
-      widgetWindowInstance.showInactive();
+  win.once('ready-to-show', () => {
+    if (win && !win.isDestroyed()) {
+      win.showInactive();
     }
   });
 
-  // Fallback to guarantee the widget shows immediately even if ready-to-show is delayed
+  // Fallback reveal
   setTimeout(() => {
-    if (widgetWindowInstance && !widgetWindowInstance.isDestroyed() && !widgetWindowInstance.isVisible()) {
-      widgetWindowInstance.showInactive();
+    if (win && !win.isDestroyed() && !win.isVisible()) {
+      win.showInactive();
     }
-  }, 400);
+  }, 350);
 
-  widgetWindowInstance.webContents.on('did-fail-load', (_event, errorCode, errorDesc) => {
-    console.error(`[WidgetWindow] Failed to load: ${errorCode} - ${errorDesc}`);
+  // Remember drag position on desktop
+  win.on('moved', () => {
+    if (win && !win.isDestroyed()) {
+      const [currX, currY] = win.getPosition();
+      try {
+        const currentSettings = dbInstance.getSettings();
+        const currentPositions = currentSettings.widgetPositions || {};
+        currentPositions[variant] = { x: currX, y: currY };
+        dbInstance.updateSettings({ widgetPositions: currentPositions });
+      } catch (err) {
+        console.error(`[WidgetWindow] Failed to save position for ${variant}:`, err);
+      }
+    }
   });
 
-  widgetWindowInstance.on('closed', () => {
-    widgetWindowInstance = null;
+  win.on('closed', () => {
+    activeWidgetWindows.delete(variant);
+    try {
+      const currentActive = Array.from(activeWidgetWindows.keys());
+      dbInstance.updateSettings({ activeWidgets: currentActive });
+    } catch {}
+    broadcastActiveWidgets();
   });
 
-  return widgetWindowInstance;
+  // Save active widgets list
+  try {
+    const currentActive = Array.from(activeWidgetWindows.keys());
+    dbInstance.updateSettings({ activeWidgets: currentActive });
+  } catch {}
+  broadcastActiveWidgets();
+
+  return win;
 }
 
-export function toggleWidgetWindow(isDev: boolean, devServerUrl?: string): void {
-  if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
-    if (widgetWindowInstance.isVisible()) {
-      widgetWindowInstance.hide();
+export function closeWidgetWindow(variant: WidgetVariant): void {
+  const win = activeWidgetWindows.get(variant);
+  if (win && !win.isDestroyed()) {
+    win.close();
+    activeWidgetWindows.delete(variant);
+    broadcastActiveWidgets();
+  }
+}
+
+export function closeAllWidgetWindows(): void {
+  for (const [variant, win] of Array.from(activeWidgetWindows.entries())) {
+    if (win && !win.isDestroyed()) {
+      win.close();
+    }
+    activeWidgetWindows.delete(variant);
+  }
+  try {
+    dbInstance.updateSettings({ activeWidgets: [] });
+  } catch {}
+  broadcastActiveWidgets();
+}
+
+export function toggleWidgetWindow(
+  variant: WidgetVariant = 'tasks-heatmap',
+  isDev: boolean = false,
+  devServerUrl?: string
+): void {
+  const win = activeWidgetWindows.get(variant);
+  if (win && !win.isDestroyed()) {
+    if (win.isVisible()) {
+      win.close();
+      activeWidgetWindows.delete(variant);
+      broadcastActiveWidgets();
     } else {
-      widgetWindowInstance.show();
-      widgetWindowInstance.focus();
+      win.showInactive();
     }
   } else {
-    createOrShowWidgetWindow(isDev, devServerUrl);
+    createOrShowWidgetWindow(variant, isDev, devServerUrl);
   }
 }
 
-export function closeWidgetWindow(): void {
-  if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
-    widgetWindowInstance.close();
-    widgetWindowInstance = null;
+export function launchAllPreferredWidgets(isDev: boolean = false, devServerUrl?: string): void {
+  const settings = dbInstance.getSettings();
+  const targets = (settings.activeWidgets && settings.activeWidgets.length > 0)
+    ? settings.activeWidgets
+    : (['tasks-heatmap', 'todo', 'leetcode-streak'] as WidgetVariant[]);
+
+  for (const variant of targets) {
+    createOrShowWidgetWindow(variant, isDev, devServerUrl);
   }
 }
 
-export function resizeWidgetWindow(width: number, height: number): void {
-  if (widgetWindowInstance && !widgetWindowInstance.isDestroyed()) {
-    widgetWindowInstance.setSize(width, height);
+export function resizeWidgetWindow(variant: WidgetVariant, width: number, height: number): void {
+  const win = activeWidgetWindows.get(variant);
+  if (win && !win.isDestroyed()) {
+    win.setSize(width, height);
   }
 }

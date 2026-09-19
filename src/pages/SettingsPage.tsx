@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, Check, Code2, Pin, ExternalLink, CheckSquare, Calendar } from 'lucide-react';
-import { Settings } from '../types';
+import React, { useState, useEffect } from 'react';
+import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, Check, Code2, Pin, ExternalLink, CheckSquare, Calendar, Sparkles, Cpu } from 'lucide-react';
+import { Settings, WidgetVariant } from '../types';
 import { SOUND_OPTIONS, audioService } from '../services/audioService';
 import { api } from '../services/api';
 import logoSquircle from '../assets/logo-squircle.png';
@@ -20,6 +20,51 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [lcUsername, setLcUsername] = useState(settings.leetcodeUsername || '');
+  const [activeWidgets, setActiveWidgets] = useState<WidgetVariant[]>(settings.activeWidgets || ['tasks-heatmap']);
+
+  useEffect(() => {
+    if (api.getActiveWidgets) {
+      api.getActiveWidgets().then((active) => {
+        if (active) setActiveWidgets(active as WidgetVariant[]);
+      });
+    }
+    if (api.onActiveWidgetsChanged) {
+      const unsub = api.onActiveWidgetsChanged((active) => {
+        setActiveWidgets(active as WidgetVariant[]);
+      });
+      return () => unsub();
+    }
+  }, []);
+
+  const handleToggleWidget = async (widgetId: WidgetVariant) => {
+    const isRunning = activeWidgets.includes(widgetId);
+    if (isRunning) {
+      if (api.closeWidget) await api.closeWidget(widgetId);
+      const updated = activeWidgets.filter((w) => w !== widgetId);
+      setActiveWidgets(updated);
+      onUpdateSettings({ activeWidgets: updated });
+    } else {
+      if (api.openWidget) await api.openWidget(widgetId);
+      const updated = [...activeWidgets, widgetId];
+      setActiveWidgets(updated);
+      onUpdateSettings({ activeWidgets: updated });
+    }
+  };
+
+  const handleLaunchAll = async () => {
+    const allVariants: WidgetVariant[] = [
+      'tasks-heatmap', 'todo', 'leetcode', 'leetcode-streak', 'coding-platforms', 'routine-progress', 'mini-pill'
+    ];
+    if (api.launchAllWidgets) await api.launchAllWidgets();
+    setActiveWidgets(allVariants);
+    onUpdateSettings({ activeWidgets: allVariants });
+  };
+
+  const handleCloseAll = async () => {
+    if (api.closeAllWidgets) await api.closeAllWidgets();
+    setActiveWidgets([]);
+    onUpdateSettings({ activeWidgets: [] });
+  };
 
   const handleToggleSoundPreview = async () => {
     if (isPlayingPreview) {
@@ -287,26 +332,49 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         </div>
       </div>
 
-      {/* Desktop Floating Widget Settings */}
+      {/* Desktop Multi-Widget Manager */}
       <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-[var(--border-glass)] pb-3 flex-wrap gap-2">
-          <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <Pin size={16} className="text-[#0a84ff]" />
-            Desktop Floating Widget
-          </h3>
+            <h3 className="text-sm font-bold text-[var(--text-main)]">
+              Desktop Multi-Widget Manager
+            </h3>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#39d353]/15 text-[#39d353] border border-[#39d353]/30">
+              {activeWidgets.length} Active
+            </span>
+          </div>
 
-          <button
-            onClick={() => api.toggleWidget()}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0a84ff] hover:bg-[#0066d6] text-white text-xs font-semibold rounded-xl transition-all shadow-[0_2px_10px_rgba(10,132,255,0.3)] cursor-pointer"
-          >
-            <ExternalLink size={12} />
-            <span>Launch / Toggle Widget</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleLaunchAll}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs font-semibold rounded-xl transition-all cursor-pointer shadow-sm"
+            >
+              <Sparkles size={12} />
+              <span>Launch All 7</span>
+            </button>
+            <button
+              onClick={handleCloseAll}
+              disabled={activeWidgets.length === 0}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
+            >
+              <span>Close All</span>
+            </button>
+          </div>
         </div>
 
         <p className="text-xs text-[var(--text-sub)]">
-          The Desktop Widget is a lightweight, frameless floating card that sits on your Windows desktop wallpaper. By default, it stays behind active applications (browsers, IDEs) so it never blocks your tabs or work.
+          Run individual standalone widgets simultaneously on your Windows desktop wallpaper. Each widget can be freely dragged, placed anywhere, and remembers its exact desktop coordinates.
         </p>
+
+        {/* Windows Low-RAM Status Banner */}
+        <div className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-[#238636]/30 text-xs">
+          <div className="flex items-center gap-2 text-[#39d353] font-medium">
+            <Cpu size={15} />
+            <span>Windows Low-RAM Engine Active</span>
+          </div>
+          <span className="text-[10px] font-mono text-white/50">~70–90MB Footprint • Shared Process</span>
+        </div>
 
         {/* Individual Desktop Widgets Selection */}
         <div className="space-y-3">
@@ -314,10 +382,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             <div className="flex items-center justify-between mb-3">
               <div>
                 <div className="text-xs font-semibold text-[var(--text-main)]">
-                  Active Desktop Widget Variant
+                  Standalone Desktop Widgets (Simultaneous Multi-Widget Support)
                 </div>
                 <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
-                  Select which standalone widget runs on your desktop with pure pitch-black background.
+                  Click any widget card or toggle to launch or close it individually on your desktop.
                 </div>
               </div>
             </div>
@@ -333,31 +401,34 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 { id: 'routine-progress', name: 'Routine & Streak Meter', desc: 'Daily progress bar, 8PM & 10PM status', color: 'text-[#bc8cff]' },
                 { id: 'mini-pill', name: 'Minimalist Compact Pill', desc: 'Ultra-compact mini heatmap desktop strip', color: 'text-[#f43f5e]' },
               ].map((opt) => {
-                const isSelected = (settings.widgetMode || 'tasks-heatmap') === opt.id;
+                const isRunning = activeWidgets.includes(opt.id as WidgetVariant);
                 return (
                   <div
                     key={opt.id}
-                    onClick={() => {
-                      localStorage.setItem('remindgo_widget_variant', opt.id);
-                      onUpdateSettings({ widgetMode: opt.id as any });
-                    }}
+                    onClick={() => handleToggleWidget(opt.id as WidgetVariant)}
                     className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
-                      isSelected
-                        ? 'bg-[#0a84ff]/15 border-[#0a84ff] text-white shadow-[0_0_12px_rgba(10,132,255,0.25)]'
+                      isRunning
+                        ? 'bg-[#0a84ff]/15 border-[#0a84ff] text-white shadow-[0_0_12px_rgba(10,132,255,0.25)] ring-1 ring-[#0a84ff]/30'
                         : 'bg-black/20 border-white/10 hover:border-white/25 text-white/80'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1 mb-1.5">
                       <span className={`text-xs font-bold ${opt.color}`}>{opt.name}</span>
-                      <div
-                        className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
-                          isSelected ? 'border-[#0a84ff] bg-[#0a84ff]' : 'border-white/30'
-                        }`}
-                      >
-                        {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      <div className="flex items-center gap-1.5">
+                        <span className={`w-2 h-2 rounded-full ${isRunning ? 'bg-[#39d353] shadow-[0_0_6px_#39d353]' : 'bg-white/20'}`} />
+                        <span className={`text-[10px] font-mono ${isRunning ? 'text-[#39d353] font-semibold' : 'text-white/40'}`}>
+                          {isRunning ? 'Active' : 'Off'}
+                        </span>
                       </div>
                     </div>
-                    <p className="text-[10px] text-white/50 leading-relaxed">{opt.desc}</p>
+                    <p className="text-[10px] text-white/50 leading-relaxed mb-2">{opt.desc}</p>
+
+                    <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono">
+                      <span className="text-white/40">Desktop Widget</span>
+                      <span className={isRunning ? 'text-red-400 hover:underline' : 'text-[#0a84ff] hover:underline'}>
+                        {isRunning ? 'Click to Close' : 'Click to Launch'}
+                      </span>
+                    </div>
                   </div>
                 );
               })}
@@ -485,9 +556,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-xl border border-white/20 mb-3 bg-white p-0.5">
           <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
         </div>
-        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.6.1 • Liquid Glass Edition</div>
+        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.7.0 Final • Liquid Glass Edition</div>
         <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
-          Liquid Glass Architecture • LeetCode Integration • Local SQLite Engine
+          Multi-Widget Desktop Engine • Windows Low-RAM Architecture • Local SQLite
         </div>
         <div className="text-[10px] text-[var(--text-muted)] mt-1 font-mono">
           Developed by HARIPRASANTH T
