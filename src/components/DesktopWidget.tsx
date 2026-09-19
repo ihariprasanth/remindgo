@@ -19,6 +19,7 @@ export const WIDGET_OPTIONS: { id: WidgetVariant; name: string; subtitle: string
   { id: 'tasks-heatmap', name: 'Task Activity Matrix', subtitle: '20-week to-do tasks heatmap & streak', icon: Calendar },
   { id: 'todo', name: 'Today\'s Daily Checklist', subtitle: '1-click checkoff for routine & to-dos', icon: CheckSquare },
   { id: 'leetcode', name: 'LeetCode Activity', subtitle: 'Submissions heatmap & solved problem stats', icon: Code2 },
+  { id: 'leetcode-streak', name: 'LeetCode Daily Streak', subtitle: 'Dedicated flaming streak & rank counter', icon: Flame },
   { id: 'coding-platforms', name: 'Coding Platforms Hub', subtitle: 'LeetCode, CodeChef, GFG & GitHub tracker', icon: Terminal },
   { id: 'routine-progress', name: 'Routine & Streak Meter', subtitle: 'Daily progress bar, 8PM & 10PM status', icon: Sparkles },
   { id: 'mini-pill', name: 'Minimalist Compact Pill', subtitle: 'Ultra-compact mini heatmap desktop strip', icon: Flame },
@@ -81,6 +82,9 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
         break;
       case 'routine-progress':
         api.resizeWidget(380, 230);
+        break;
+      case 'leetcode-streak':
+        api.resizeWidget(360, 205);
         break;
       case 'mini-pill':
         api.resizeWidget(320, 85);
@@ -408,10 +412,15 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
 
       {hoveredDay && (
         <div
-          style={{ left: hoveredDay.x, top: hoveredDay.y }}
-          className="fixed z-50 transform -translate-x-1/2 -translate-y-full pointer-events-none bg-neutral-900 text-white text-[10px] font-mono px-2 py-1 rounded-md shadow-xl border border-white/20 whitespace-nowrap"
+          style={{ 
+            left: Math.max(90, Math.min(hoveredDay.x, 325)), 
+            top: Math.max(35, hoveredDay.y) 
+          }}
+          className="fixed z-50 transform -translate-x-1/2 -translate-y-full pointer-events-none bg-[#0d1117] text-white text-[10px] font-mono px-2.5 py-1 rounded-md shadow-2xl border border-white/20 whitespace-nowrap"
         >
-          {hoveredDay.dateStr}: {hoveredDay.count} {label}
+          {hoveredDay.count === 0 
+            ? `No ${label} on ${hoveredDay.dateStr}` 
+            : `${hoveredDay.count} ${label} on ${hoveredDay.dateStr}`}
         </div>
       )}
     </>
@@ -551,7 +560,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
         <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
           {renderHeader(
             'LeetCode Activity',
-            <Code2 size={13} className="text-[#f59e0b]" />,
+            <Code2 size={13} className="text-[#39d353]" />,
             leetCodeData && (
               <div className="flex items-center gap-1.5 mr-1 font-mono text-[10px]">
                 <span className="flex items-center gap-1 text-[#f43f5e]">
@@ -559,27 +568,93 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = () => {
                   <span className="font-bold">{leetCodeData.streak}d</span>
                 </span>
                 <span className="text-white/40">•</span>
-                <span className="text-[#f59e0b]">#{leetCodeData.ranking ? leetCodeData.ranking.toLocaleString() : 'N/A'}</span>
+                <span className="text-[#39d353]">#{leetCodeData.ranking ? leetCodeData.ranking.toLocaleString() : 'N/A'}</span>
               </div>
             )
           )}
 
-          {renderHeatmapGrid(weeksGrid, 'submissions', 'amber')}
+          {renderHeatmapGrid(weeksGrid, 'submissions', 'green')}
 
-          {/* Solved breakdown */}
+          {/* Minimalist footer: total solved & green intensity legend */}
           <div className="flex items-center justify-between text-[10px] text-white/50 pt-1.5 font-mono">
             {leetCodeData ? (
               <>
-                <span className="text-white font-bold">{leetCodeData.totalSolved} Solved</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[#39d353]">E: {leetCodeData.easySolved}</span>
-                  <span className="text-[#f59e0b]">M: {leetCodeData.mediumSolved}</span>
-                  <span className="text-[#f43f5e]">H: {leetCodeData.hardSolved}</span>
+                <span className="text-white font-bold">{leetCodeData.totalSolved} Problems Solved</span>
+                <div className="flex items-center gap-1">
+                  <span>Less</span>
+                  <div className="flex gap-1">
+                    {[0, 1, 2, 3, 4].map((l) => (
+                      <div key={l} className={`w-2 h-2 rounded-[1px] border ${getCellColor(l, 'green')}`} />
+                    ))}
+                  </div>
+                  <span>More</span>
                 </div>
               </>
             ) : (
               <span>Connect LeetCode username in App</span>
             )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // 3b. DEDICATED LEETCODE DAILY STREAK FLAME WIDGET
+  // =========================================================================
+  if (variant === 'leetcode-streak') {
+    return (
+      <div className={containerClasses}>
+        <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
+          {renderHeader(
+            'LeetCode Streak',
+            <Flame size={13} className="text-[#f43f5e]" />,
+            <span className="text-[10px] font-mono text-[#39d353] mr-1">Daily Streak</span>
+          )}
+
+          <div className="flex items-center justify-between gap-3 py-1.5 no-drag">
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 rounded-2xl bg-[#f43f5e]/15 border border-[#f43f5e]/30 flex flex-col items-center justify-center flex-shrink-0">
+                <Flame size={24} className="text-[#f43f5e] animate-pulse" />
+                <span className="text-[10px] font-mono font-bold text-[#f43f5e] -mt-0.5">
+                  {leetCodeData ? `${leetCodeData.streak}d` : '0d'}
+                </span>
+              </div>
+
+              <div>
+                <div className="text-sm font-bold text-white tracking-wide">
+                  {leetCodeData ? `${leetCodeData.streak} Days Active` : 'No Streak'}
+                </div>
+                <div className="text-[11px] font-mono text-white/50 mt-0.5">
+                  Rank: <span className="text-[#39d353]">#{leetCodeData?.ranking ? leetCodeData.ranking.toLocaleString() : 'N/A'}</span>
+                </div>
+                <div className="text-[11px] font-mono text-white/50">
+                  Solved: <span className="text-white font-bold">{leetCodeData?.totalSolved || 0}</span> problems
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-end gap-1.5">
+              <button
+                onClick={() => {
+                  if (api.openExternal) {
+                    api.openExternal('https://leetcode.com/problemset/all/');
+                  } else {
+                    window.open('https://leetcode.com/problemset/all/', '_blank');
+                  }
+                }}
+                className="px-3 py-1.5 rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white text-[11px] font-semibold transition-all flex items-center gap-1 shadow-lg cursor-pointer"
+              >
+                <span>Solve Today</span>
+                <ExternalLink size={10} />
+              </button>
+              <span className="text-[9px] font-mono text-white/40">POTD Active</span>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-white/50 font-mono">
+            <span>Username: {leetCodeData?.username || 'Not set'}</span>
+            <span className="text-[#39d353]">{leetCodeData?.streak && leetCodeData.streak > 0 ? 'On Fire' : 'Active'}</span>
           </div>
         </div>
       </div>

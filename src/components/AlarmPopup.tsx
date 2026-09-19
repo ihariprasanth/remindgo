@@ -100,9 +100,20 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
         </h1>
 
         {task.description && (
-          <p className="text-xs text-[#8b949e] max-w-sm mx-auto line-clamp-3">
-            {task.description}
-          </p>
+          task.id.startsWith('batch-') ? (
+            <div className="max-h-28 overflow-y-auto p-2.5 rounded-xl bg-white/5 border border-white/10 text-left space-y-1.5 my-1 max-w-md mx-auto text-xs">
+              {task.description.split('\n').map((line, idx) => (
+                <div key={idx} className="text-[#38bdf8] flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0a84ff] flex-shrink-0" />
+                  <span className="truncate">{line}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-[#8b949e] max-w-sm mx-auto line-clamp-3">
+              {task.description}
+            </p>
+          )
         )}
 
         <div className="flex items-center justify-center gap-1.5 text-xs text-[#0a84ff] font-mono">
@@ -113,13 +124,19 @@ export const AlarmPopup: React.FC<AlarmPopupProps> = ({
 
       {/* Action Controls */}
       <div className="space-y-3 pt-2">
-        {/* Primary Action Button: "Mark as Done" or "Thank you I will do it now" */}
+        {/* Primary Action Button: "Mark All as Done" / "Mark as Done" / "Thank you I will do it now" */}
         <button
           onClick={handlePrimaryAction}
           className="w-full py-3 px-4 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] active:scale-[0.99] text-white text-sm font-semibold rounded-xl shadow-[0_4px_16px_rgba(10,132,255,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wide text-xs"
         >
           <Check size={16} strokeWidth={3} />
-          <span>{isDailyReminder ? 'Mark as Done' : 'Thank you I will do it now'}</span>
+          <span>
+            {task.id.startsWith('batch-')
+              ? 'Mark All as Done'
+              : isDailyReminder
+              ? 'Mark as Done'
+              : 'Thank you I will do it now'}
+          </span>
         </button>
 
         {/* Options 2, 3, 4: "5MIN", "10MIN", "15MIN" Snooze Buttons */}

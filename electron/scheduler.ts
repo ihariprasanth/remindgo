@@ -110,6 +110,7 @@ export class AlarmScheduler {
       dbInstance.ensureDailyDeveloperTasks(istDateStr);
 
       // Check standard scheduled tasks
+      const dueTasks: Task[] = [];
       for (const task of allTasks) {
         if (task.status === 'completed') continue;
 
@@ -142,8 +143,14 @@ export class AlarmScheduler {
         }
 
         if (isDue) {
-          this.triggerAlarm(task);
+          dueTasks.push(task);
         }
+      }
+
+      if (dueTasks.length === 1) {
+        this.triggerAlarm(dueTasks[0]);
+      } else if (dueTasks.length > 1) {
+        this.triggerConsolidatedAlarm(dueTasks);
       }
 
       // 1. Daily 8:00 PM IST Reminder: "Complete Today Tasks"
@@ -230,6 +237,62 @@ export class AlarmScheduler {
       mainWin.webContents.send('tasks-changed');
       if (!alarmWin) {
         mainWin.webContents.send('alarm-triggered', task);
+      }
+    }
+  }
+
+  private triggerConsolidatedAlarm(tasks: Task[]): void {
+    console.log(`[AlarmScheduler] Triggering consolidated alarm for ${tasks.length} tasks scheduled for ${tasks[0].time}`);
+
+    const nowIso = new Date().toISOString();
+    for (const t of tasks) {
+      dbInstance.markTaskNotified(t.id, nowIso);
+      t.last_notified_at = nowIso;
+    }
+
+    const taskTitles = tasks.map((t, idx) => `${idx + 1}. ${t.title}`).join('\n');
+    const batchId = `batch-${tasks.map((t) => t.id).join('__')}`;
+
+    const consolidatedTask: Task = {
+      id: batchId,
+      title: `${tasks.length} Tasks Scheduled for ${tasks[0].time}`,
+      description: taskTitles,
+      category: 'Multiple Tasks Due',
+      date: tasks[0].date,
+      time: tasks[0].time,
+      repeat: 'none',
+      status: 'pending',
+      priority: 'high',
+      created_at: nowIso
+    };
+
+    // 1. Popup the prominent always-on-top alarm window once
+    const alarmWin = createOrShowAlarmWindow(consolidatedTask, this.isDev, this.devServerUrl);
+
+    // 2. Show native Windows Notification once
+    if (Notification.isSupported()) {
+      try {
+        const notif = new Notification({
+          title: `RemindGo: ${tasks.length} Tasks Scheduled`,
+          body: tasks.slice(0, 3).map((t) => t.title).join(', ') + (tasks.length > 3 ? '...' : ''),
+          urgency: 'critical',
+          silent: true
+        });
+        notif.on('click', () => {
+          createOrShowAlarmWindow(consolidatedTask, this.isDev, this.devServerUrl);
+        });
+        notif.show();
+      } catch (notifErr) {
+        console.warn('[AlarmScheduler] Native notification error:', notifErr);
+      }
+    }
+
+    // 3. Inform main window of task updates; only trigger in-app overlay if dedicated alarm window is unavailable
+    const mainWin = getMainWindow();
+    if (mainWin && !mainWin.isDestroyed()) {
+      mainWin.webContents.send('tasks-changed');
+      if (!alarmWin) {
+        mainWin.webContents.send('alarm-triggered', consolidatedTask);
       }
     }
   }

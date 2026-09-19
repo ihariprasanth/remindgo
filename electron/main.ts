@@ -236,7 +236,14 @@ ipcMain.handle('update-settings', async (_event, partialSettings: Partial<Settin
 // ==========================================
 ipcMain.handle('snooze-alarm', async (_event, { taskId, minutes }: { taskId: string; minutes: number }) => {
   console.log(`[Main] Snoozing task ${taskId} for ${minutes} minutes`);
-  dbInstance.snoozeTask(taskId, minutes);
+  if (taskId.startsWith('batch-')) {
+    const ids = taskId.replace('batch-', '').split('__');
+    for (const id of ids) {
+      dbInstance.snoozeTask(id, minutes);
+    }
+  } else {
+    dbInstance.snoozeTask(taskId, minutes);
+  }
   closeAlarmWindow();
   broadcastAlarmDismissed();
   broadcastTasksChanged();
@@ -245,34 +252,37 @@ ipcMain.handle('snooze-alarm', async (_event, { taskId, minutes }: { taskId: str
 ipcMain.handle('dismiss-alarm', async (_event, { taskId, markDone }: { taskId: string; markDone?: boolean }) => {
   console.log(`[Main] Dismissing alarm for task ${taskId}, markDone: ${markDone}`);
   if (markDone) {
-    const task = dbInstance.getTaskById(taskId);
-    if (task) {
-      if (task.repeat === 'daily' || task.repeat === 'weekly') {
-        const [year, month, day] = task.date.split('-').map(Number);
-        const currentDate = new Date(year, month - 1, day);
-        const daysToAdd = task.repeat === 'daily' ? 1 : 7;
-        currentDate.setDate(currentDate.getDate() + daysToAdd);
+    const taskIds = taskId.startsWith('batch-') ? taskId.replace('batch-', '').split('__') : [taskId];
+    for (const id of taskIds) {
+      const task = dbInstance.getTaskById(id);
+      if (task) {
+        if (task.repeat === 'daily' || task.repeat === 'weekly') {
+          const [year, month, day] = task.date.split('-').map(Number);
+          const currentDate = new Date(year, month - 1, day);
+          const daysToAdd = task.repeat === 'daily' ? 1 : 7;
+          currentDate.setDate(currentDate.getDate() + daysToAdd);
 
-        const nextYear = currentDate.getFullYear();
-        const nextMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const nextDay = String(currentDate.getDate()).padStart(2, '0');
-        const nextDateStr = `${nextYear}-${nextMonth}-${nextDay}`;
+          const nextYear = currentDate.getFullYear();
+          const nextMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+          const nextDay = String(currentDate.getDate()).padStart(2, '0');
+          const nextDateStr = `${nextYear}-${nextMonth}-${nextDay}`;
 
-        dbInstance.createTask({
-          ...task,
-          id: 'task_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8),
-          status: 'completed',
-          completed_at: new Date().toISOString(),
-          repeat: 'none'
-        });
+          dbInstance.createTask({
+            ...task,
+            id: 'task_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8),
+            status: 'completed',
+            completed_at: new Date().toISOString(),
+            repeat: 'none'
+          });
 
-        task.date = nextDateStr;
-        task.status = 'pending';
-        task.last_notified_at = null;
-        task.snoozed_until = null;
-        dbInstance.updateTask(task);
-      } else {
-        dbInstance.setTaskStatus(taskId, 'completed', new Date().toISOString());
+          task.date = nextDateStr;
+          task.status = 'pending';
+          task.last_notified_at = null;
+          task.snoozed_until = null;
+          dbInstance.updateTask(task);
+        } else {
+          dbInstance.setTaskStatus(id, 'completed', new Date().toISOString());
+        }
       }
     }
   }

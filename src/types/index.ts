@@ -29,10 +29,10 @@ export interface Settings {
   theme: 'dark' | 'light';
   autoOpenWidget?: boolean;
   widgetAlwaysOnTop?: boolean;
-  widgetMode?: 'tasks-heatmap' | 'todo' | 'leetcode' | 'coding-platforms' | 'routine-progress' | 'mini-pill' | 'combined';
+  widgetMode?: 'tasks-heatmap' | 'todo' | 'leetcode' | 'leetcode-streak' | 'coding-platforms' | 'routine-progress' | 'mini-pill' | 'combined';
 }
 
-export type WidgetVariant = 'tasks-heatmap' | 'todo' | 'leetcode' | 'coding-platforms' | 'routine-progress' | 'mini-pill';
+export type WidgetVariant = 'tasks-heatmap' | 'todo' | 'leetcode' | 'leetcode-streak' | 'coding-platforms' | 'routine-progress' | 'mini-pill';
 
 export interface HeatmapDay {
   date: string; // YYYY-MM-DD

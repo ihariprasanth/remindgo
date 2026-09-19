@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.6.0';
-  const commitMsg = `Release v2.6.0: 6 Standalone Desktop Widgets (Pure Black), Standard Window Controls, 8PM Daily Reminder & 10PM Warning`;
+  const version = 'v2.6.1';
+  const commitMsg = `Release v2.6.1: Green LeetCode Heatmap, Dedicated Streak Widget, Consolidated Multi-Task Alarms, and Website Refinements`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

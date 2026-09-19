@@ -322,12 +322,13 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               </div>
             </div>
 
-            {/* 6 Visual Cards for Individual Widgets */}
+            {/* Visual Cards for Individual Standalone Widgets */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
               {[
                 { id: 'tasks-heatmap', name: 'Task Activity Matrix', desc: '20-week to-do tasks heatmap & streak', color: 'text-[#39d353]' },
                 { id: 'todo', name: 'Today\'s Daily Checklist', desc: '1-click checkoff for routine & to-dos', color: 'text-[#0a84ff]' },
-                { id: 'leetcode', name: 'LeetCode Activity', desc: 'Submissions heatmap & solved problem stats', color: 'text-[#f59e0b]' },
+                { id: 'leetcode', name: 'LeetCode Activity', desc: 'Submissions heatmap & solved problem stats', color: 'text-[#39d353]' },
+                { id: 'leetcode-streak', name: 'LeetCode Daily Streak', desc: 'Dedicated flaming streak & rank counter', color: 'text-[#f43f5e]' },
                 { id: 'coding-platforms', name: 'Coding Platforms Hub', desc: 'LeetCode, CodeChef, GFG & GitHub tracker', color: 'text-[#38bdf8]' },
                 { id: 'routine-progress', name: 'Routine & Streak Meter', desc: 'Daily progress bar, 8PM & 10PM status', color: 'text-[#bc8cff]' },
                 { id: 'mini-pill', name: 'Minimalist Compact Pill', desc: 'Ultra-compact mini heatmap desktop strip', color: 'text-[#f43f5e]' },
@@ -484,12 +485,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-xl border border-white/20 mb-3 bg-white p-0.5">
           <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
         </div>
-        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.6.0 • Liquid Glass Edition</div>
+        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.6.1 • Liquid Glass Edition</div>
         <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
           Liquid Glass Architecture • LeetCode Integration • Local SQLite Engine
         </div>
         <div className="text-[10px] text-[var(--text-muted)] mt-1 font-mono">
-          Developed by Hariprasanth T
+          Developed by HARIPRASANTH T
         </div>
       </div>
     </div>
