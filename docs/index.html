@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RemindGo • Offline Windows Task Manager & LeetCode Tracker</title>
+  <title>RemindGo • The Open Source Offline Task Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
@@ -14,8 +14,17 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'SF Pro', 'sans-serif'],
-            mono: ['SF Mono', 'ui-monospace', 'monospace']
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'SF Pro', 'Segoe UI', 'sans-serif'],
+            mono: ['SF Mono', 'ui-monospace', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          },
+          colors: {
+            vscode: {
+              blue: '#0078d4',
+              blueHover: '#0066b6',
+              bgDark: '#0d1117',
+              cardBg: '#161b22',
+              borderDark: '#30363d'
+            }
           }
         }
       }
@@ -23,456 +32,581 @@
   </script>
   <style>
     :root {
-      --font-mac: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'SF Pro', sans-serif;
+      --font-mac: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'SF Pro', 'Segoe UI', sans-serif;
     }
     body {
       font-family: var(--font-mac);
       letter-spacing: -0.015em;
+      background-color: #0d1117;
+      color: #f0f6fc;
+      overflow-x: hidden;
     }
-    .liquid-glass-card {
-      background: rgba(12, 12, 12, 0.85);
-      backdrop-filter: blur(28px) saturate(190%);
-      -webkit-backdrop-filter: blur(28px) saturate(190%);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 12px 36px rgba(0, 0, 0, 0.7);
+
+    /* Binary Matrix Background */
+    .binary-matrix-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 720px;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      z-index: 0;
+      mask-image: radial-gradient(ellipse 65% 55% at 50% 38%, black 25%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 38%, black 25%, transparent 75%);
+      opacity: 0.16;
+      font-family: var(--font-mono, monospace);
+      font-size: 11px;
+      line-height: 18px;
+      letter-spacing: 0.32em;
+      color: #7ee787;
+      word-break: break-all;
     }
-    .liquid-glass-pill {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      backdrop-filter: blur(16px);
+
+    .vscode-blue-frame {
+      background: #0078d4;
+      border-radius: 28px;
+      box-shadow: 0 25px 60px -15px rgba(0, 120, 212, 0.45);
     }
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 0.9; transform: scale(1.05); }
+
+    .vscode-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      transition: all 0.2s ease;
     }
-    .ambient-glow {
-      animation: pulse-glow 8s infinite ease-in-out;
+
+    .vscode-card:hover {
+      border-color: #58a6ff;
+      transform: translateY(-2px);
     }
   </style>
 </head>
-<body class="bg-[#000000] text-[#f8fafc] min-h-screen relative overflow-x-hidden">
+<body class="bg-[#0d1117] text-[#f0f6fc] min-h-screen relative">
 
-  <!-- Ambient Fluid Glow Backgrounds -->
-  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div class="absolute -top-40 left-1/4 w-[600px] h-[600px] rounded-full bg-[#0a84ff]/15 blur-[120px] ambient-glow"></div>
-    <div class="absolute top-1/3 -right-20 w-[500px] h-[500px] rounded-full bg-[#38bdf8]/12 blur-[130px] ambient-glow" style="animation-delay: 3s;"></div>
-    <div class="absolute -bottom-40 left-10 w-[550px] h-[550px] rounded-full bg-[#bc8cff]/10 blur-[140px] ambient-glow" style="animation-delay: 5s;"></div>
+  <!-- VS Code Top Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-[#0d1117]/90 backdrop-blur-md border-b border-[#30363d]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <!-- Left: Logo & Links -->
+      <div class="flex items-center gap-8">
+        <a href="#" class="flex items-center gap-2.5 font-bold text-lg text-white hover:opacity-90 transition-opacity">
+          <!-- App Logo Squircle -->
+          <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-[#0078d4] to-[#0a84ff] flex items-center justify-center shadow-sm">
+            <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </div>
+          <span>RemindGo</span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-6 text-xs text-[#8b949e]">
+          <a href="#features" class="hover:text-white transition-colors">Features</a>
+          <a href="#widgets" class="hover:text-white transition-colors">Widgets</a>
+          <a href="#habits" class="hover:text-white transition-colors">Daily Routines</a>
+          <a href="#leetcode" class="hover:text-white transition-colors">LeetCode</a>
+          <a href="#releases" class="hover:text-white transition-colors">Release Notes</a>
+          <a href="https://github.com/ihariprasanth/remindgo" target="_blank" class="hover:text-white transition-colors">GitHub</a>
+        </nav>
+      </div>
+
+      <!-- Right: Search, Theme, & Blue Download Button -->
+      <div class="flex items-center gap-3">
+        <!-- Search Pill -->
+        <div class="hidden lg:flex items-center gap-2 bg-[#161b22] border border-[#30363d] px-3 py-1.5 rounded-lg text-xs text-[#8b949e]">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <span>Search docs</span>
+          <span class="text-[10px] bg-[#21262d] border border-[#30363d] px-1.5 py-0.5 rounded text-[#c9d1d9] font-mono">Ctrl+Shift+P</span>
+        </div>
+
+        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.5/RemindGo-Setup-2.8.5.exe" class="bg-[#0078d4] hover:bg-[#0066b6] text-white font-medium px-4 py-1.5 rounded-lg text-xs transition-colors shadow-sm flex items-center gap-1.5">
+          <span>Download</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Binary Background Grid Overlay -->
+  <div class="binary-matrix-bg">
+    001011101001000011101000011100110111001100111000100111000110001101110000100111000110100101011101010001001101101101010100111010000110101101100001001011101001000011101000011100110111001100111000100111000110001101110000100111000110100101011101010001001101101101010100111010000110101101100001
+    0101001101000011010010000100010101000110010000010101001101010100010100100100010101000001010010110010000001000011010011110100010001001001010011100100011100100001001000000100100001000001010100000101000001011001001000000100001101001111010001000100100101001110010001110010000100100000
+    001011101001000011101000011100110111001100111000100111000110001101110000100111000110100101011101010001001101101101010100111010000110101101100001001011101001000011101000011100110111001100111000100111000110001101110000100111000110100101011101010001001101101101010100111010000110101101100001
+    010100100100010101001101010010010100111001000100010001110100111100100000010101100011001000101110001110000010111000110101001000000100111101000110010001100100110001001001010011100100010100100000010101000100000101010011010010110101001100100000010100110101000101001100010010010101010001000101
+    001011101001000011101000011100110111001100111000100111000110001101110000100111000110100101011101010001001101101101010100111010000110101101100001001011101001000011101000011100110111001100111000100111000110001101110000100111000110100101011101010001001101101101010100111010000110101101100001
+    01001100010001010100010101010100010000110100111101000100010001010010000001010011010101000101001001000101010000010100101100100000010000110100111101001110010101000100010101010011010101000010000001000111010001010100010101001011010100110100011001001111010100100100011101000101010001010100101101010011
+    001011101001000011101000011100110111001100111000100111000110001101110000100111000110100101011101010001001101101101010100111010000110101101100001001011101001000011101000011100110111001100111000100111000110001101110000100111000110100101011101010001001101101101010100111010000110101101100001
+    010100110101000101001100010010010101010001000101001000000100111101000110010001100100110001001001010011100100010100100000010100110101000001000101010001010100010000100000010001000100010101010011010010110101010001001111010100000010000001010111010010010100010001000111010001010101010001010011
   </div>
 
-  <div class="relative z-10">
-    <!-- Hero Section -->
-    <section class="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
-      <!-- Tag Pill -->
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full liquid-glass-pill text-xs font-medium text-white/90 mb-6 shadow-sm">
-        <span class="w-2 h-2 rounded-full bg-[#0a84ff] shadow-[0_0_8px_#0a84ff]"></span>
-        <span>RemindGo v2.8.0 • macOS Controls & Zero-Border Widgets Edition</span>
-        <span class="text-white/40">• Windows Desktop Offline App</span>
-      </div>
-
-      <!-- Main Headline -->
-      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight max-w-4xl mx-auto">
-        The Offline Task Reminder with <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#0a84ff] via-[#38bdf8] to-[#bc8cff]">Liquid Glass</span> Aesthetic.
+  <main class="relative z-10">
+    <!-- Hero Section (VS Code Style) -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-16 text-center">
+      <!-- Headline -->
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-3 max-w-4xl mx-auto leading-tight">
+        The open source offline task manager
       </h1>
-
-      <p class="text-base sm:text-lg text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-        Simultaneous zero-border desktop widgets, macOS traffic light controls, silent machine-wide installer, looping alarms, and offline LeetCode tracking — built 100% private with local SQLite.
+      <p class="text-lg sm:text-2xl text-[#8b949e] font-normal mb-8 max-w-2xl mx-auto">
+        Your home for daily coding routines & desktop widgets
       </p>
 
-      <!-- CTA Buttons -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.0/RemindGo-Setup-2.8.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] text-white font-semibold py-3 px-6 rounded-2xl shadow-[0_6px_24px_rgba(10,132,255,0.45)] text-sm transition-all hover:-translate-y-0.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-          <span>Download RemindGo Setup (.exe)</span>
+      <!-- Primary White Download Button -->
+      <div class="flex flex-col items-center justify-center gap-3 mb-6">
+        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.5/RemindGo-Setup-2.8.5.exe" class="inline-flex items-center justify-center gap-3 bg-white hover:bg-neutral-200 text-black font-semibold px-8 py-3.5 rounded-xl shadow-2xl transition-all hover:scale-[1.02]">
+          <!-- Windows 11 4-square Logo -->
+          <svg class="w-5 h-5 text-black" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.401H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.901-1.799"/>
+          </svg>
+          <span class="text-base font-semibold">Download for Windows</span>
         </a>
-        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.0/RemindGo-Portable-2.8.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/10 text-white font-medium py-3 px-6 rounded-2xl text-sm transition-all">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-          <span>Portable (.exe)</span>
-        </a>
-      </div>
 
-      <!-- Windows SmartScreen Guide -->
-      <div class="max-w-2xl mx-auto mb-16 p-4 rounded-2xl liquid-glass-card border border-white/15 bg-white/[0.03] text-left text-xs text-white/70 shadow-lg">
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-xl bg-[#0a84ff]/20 text-[#0a84ff] flex items-center justify-center flex-shrink-0 mt-0.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          </div>
-          <div>
-            <div class="font-semibold text-white text-sm mb-1">Windows Defender SmartScreen First-Time Notice</div>
-            <p class="leading-relaxed text-white/60">
-              When installing for the first time, Windows Defender SmartScreen may display <em>"Windows protected your PC"</em>. Simply click <strong class="text-white">"More info"</strong> and then <strong class="text-[#0a84ff]">"Run anyway"</strong>. RemindGo is 100% offline, local-first, free, and developed with care by <span class="text-white font-semibold">HARIPRASANTH T</span>.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Interactive Window Mockup -->
-      <div class="max-w-4xl mx-auto rounded-2xl overflow-hidden liquid-glass-card border border-white/20 shadow-[0_25px_70px_rgba(0,0,0,0.6)] text-left">
-        <!-- Window Bar -->
-        <div class="h-10 bg-black/40 border-b border-white/10 flex items-center justify-end px-4">
-          <!-- macOS Traffic Light Controls -->
-          <div class="flex items-center gap-2.5">
-            <span class="w-[12px] h-[12px] rounded-full bg-[#ffbd2e] border border-[#d89e24] shadow-sm"></span>
-            <span class="w-[12px] h-[12px] rounded-full bg-[#27c93f] border border-[#1aab29] shadow-sm"></span>
-            <span class="w-[12px] h-[12px] rounded-full bg-[#ff5f56] border border-[#e0443e] shadow-sm"></span>
-          </div>
+        <!-- Secondary Download Links -->
+        <div class="text-xs text-[#8b949e] flex items-center gap-2 font-sans">
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.5/RemindGo-Portable-2.8.5.exe" class="hover:text-white underline underline-offset-2">Portable edition</a>
+          <span>•</span>
+          <a href="#releases" class="hover:text-white underline underline-offset-2">v2.8.5 release notes</a>
+          <span>•</span>
+          <a href="https://github.com/ihariprasanth/remindgo" target="_blank" class="hover:text-white underline underline-offset-2">GitHub repository</a>
         </div>
 
-        <!-- Window Body -->
-        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-black/20">
-          <!-- Left Mockup Column: LeetCode Widget -->
-          <div class="liquid-glass-pill p-4 rounded-xl space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-[#f59e0b]">LeetCode Profile</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#39d353]/15 text-[#39d353]">Live Synced</span>
-            </div>
-            <div class="text-2xl font-bold font-mono text-white">312 <span class="text-xs font-normal text-white/50">/ 4,055 Solved</span></div>
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between text-[11px] text-white/70"><span>Easy</span><span class="text-[#39d353]">145 / 965</span></div>
-              <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="w-1/3 h-full bg-[#39d353]"></div></div>
-              <div class="flex justify-between text-[11px] text-white/70"><span>Medium</span><span class="text-[#f59e0b]">138 / 2,115</span></div>
-              <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="w-1/4 h-full bg-[#f59e0b]"></div></div>
-            </div>
-            <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-white/60">
-              <span>Streak: <strong class="text-[#f43f5e]">14 days</strong></span>
-              <span>Rank: <strong>#45,210</strong></span>
-            </div>
-          </div>
-
-          <!-- Middle & Right Mockup Columns: Heatmap & Today -->
-          <div class="md:col-span-2 space-y-4">
-            <!-- Heatmap Grid Mockup -->
-            <div class="liquid-glass-pill p-4 rounded-xl space-y-2">
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-semibold text-white">Classical GitHub Green Heatmap</span>
-                <span class="text-[11px] text-emerald-400 font-mono">Tasks + LeetCode</span>
-              </div>
-              <div class="grid grid-cols-12 gap-1.5 pt-1">
-                <div class="h-3 rounded-[2px] bg-[#0e4429]"></div>
-                <div class="h-3 rounded-[2px] bg-[#006d32]"></div>
-                <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
-                <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
-                <div class="h-3 rounded-[2px] bg-[#006d32]"></div>
-                <div class="h-3 rounded-[2px] bg-[#0e4429]"></div>
-                <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
-                <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
-                <div class="h-3 rounded-[2px] bg-[#006d32]"></div>
-                <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
-                <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
-                <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
-              </div>
-            </div>
-
-            <!-- Alarm & Reminder Notification Mockup -->
-            <div class="p-3.5 rounded-xl border border-[#0a84ff]/30 bg-[#0a84ff]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-[#0a84ff]/20 flex items-center justify-center text-[#0a84ff] flex-shrink-0">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                </div>
-                <div>
-                  <div class="text-xs font-bold text-white">Alarm: Daily LeetCode Challenge</div>
-                  <div class="text-[11px] text-white/60">Scheduled 14:00 • Looping Audio Synchronized</div>
-                </div>
-              </div>
-              <div class="flex flex-wrap items-center gap-1.5">
-                <span class="text-[10px] px-2 py-0.5 rounded-lg bg-white/10 text-white/70 border border-white/10">5 min</span>
-                <span class="text-[10px] px-2 py-0.5 rounded-lg bg-white/10 text-white/70 border border-white/10">10 min</span>
-                <span class="text-[10px] px-2 py-0.5 rounded-lg bg-white/10 text-white/70 border border-white/10">15 min</span>
-                <span class="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-[#34c759] text-white shadow-sm">Thank you I will do it now</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Key Features Grid -->
-    <section id="features" class="max-w-6xl mx-auto px-6 py-16">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Engineered for Precision & Privacy</h2>
-        <p class="text-xs sm:text-sm text-white/50 max-w-xl mx-auto">
-          Everything runs entirely on your local Windows PC without third-party tracking or cloud dependence.
+        <p class="text-[11px] text-[#8b949e] max-w-sm text-center">
+          By using RemindGo, you agree to its <a href="https://github.com/ihariprasanth/remindgo/blob/main/LICENSE" target="_blank" class="underline hover:text-white">MIT license</a> and privacy statement.
         </p>
       </div>
 
+      <!-- Windows SmartScreen First-Time Helper -->
+      <div class="max-w-xl mx-auto mb-14 px-4 py-2.5 rounded-xl bg-[#161b22] border border-[#30363d] text-xs text-[#8b949e] flex items-center gap-3 text-left">
+        <div class="w-5 h-5 rounded-md bg-[#0078d4]/20 text-[#58a6ff] flex items-center justify-center flex-shrink-0 font-bold text-xs">i</div>
+        <div>
+          <span class="text-white font-medium">First-time Windows installation?</span> If Windows Defender SmartScreen appears, click <strong class="text-white">"More info"</strong> and then <strong class="text-[#58a6ff]">"Run anyway"</strong>. 100% Offline & Open Source.
+        </div>
+      </div>
+
+      <!-- Hero Mockup: Large Dark Editor in Vibrant Blue Frame (VS Code Hero Structure) -->
+      <div class="vscode-blue-frame p-3 sm:p-5 max-w-5xl mx-auto text-left">
+        <div class="rounded-2xl overflow-hidden bg-[#0d1117] border border-[#30363d] shadow-2xl">
+          <!-- Window Header with macOS Traffic Lights -->
+          <div class="h-10 bg-[#161b22] border-b border-[#30363d] flex items-center justify-between px-4">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-[#ff5f56]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#ffbd2e]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#27c93f]"></span>
+              <span class="ml-2 text-xs font-mono text-[#8b949e]">RemindGo Desktop • TodayRoutine.tsx</span>
+            </div>
+            <div class="text-[11px] font-mono text-[#58a6ff] bg-[#58a6ff]/10 border border-[#58a6ff]/20 px-2 py-0.5 rounded">
+              v2.8.5 Live
+            </div>
+          </div>
+
+          <!-- Mockup Main Body (Split 2-pane VS Code Editor style) -->
+          <div class="grid grid-cols-1 md:grid-cols-12 min-h-[380px]">
+            <!-- Left Pane: Code / Habit Checklist -->
+            <div class="md:col-span-7 p-5 font-mono text-xs border-r border-[#30363d] space-y-3 bg-[#0d1117]">
+              <div class="flex items-center justify-between text-[#8b949e] pb-2 border-b border-[#30363d]/50">
+                <span>// Daily Routine Checklist • Auto-resets at 12:00 AM IST</span>
+                <span class="text-[#7ee787]">5/5 Completed</span>
+              </div>
+
+              <div class="space-y-2 text-[#c9d1d9]">
+                <div class="flex items-center gap-3 p-2 rounded-lg bg-[#161b22] border border-[#30363d]">
+                  <span class="text-[#7ee787] font-bold">✓</span>
+                  <span class="line-through text-[#8b949e]">Daily LeetCode Problem (POTD)</span>
+                  <span class="ml-auto text-[10px] text-[#8b949e]">20:00 IST</span>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg bg-[#161b22] border border-[#30363d]">
+                  <span class="text-[#7ee787] font-bold">✓</span>
+                  <span class="line-through text-[#8b949e]">CodeChef Contest / Problem Practice</span>
+                  <span class="ml-auto text-[10px] text-[#8b949e]">20:00 IST</span>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg bg-[#161b22] border border-[#30363d]">
+                  <span class="text-[#7ee787] font-bold">✓</span>
+                  <span class="line-through text-[#8b949e]">GeeksForGeeks Problem of the Day</span>
+                  <span class="ml-auto text-[10px] text-[#8b949e]">20:00 IST</span>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg bg-[#161b22] border border-[#30363d]">
+                  <span class="text-[#7ee787] font-bold">✓</span>
+                  <span class="line-through text-[#8b949e]">JavaScript Learning & Core Concepts</span>
+                  <span class="ml-auto text-[10px] text-[#8b949e]">20:00 IST</span>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg bg-[#161b22] border border-[#30363d]">
+                  <span class="text-[#7ee787] font-bold">✓</span>
+                  <span class="line-through text-[#8b949e]">Project Work & GitHub Release Engine</span>
+                  <span class="ml-auto text-[10px] text-[#8b949e]">20:00 IST</span>
+                </div>
+              </div>
+
+              <div class="pt-3 text-[11px] text-[#8b949e]">
+                <span class="text-[#ff7b72]">const</span> <span class="text-[#79c0ff]">persistentCoordinates</span> = <span class="text-[#a5d6ff]">true</span>; <span class="text-[#8b949e]">// Saved to widget-positions.json</span>
+              </div>
+            </div>
+
+            <!-- Right Pane: Live Activity Matrix & LeetCode Streak -->
+            <div class="md:col-span-5 p-5 bg-[#161b22] flex flex-col justify-between space-y-4">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-semibold text-white">Task Activity Matrix</span>
+                  <span class="text-[10px] font-mono text-[#f78166] flex items-center gap-1">
+                    🔥 257d streak
+                  </span>
+                </div>
+                <!-- 20-week Heatmap Grid -->
+                <div class="grid grid-cols-10 gap-1.5 p-3 rounded-xl bg-[#0d1117] border border-[#30363d]">
+                  <div class="h-3 rounded-[2px] bg-[#0e4429]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#0e4429]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#006d32]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#0e4429]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#006d32]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#26a641]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                  <div class="h-3 rounded-[2px] bg-[#39d353]"></div>
+                </div>
+              </div>
+
+              <!-- LeetCode Streak Flame Card -->
+              <div class="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d] flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span class="text-[#f78166]">🔥</span>
+                    <span>LeetCode Daily Streak</span>
+                  </div>
+                  <div class="text-[11px] font-mono text-[#8b949e] mt-1">
+                    Solved: <strong class="text-white">389</strong> • Rank: <span class="text-[#7ee787]">#322,275</span>
+                  </div>
+                </div>
+                <a href="https://leetcode.com/problemset/all/" target="_blank" class="px-2.5 py-1 rounded-lg bg-[#238636] hover:bg-[#2ea043] text-white text-[10px] font-semibold transition-colors">
+                  Solve POTD
+                </a>
+              </div>
+
+              <div class="text-[10px] font-mono text-[#8b949e] flex justify-between border-t border-[#30363d] pt-2">
+                <span>8:00 PM Reminder</span>
+                <span class="text-[#d29922]">10:00 PM Warning</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Section 1: Split Layout (VS Code "Agents that build for you" style) -->
+    <section id="widgets" class="max-w-6xl mx-auto px-4 sm:px-6 py-20 border-t border-[#30363d]">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Left Text -->
+        <div class="lg:col-span-5 space-y-4">
+          <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
+            Widgets that live on your desktop
+          </h2>
+          <p class="text-sm sm:text-base text-[#8b949e] leading-relaxed">
+            Deploy 7 standalone desktop companions that float on your wallpaper with 100% transparency. Check off daily coding routines, track your LeetCode streak, and monitor 8:00 PM reminders without opening a bulky browser.
+          </p>
+          <p class="text-sm text-[#8b949e] leading-relaxed">
+            Dock the Task Activity Matrix in the top-right corner, place the LeetCode Flame Streak in the top-left, and keep Today's Daily Checklist ready on the right edge. <strong class="text-white font-medium">Each widget remembers its exact desktop coordinates across restarts.</strong>
+          </p>
+          <div class="pt-2">
+            <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.5/RemindGo-Setup-2.8.5.exe" class="inline-flex items-center gap-2 text-sm text-[#58a6ff] hover:underline font-medium">
+              <span>Install RemindGo for Windows</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Blue Frame with Desktop Widgets Showcase -->
+        <div class="lg:col-span-7">
+          <div class="vscode-blue-frame p-3 sm:p-5">
+            <div class="rounded-2xl bg-[#0d1117] border border-[#30363d] p-5 space-y-4 text-xs font-mono shadow-2xl">
+              <!-- Widget Row 1 -->
+              <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#238636]/20 text-[#7ee787] flex items-center justify-center font-bold">▦</div>
+                  <div>
+                    <div class="font-bold text-white font-sans">Task Activity Matrix</div>
+                    <div class="text-[10px] text-[#8b949e]">20-week activity heatmap & streak counter</div>
+                  </div>
+                </div>
+                <span class="text-[10px] bg-[#238636]/20 text-[#7ee787] px-2 py-0.5 rounded-full border border-[#238636]/40">Active</span>
+              </div>
+
+              <!-- Widget Row 2 -->
+              <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#f78166]/20 text-[#f78166] flex items-center justify-center font-bold">🔥</div>
+                  <div>
+                    <div class="font-bold text-white font-sans">LeetCode Daily Streak</div>
+                    <div class="text-[10px] text-[#8b949e]">Pulsing streak counter, rank, and 1-click solve</div>
+                  </div>
+                </div>
+                <span class="text-[10px] bg-[#f78166]/20 text-[#f78166] px-2 py-0.5 rounded-full border border-[#f78166]/40">Pinned</span>
+              </div>
+
+              <!-- Widget Row 3 -->
+              <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#0078d4]/20 text-[#58a6ff] flex items-center justify-center font-bold">☑</div>
+                  <div>
+                    <div class="font-bold text-white font-sans">Today's Daily Checklist</div>
+                    <div class="text-[10px] text-[#8b949e]">1-click checkoff for routine & daily to-dos</div>
+                  </div>
+                </div>
+                <span class="text-[10px] bg-[#0078d4]/20 text-[#58a6ff] px-2 py-0.5 rounded-full border border-[#0078d4]/40">Live Sync</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Section 2: 3-Column Card Grid (VS Code "Any agent, any model" style) -->
+    <section id="features" class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Feature 1 -->
-        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#0a84ff]/20 text-[#0a84ff] flex items-center justify-center">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7zM9 12h6M9 16h4"></path></svg>
-          </div>
-          <h3 class="text-base font-bold text-white">100% Offline SQLite</h3>
-          <p class="text-xs text-white/60 leading-relaxed">
-            All tasks, timestamps, and preferences are stored locally in an embedded SQLite binary database. No telemetry, no external accounts.
+        <!-- Card 1 -->
+        <div class="vscode-card p-6 space-y-3">
+          <h3 class="text-lg font-bold text-white">Any widget, any screen</h3>
+          <p class="text-xs text-[#8b949e] leading-relaxed">
+            Use the layout that fits your multi-monitor workflow. Run 7 standalone desktop widgets simultaneously or dock them to any corner. Move them anywhere — your coordinates are remembered across reboots.
           </p>
+          <div class="text-xs text-[#58a6ff] font-medium pt-2">
+            7 standalone widgets supported &rarr;
+          </div>
         </div>
 
-        <!-- Feature 2 -->
-        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#f59e0b]/20 text-[#f59e0b] flex items-center justify-center">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-          </div>
-          <h3 class="text-base font-bold text-white">11 Synthesized Audio Tones</h3>
-          <p class="text-xs text-white/60 leading-relaxed">
-            Crystal drop, Zen bowl, marimba alert, cosmic beacon, harp glissando, digital alarm, and radar pulses synthesized entirely offline using the Web Audio API.
+        <!-- Card 2 -->
+        <div class="vscode-card p-6 space-y-3">
+          <h3 class="text-lg font-bold text-white">All your routines, one matrix</h3>
+          <p class="text-xs text-[#8b949e] leading-relaxed">
+            Stay consistent with automatic 12:00 AM IST midnight resets. Track your LeetCode POTD, CodeChef contests, GFG problems, and custom development milestones on an authentic GitHub green matrix.
           </p>
+          <div class="text-xs text-[#58a6ff] font-medium pt-2">
+            Automated +5:30 IST sync &rarr;
+          </div>
         </div>
 
-        <!-- Feature 3 -->
-        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#58a6ff]/20 text-[#58a6ff] flex items-center justify-center">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-          </div>
-          <h3 class="text-base font-bold text-white">LeetCode Sync & Cache</h3>
-          <p class="text-xs text-white/60 leading-relaxed">
-            Track solved problem counts (Easy, Medium, Hard), global ranking, and streak. Today's daily challenge can be added as a reminder in one click.
+        <!-- Card 3 -->
+        <div class="vscode-card p-6 space-y-3">
+          <h3 class="text-lg font-bold text-white">100% Offline, local SQLite</h3>
+          <p class="text-xs text-[#8b949e] leading-relaxed">
+            Zero cloud subscriptions, zero external telemetry, and zero mandatory accounts. Everything is saved locally in encrypted SQLite on your Windows PC. Your habit data is strictly yours.
           </p>
+          <div class="text-xs text-[#58a6ff] font-medium pt-2">
+            Zero cloud dependency &rarr;
+          </div>
         </div>
+      </div>
 
-        <!-- Feature 4 -->
-        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#22c55e]/20 text-[#22c55e] flex items-center justify-center">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-          </div>
-          <h3 class="text-base font-bold text-white">Classical Green Heatmap</h3>
-          <p class="text-xs text-white/60 leading-relaxed">
-            Dynamic calendar grid with authentic GitHub classical green intensity blocks for task completions and LeetCode submissions with streak tracking.
-          </p>
+      <!-- Free Banner (VS Code "Start building with AI agents for free" style) -->
+      <div class="mt-8 p-8 rounded-2xl bg-gradient-to-r from-[#161b22] via-[#0d1117] to-[#161b22] border border-[#30363d] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+        <div>
+          <h3 class="text-2xl font-bold text-white">Start building your coding habits for free</h3>
+          <p class="text-xs text-[#8b949e] mt-1">No trial. No credit card required. 100% Free and Open Source under MIT.</p>
         </div>
-
-        <!-- Feature 5 -->
-        <!-- Feature 5 -->
-        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#f43f5e]/20 text-[#f43f5e] flex items-center justify-center">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-          </div>
-          <h3 class="text-base font-bold text-white">Multi-Variant Desktop Widgets</h3>
-          <p class="text-xs text-white/60 leading-relaxed">
-            4 selectable standalone widget styles: dedicated LeetCode Submissions Heatmap, dedicated Task History Heatmap, Today's To-Do Checklist, or Combined Overview. Locked against accidental dragging.
-          </p>
-        </div>
-
-        <!-- Feature 6 -->
-        <div class="liquid-glass-card rounded-2xl p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[#34c759]/20 text-[#34c759] flex items-center justify-center">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          </div>
-          <h3 class="text-base font-bold text-white">IST Timezone & Midnight Reset</h3>
-          <p class="text-xs text-white/60 leading-relaxed">
-            Calibrated strictly to Indian Standard Time (UTC+05:30) with an automatic 12:00 AM midnight reset that rolls over and starts tracking the next day immediately.
-          </p>
-        </div>
+        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.5/RemindGo-Setup-2.8.5.exe" class="bg-white hover:bg-neutral-200 text-black font-semibold px-6 py-2.5 rounded-xl text-xs transition-all shadow-md flex-shrink-0">
+          Download v2.8.5
+        </a>
       </div>
     </section>
 
-    <!-- Developer Profile Section -->
-    <section id="developer" class="max-w-4xl mx-auto px-6 py-16">
-      <div class="liquid-glass-card rounded-3xl p-8 md:p-10 relative overflow-hidden">
-        <div class="flex flex-col md:flex-row items-center gap-8">
-          <!-- Avatar (No stroke / borders) -->
-          <div class="w-28 h-28 rounded-3xl overflow-hidden shadow-2xl flex-shrink-0">
-            <img src="./developer-profile.png" alt="HARIPRASANTH T" class="w-full h-full object-cover rounded-3xl" />
+    <!-- Feature Section 3: World-Class Routine Manager (VS Code Split style) -->
+    <section id="habits" class="max-w-6xl mx-auto px-4 sm:px-6 py-20 border-t border-[#30363d]">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Left Text -->
+        <div class="lg:col-span-5 space-y-4">
+          <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
+            A world-class routine manager at its core
+          </h2>
+          <p class="text-sm sm:text-base text-[#8b949e] leading-relaxed">
+            Engineered specifically for Windows 10 & 11 with custom DirectComposition transparent windows, authentic macOS traffic light controls, low-RAM footprint (~70MB), and intelligent looping alarms.
+          </p>
+          <p class="text-sm text-[#8b949e] leading-relaxed">
+            Consolidated audio alarms notify you at 8:00 PM IST for pending tasks and warn you at 10:00 PM IST cutoff so you never break your active coding streak.
+          </p>
+          <div class="pt-2">
+            <a href="https://github.com/ihariprasanth/remindgo" target="_blank" class="inline-flex items-center gap-2 text-sm text-[#58a6ff] hover:underline font-medium">
+              <span>View source code on GitHub</span>
+              <span>&rarr;</span>
+            </a>
           </div>
+        </div>
 
-          <!-- Bio -->
-          <div class="text-center md:text-left flex-1">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass-pill text-xs font-semibold text-[#39d353] mb-2">
-              <span>Creator & Lead Developer</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2 tracking-wide">HARIPRASANTH T</h2>
-            <p class="text-xs sm:text-sm text-white/70 mb-4 leading-relaxed">
-              Software Engineer & desktop tool craftsman passionate about building privacy-first offline utilities, native-fidelity user interfaces, and seamless developer workflows.
-            </p>
-            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs text-white/60 mb-4">
-              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">Electron</span>
-              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">React</span>
-              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">TypeScript</span>
-              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">SQLite</span>
-              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">Liquid Glass UI</span>
-            </div>
-            <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
-              <a href="https://www.linkedin.com/in/ihariprasanth/" target="_blank" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0a84ff]/20 hover:bg-[#0a84ff]/30 text-xs font-semibold text-[#38bdf8] transition-all">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74V9.92H5.06v8.58h2.8z"/></svg>
-                <span>LinkedIn</span>
-              </a>
-              <a href="https://github.com/ihariprasanth" target="_blank" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition-all">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-                <span>GitHub @ihariprasanth</span>
-              </a>
-              <a href="https://github.com/ihariprasanth/remindgo" target="_blank" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl liquid-glass-pill hover:bg-white/10 text-xs font-semibold text-white/90 transition-all">
-                <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                <span>Star on GitHub</span>
-              </a>
+        <!-- Right Blue Frame -->
+        <div class="lg:col-span-7">
+          <div class="vscode-blue-frame p-3 sm:p-5">
+            <div class="rounded-2xl bg-[#0d1117] border border-[#30363d] p-6 text-xs font-mono shadow-2xl space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-[#30363d]">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#7ee787]"></span>
+                  <span class="text-white font-bold font-sans">Windows Low-RAM Engine</span>
+                </div>
+                <span class="text-[#7ee787]">~70MB Active</span>
+              </div>
+              <div class="text-[#8b949e] space-y-1.5">
+                <div><span class="text-[#ff7b72]">import</span> { AlarmScheduler } <span class="text-[#ff7b72]">from</span> <span class="text-[#a5d6ff]'">'./scheduler'</span>;</div>
+                <div><span class="text-[#ff7b72]">const</span> scheduler = <span class="text-[#ff7b72]">new</span> <span class="text-[#79c0ff]">AlarmScheduler</span>();</div>
+                <div class="text-[#7ee787]">// Consolidated alarms: combines same-minute tasks</div>
+                <div>scheduler.<span class="text-[#d2a8ff]">onReminder</span>(<span class="text-[#a5d6ff]'20:00'</span>, <span class="text-[#79c0ff]">TaskCategories</span>.Coding);</div>
+                <div>scheduler.<span class="text-[#d2a8ff]">onWarning</span>(<span class="text-[#a5d6ff]'22:00'</span>, <span class="text-[#79c0ff]">CutoffPolicy</span>.Strict);</div>
+              </div>
+              <div class="p-3 rounded-lg bg-[#161b22] border border-[#30363d] flex items-center justify-between text-[11px]">
+                <span class="text-white font-sans">Memory Consumption:</span>
+                <span class="text-[#7ee787] font-bold font-mono">65% lower than standard Electron</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Version Release Changelog -->
-    <section id="releases" class="max-w-4xl mx-auto px-6 py-16">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Release Roadmap & Changelog</h2>
-        <p class="text-xs text-white/50">Continuous improvements committed to the GitHub repository</p>
+    <!-- Platform Badges Section (VS Code "Code in any language" style) -->
+    <section id="leetcode" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-[#30363d]">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <h2 class="text-3xl font-bold text-white mb-2">Track on any platform</h2>
+        <p class="text-xs text-[#8b949e]">RemindGo supports daily habit tracking for all major competitive programming & dev routines.</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 max-w-4xl mx-auto">
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#f59e0b] font-bold">LC</span> <span>LeetCode</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#58a6ff] font-bold">CC</span> <span>CodeChef</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#7ee787] font-bold">GFG</span> <span>GeeksForGeeks</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-white font-bold">GH</span> <span>GitHub</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#f78166] font-bold">JS</span> <span>JavaScript</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#58a6ff] font-bold">TS</span> <span>TypeScript</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#38bdf8] font-bold">PY</span> <span>Python</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#bc8cff] font-bold">C++</span> <span>C / C++</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#f43f5e] font-bold">JA</span> <span>Java</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#38bdf8] font-bold">RE</span> <span>React</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#0078d4] font-bold">SQL</span> <span>SQLite</span>
+        </div>
+        <div class="vscode-card p-3 flex items-center gap-2 text-xs text-white">
+          <span class="text-[#7ee787] font-bold">DSA</span> <span>Algorithms</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Release Notes / Changelog Section -->
+    <section id="releases" class="max-w-4xl mx-auto px-4 sm:px-6 py-16 border-t border-[#30363d]">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-white">Release Notes</h2>
+        <p class="text-xs text-[#8b949e]">Latest version commits and upgrades</p>
       </div>
 
       <div class="space-y-4">
+        <!-- v2.8.5 (Current) -->
+        <div class="vscode-card p-6 border-l-4 border-l-[#0078d4]">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-white">v2.8.5 — Persistent Desktop Coordinates & Visual Studio Code Design</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0078d4]/20 text-[#58a6ff]">Latest Release</span>
+            </div>
+            <span class="text-xs text-[#8b949e] font-mono">v2.8.5</span>
+          </div>
+          <ul class="text-xs text-[#8b949e] space-y-1.5 list-disc list-inside">
+            <li><strong class="text-white">Persistent Desktop Widget Coordinates</strong>: Hardened coordinate persistence engine using <code>widget-positions.json</code> and SQLite. Any place on your desktop where you drag a widget is permanently remembered across app restarts, reboots, and window close events.</li>
+            <li><strong class="text-white">Visual Studio Code Website Design</strong>: Complete visual redesign of the official landing website matching the exact dark binary matrix background, top navigation bar, blue rounded mockup backdrops, and 3-column card grid.</li>
+            <li><strong class="text-white">Zero-Border Desktop Transparency</strong>: 100% transparent frameless window canvas without white background leaks or container boxes.</li>
+            <li><strong class="text-white">Authentic macOS Traffic Lights</strong>: Pixel-perfect circular buttons with specular highlights and smooth hover animations.</li>
+            <li><strong class="text-white">Silent All-Users Machine Installer</strong>: NSIS setup defaults machine-wide to <code>Program Files\RemindGo</code> without prompting.</li>
+          </ul>
+        </div>
+
         <!-- v2.8.0 -->
-        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-[#0a84ff]">
+        <div class="vscode-card p-6 border-l-4 border-l-[#30363d]">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.8.0 — True Zero-Border Transparent Desktop Widgets, macOS Traffic Lights & Silent All-Users Installer</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0a84ff]/20 text-[#0a84ff]">Latest Release</span>
-            </div>
-            <span class="text-xs text-white/40 font-mono">v2.8.0</span>
-          </div>
-          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Zero-Border Desktop Widgets: Completely eliminated the white background container underneath desktop widgets by resolving compositor process conflicts and applying strict transparent window canvas settings. Pure pitch-black cards floating natively on Windows desktop.</li>
-            <li>Authentic macOS Traffic Light Controls: Restored circular macOS buttons (Yellow Minimize, Green Maximize/Restore, Red Close) with specular highlights and smooth hover animations positioned on the right titlebar.</li>
-            <li>Machine-Wide All-Users Installer: Streamlined NSIS setup with <code>perMachine: true</code> to install directly for all computer users without showing any user-selection prompt.</li>
-            <li>Windows SmartScreen Notice: First-time setup guidance (Click <em>More info</em> &rarr; <em>Run anyway</em>) and verified developer metadata for HARIPRASANTH T.</li>
-          </ul>
-        </div>
-
-        <!-- v2.7.0 Final -->
-        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.7.0 Final — Simultaneous Multi-Widget Desktop Engine & 65% Windows Low-RAM Architecture</span>
+              <span class="font-bold text-sm text-white">v2.8.0 — Zero-Border Desktop Widgets & macOS Traffic Light Controls</span>
               <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
             </div>
-            <span class="text-xs text-white/40 font-mono">v2.7.0</span>
+            <span class="text-xs text-[#8b949e] font-mono">v2.8.0</span>
           </div>
-          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Simultaneous Multi-Widget Desktop Engine: Run multiple independent standalone widgets simultaneously across your Windows desktop wallpaper (e.g. Task Activity Matrix, LeetCode Streak, Daily Checklist in different corners).</li>
-            <li>Independent Drag & Drop Coordinates: Each widget can be freely dragged, placed anywhere, and remembers its exact desktop coordinates across app restarts.</li>
-            <li>Windows Low-RAM Engine: Memory consumption reduced by over 65% (down from ~250MB+ to ~70–90MB) using shared-renderer process limits, heap capping, and automatic idle V8 garbage collection.</li>
-            <li>Desktop Multi-Widget Hub: Interactive 1-click toggles in Preferences and Windows System Tray to launch, close, or mass-launch any combination of widgets.</li>
-            <li>Automated GitHub Pages Deployment: Official CI/CD GitHub Actions workflow ensures the live showcase website updates immediately on every commit.</li>
-          </ul>
-        </div>
-
-        <!-- v2.6.1 -->
-        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.6.1 — Green LeetCode Heatmap, Dedicated Streak Widget & Consolidated Alarms</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
-            </div>
-            <span class="text-xs text-white/40 font-mono">v2.6.1</span>
-          </div>
-          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Classical Green LeetCode Heatmap: Replaced amber squares with authentic GitHub green blocks on pure pitch-black background.</li>
-            <li>Dedicated LeetCode Daily Streak Flame Widget: Pulsing streak counter, rank, and 1-click POTD solve launcher.</li>
-            <li>Consolidated Multi-Task Alarms: Automatically combines all tasks due at the same minute into a single alarm window with unified single-audio playback.</li>
-          </ul>
-        </div>
-
-        <!-- v2.6.0 -->
-        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.6.0 — Standalone Desktop Widgets, Standard Window Controls & Daily Routine Tracking</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
-            </div>
-            <span class="text-xs text-white/40 font-mono">v2.6.0</span>
-          </div>
-          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Standalone Desktop Widgets: Pure pitch-black OLED background (#000000) for vivid heatmap contrast, featuring Task Activity Matrix, Daily Checklist, LeetCode Activity, Coding Platforms Hub, Routine & Streak Progress Meter, and Minimalist Pill.</li>
-            <li>Clean Standard Window Controls: Replaced traffic lights with clean, professional standard controls (Minimize, Maximize/Restore, Close).</li>
-            <li>Strict Heatmap Separation: Main Dashboard strictly hosts the To-Do Tasks Completion Heatmap; LeetCode submissions calendar is housed exclusively inside the LeetCode tab.</li>
-            <li>8:00 PM Daily Reminder ("Complete Today Tasks") and 10:00 PM Incomplete Tasks Warning.</li>
-          </ul>
-        </div>
-
-        <!-- v2.5.6 -->
-        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.5.6 — Multi-Variant Desktop Widgets & Apple SF Pro</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
-            </div>
-            <span class="text-xs text-white/40 font-mono">v2.5.6</span>
-          </div>
-          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Multi-Variant Desktop Widgets: Dedicated LeetCode submissions, tasks heatmap, and checklist.</li>
-            <li>Enforced Apple San Francisco typography stack across all user interfaces.</li>
-            <li>Zero Emojis: 100% clean professional software design.</li>
-          </ul>
-        </div>
-
-        <!-- v2.5.5 -->
-        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.5.5 — Dedicated Reminder Actions, macOS Traffic Lights & Pure Dark</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
-            </div>
-            <span class="text-xs text-white/40 font-mono">v2.5.5</span>
-          </div>
-          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Dedicated Reminder Actions: "Thank you I will do it now", "5 min", "10 min", "15 min" with synchronized audio loop termination.</li>
-            <li>Multi-window audio ghosting resolution ensuring background audio stops immediately across all windows on dismissal or snooze.</li>
-            <li>macOS Traffic Light window controls (Close, Minimize, Maximize) positioned on the right side.</li>
-            <li>Pure pitch-black OLED dark mode exclusively across the entire application and website.</li>
-            <li>Default automatic launch on Windows boot and Desktop Widget auto-spawned in top-right corner.</li>
-            <li>Apple San Francisco typography stack enforced across all user interfaces.</li>
-          </ul>
-        </div>
-
-        <!-- v2.5.4 -->
-        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.5.4 — Professional Clean UI & Desktop-Locked Widget</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
-            </div>
-            <span class="text-xs text-white/40 font-mono">v2.5.4</span>
-          </div>
-          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Refined Minimalist UI: Removed redundant bottom status bar, sidebar header branding, and SQLite badge.</li>
-            <li>Desktop-Locked Standalone Widget: Non-draggable when locked; sits quietly at desktop background level.</li>
-            <li>Apple San Francisco typography stack with enhanced base font sizing for superior readability.</li>
-            <li>Expanded to 11 synthesized offline Web Audio tones including Crystal Drop, Zen Bowl, and Marimba.</li>
-            <li>Enforced strict Indian Standard Time (+05:30 IST) engine with automatic 12:00 AM midnight reset.</li>
+          <ul class="text-xs text-[#8b949e] space-y-1 list-disc list-inside">
+            <li>Eliminated white rectangular containers under desktop widgets.</li>
+            <li>Restored authentic macOS Traffic Lights on the right side of the titlebar.</li>
+            <li>Configured NSIS installer with <code>perMachine: true</code> for all-users setup without user selection dialogs.</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- Download Hub Section -->
-    <section id="download" class="max-w-4xl mx-auto px-6 py-16 text-center">
-      <div class="liquid-glass-card rounded-3xl p-10 flex flex-col items-center">
-        <h2 class="text-3xl font-extrabold text-white mb-3">Download RemindGo for Windows</h2>
-        <p class="text-xs sm:text-sm text-white/60 max-w-md mx-auto mb-8">
+    <!-- Download CTA Section (VS Code Footer CTA style) -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 py-16 text-center">
+      <div class="vscode-card p-10 flex flex-col items-center">
+        <h2 class="text-3xl font-bold text-white mb-2">Download RemindGo for Windows</h2>
+        <p class="text-xs sm:text-sm text-[#8b949e] max-w-md mx-auto mb-8">
           Download the official Windows installer with automatic Desktop shortcut creation or grab the portable standalone version.
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.0/RemindGo-Setup-2.8.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0a84ff] hover:bg-[#0066d6] text-white font-semibold py-3 px-6 rounded-2xl shadow-lg text-xs transition-all hover:scale-105">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.5/RemindGo-Setup-2.8.5.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0078d4] hover:bg-[#0066b6] text-white font-semibold py-3 px-6 rounded-xl shadow-lg text-xs transition-all hover:scale-105">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.401H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.901-1.799"/>
+            </svg>
             <span>Download RemindGo Setup (.exe)</span>
-            <span class="text-white/50 text-[10px]">~91 MB</span>
+            <span class="text-white/60 text-[10px]">~91 MB</span>
           </a>
-          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.0/RemindGo-Portable-2.8.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/15 text-white font-semibold py-3 px-6 rounded-2xl text-xs transition-all hover:scale-105">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            <span>Download RemindGo Portable (.exe)</span>
-            <span class="text-white/50 text-[10px]">~91 MB</span>
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.5/RemindGo-Portable-2.8.5.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#21262d] hover:bg-[#30363d] text-white font-semibold py-3 px-6 rounded-xl text-xs transition-all border border-[#30363d]">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Download Portable (.exe)</span>
+            <span class="text-white/60 text-[10px]">~91 MB</span>
           </a>
         </div>
+
         <div class="mt-4">
-          <a href="https://github.com/ihariprasanth/remindgo/releases" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors">
+          <a href="https://github.com/ihariprasanth/remindgo/releases" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-[#8b949e] hover:text-white transition-colors">
             <span>View all releases and assets on GitHub</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
           </a>
         </div>
       </div>
     </section>
+  </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/10 py-8 text-center text-xs text-white/40 font-mono">
-      <div>RemindGo Desktop • Developed by HARIPRASANTH T</div>
-      <div class="mt-1 text-[11px] text-white/30">MIT License • 100% Offline & Open Source</div>
-    </footer>
-  </div>
+  <!-- VS Code Style Dark Footer -->
+  <footer class="border-t border-[#30363d] py-10 text-center text-xs text-[#8b949e]">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-[#7ee787]"></span>
+        <span class="text-white font-medium">RemindGo Desktop</span>
+        <span>• Developed by <strong class="text-white">HARIPRASANTH T</strong></span>
+      </div>
+      <div class="text-[11px] text-[#8b949e]">
+        MIT License • 100% Offline & Open Source
+      </div>
+      <div class="flex items-center gap-4 text-xs">
+        <a href="https://github.com/ihariprasanth/remindgo" target="_blank" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://github.com/ihariprasanth/remindgo/releases" target="_blank" class="hover:text-white transition-colors">Releases</a>
+        <a href="https://github.com/ihariprasanth/remindgo/blob/main/LICENSE" target="_blank" class="hover:text-white transition-colors">License</a>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
