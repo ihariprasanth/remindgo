@@ -556,7 +556,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="w-16 h-16 rounded-[16px] overflow-hidden shadow-xl border border-white/20 mb-3 bg-white p-0.5">
           <img src={logoSquircle} alt="RemindGo" className="w-full h-full object-cover rounded-[14px]" />
         </div>
-        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.8.0 • Liquid Glass Edition</div>
+        <div className="font-semibold text-sm text-[var(--text-main)]">RemindGo v2.8.5 • Visual Studio Code Edition</div>
         <div className="text-[11px] text-[var(--text-sub)] mt-0.5">
           Multi-Widget Desktop Engine • Windows Low-RAM Architecture • Local SQLite
         </div>

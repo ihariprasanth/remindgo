@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.8.0';
-  const commitMsg = `Release v2.8.0: Zero-Border Transparent Desktop Widgets, macOS Traffic Light Controls, and Silent All-Users Machine Installer`;
+  const version = 'v2.8.5';
+  const commitMsg = `Release v2.8.5: Persistent Desktop Widget Coordinates & Visual Studio Code Official Showcase Website`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

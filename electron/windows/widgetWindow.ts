@@ -1,5 +1,6 @@
-import { BrowserWindow, screen } from 'electron';
+import { BrowserWindow, screen, app } from 'electron';
 import path from 'path';
+import fs from 'fs';
 import { dbInstance } from '../db/database';
 import { WidgetVariant } from '../../src/types';
 import { getMainWindow } from './mainWindow';
@@ -7,6 +8,57 @@ import { getMainWindow } from './mainWindow';
 // Active standalone widget instances mapped by variant
 const activeWidgetWindows = new Map<WidgetVariant, BrowserWindow>();
 let isPinned = false;
+
+function getPositionsFilePath(): string {
+  const userData = app ? app.getPath('userData') : path.resolve(process.cwd(), '.data');
+  return path.join(userData, 'widget-positions.json');
+}
+
+export function loadSavedWidgetPositions(): Record<string, { x: number; y: number }> {
+  try {
+    const p = getPositionsFilePath();
+    if (fs.existsSync(p)) {
+      const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+      if (data && typeof data === 'object') return data;
+    }
+  } catch {}
+  try {
+    const settings = dbInstance.getSettings();
+    if (settings.widgetPositions) return settings.widgetPositions;
+  } catch {}
+  return {};
+}
+
+export function saveWidgetPosition(variant: WidgetVariant, x: number, y: number): void {
+  try {
+    const p = getPositionsFilePath();
+    let current: Record<string, { x: number; y: number }> = {};
+    if (fs.existsSync(p)) {
+      try {
+        current = JSON.parse(fs.readFileSync(p, 'utf8')) || {};
+      } catch {}
+    }
+    current[variant] = { x, y };
+    fs.writeFileSync(p, JSON.stringify(current, null, 2), 'utf8');
+
+    // Also update SQLite settings
+    const currentSettings = dbInstance.getSettings();
+    const currentPositions = currentSettings.widgetPositions || {};
+    currentPositions[variant] = { x, y };
+    dbInstance.updateSettings({ widgetPositions: currentPositions });
+  } catch (err) {
+    console.error(`[WidgetWindow] Error saving position for ${variant}:`, err);
+  }
+}
+
+export function saveAllActiveWidgetPositions(): void {
+  for (const [variant, win] of activeWidgetWindows.entries()) {
+    if (win && !win.isDestroyed()) {
+      const [x, y] = win.getPosition();
+      saveWidgetPosition(variant, x, y);
+    }
+  }
+}
 
 export function getWidgetDimensions(variant: WidgetVariant): { width: number; height: number } {
   switch (variant) {
@@ -130,15 +182,27 @@ export function createOrShowWidgetWindow(
   const { width: winWidth, height: winHeight } = getWidgetDimensions(variant);
 
   // Position retrieval: load saved or default
-  const settings = dbInstance.getSettings();
-  const savedPos = settings.widgetPositions ? settings.widgetPositions[variant] : undefined;
+  const savedPositions = loadSavedWidgetPositions();
+  const savedPos = savedPositions[variant];
 
   let x: number;
   let y: number;
 
   if (savedPos && typeof savedPos.x === 'number' && typeof savedPos.y === 'number') {
-    x = savedPos.x;
-    y = savedPos.y;
+    const displays = screen.getAllDisplays();
+    const isVisible = displays.some((d) => {
+      const { x: dx, y: dy, width: dw, height: dh } = d.bounds;
+      return savedPos.x >= dx - 40 && savedPos.x < dx + dw && savedPos.y >= dy - 40 && savedPos.y < dy + dh;
+    });
+
+    if (isVisible) {
+      x = Math.round(savedPos.x);
+      y = Math.round(savedPos.y);
+    } else {
+      const computed = calculateDefaultPosition(variant, winWidth, winHeight);
+      x = computed.x;
+      y = computed.y;
+    }
   } else {
     const computed = calculateDefaultPosition(variant, winWidth, winHeight);
     x = computed.x;
@@ -149,6 +213,7 @@ export function createOrShowWidgetWindow(
     ? path.join(__dirname, '../../assets/icon.ico')
     : path.join(__dirname, '../assets/icon.ico');
 
+  const settings = dbInstance.getSettings();
   const win = new BrowserWindow({
     width: winWidth,
     height: winHeight,
@@ -194,18 +259,25 @@ export function createOrShowWidgetWindow(
     }
   }, 350);
 
-  // Remember drag position on desktop
-  win.on('moved', () => {
+  // Reliable, debounced position tracking for Windows
+  let moveDebounceTimer: any = null;
+  const persistCurrentPos = () => {
+    if (moveDebounceTimer) clearTimeout(moveDebounceTimer);
+    moveDebounceTimer = setTimeout(() => {
+      if (win && !win.isDestroyed()) {
+        const [currX, currY] = win.getPosition();
+        saveWidgetPosition(variant, currX, currY);
+      }
+    }, 150);
+  };
+
+  win.on('move', persistCurrentPos);
+  win.on('moved', persistCurrentPos);
+
+  win.on('close', () => {
     if (win && !win.isDestroyed()) {
       const [currX, currY] = win.getPosition();
-      try {
-        const currentSettings = dbInstance.getSettings();
-        const currentPositions = currentSettings.widgetPositions || {};
-        currentPositions[variant] = { x: currX, y: currY };
-        dbInstance.updateSettings({ widgetPositions: currentPositions });
-      } catch (err) {
-        console.error(`[WidgetWindow] Failed to save position for ${variant}:`, err);
-      }
+      saveWidgetPosition(variant, currX, currY);
     }
   });
 

@@ -14,7 +14,8 @@ import {
   closeAllWidgetWindows,
   launchAllPreferredWidgets,
   getActiveWidgetVariants,
-  resizeWidgetWindow
+  resizeWidgetWindow,
+  saveAllActiveWidgetPositions
 } from './windows/widgetWindow';
 import { setupTray, destroyTray } from './tray';
 import { AlarmScheduler } from './scheduler';
@@ -116,6 +117,9 @@ app.whenReady().then(async () => {
 
 app.on('before-quit', () => {
   setQuitting(true);
+  try {
+    saveAllActiveWidgetPositions();
+  } catch {}
   scheduler?.stop();
   destroyTray();
 });

@@ -1,7 +1,3 @@
-param(
-    [string]$TargetDir = "release"
-)
-
 $cert = Get-ChildItem -Path Cert:\CurrentUser\My -CodeSigningCert | Where-Object { $_.Subject -match "HARIPRASANTH T" } | Select-Object -First 1
 
 if (-not $cert) {
@@ -9,23 +5,22 @@ if (-not $cert) {
     exit 0
 }
 
-Write-Host "Using Code Signing Certificate: $($cert.Subject) [Thumbprint: $($cert.Thumbprint)]"
+Write-Host "Using Certificate: $($cert.Subject)"
 
-$dir = Join-Path $PSScriptRoot "..\" $TargetDir
-if (-not (Test-Path $dir)) {
-    Write-Host "Directory $dir does not exist."
-    exit 0
-}
+$targets = @(
+    "release\RemindGo-Setup-2.8.5.exe",
+    "release\RemindGo-Portable-2.8.5.exe",
+    "D:\PROJECTS\RemindGo\v2.8.5\RemindGo-Setup-2.8.5.exe",
+    "D:\PROJECTS\RemindGo\v2.8.5\RemindGo-Portable-2.8.5.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Setup-2.8.5.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo Setup 2.8.5.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Portable-2.8.5.exe"
+)
 
-$exeFiles = Get-ChildItem -Path $dir -Filter "*.exe" -Recurse
-foreach ($f in $exeFiles) {
-    Write-Host "Signing $($f.FullName)..."
-    try {
-        $res = Set-AuthenticodeSignature -FilePath $f.FullName -Certificate $cert -TimestampServer "http://timestamp.digicert.com" -HashAlgorithm SHA256
-        Write-Host "Signed: $($f.Name) -> Status: $($res.Status)"
-    } catch {
-        $res = Set-AuthenticodeSignature -FilePath $f.FullName -Certificate $cert -HashAlgorithm SHA256
-        Write-Host "Signed without timestamp: $($f.Name) -> Status: $($res.Status)"
+foreach ($t in $targets) {
+    if (Test-Path $t) {
+        $sig = Set-AuthenticodeSignature -FilePath $t -Certificate $cert -HashAlgorithm SHA256
+        Write-Host "Signed: $t -> Status: $($sig.Status)"
     }
 }
 Write-Host "Signing complete."
