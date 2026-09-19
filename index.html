@@ -65,7 +65,7 @@
       <!-- Tag Pill -->
       <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full liquid-glass-pill text-xs font-medium text-white/90 mb-6 shadow-sm">
         <span class="w-2 h-2 rounded-full bg-[#0a84ff] shadow-[0_0_8px_#0a84ff]"></span>
-        <span>RemindGo v2.7.0 Final • Multi-Widget & Low-RAM Edition</span>
+        <span>RemindGo v2.8.0 • macOS Controls & Zero-Border Widgets Edition</span>
         <span class="text-white/40">• Windows Desktop Offline App</span>
       </div>
 
@@ -75,30 +75,45 @@
       </h1>
 
       <p class="text-base sm:text-lg text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-        Simultaneous multi-widget desktop companion, Windows low-RAM engine (~70MB), looping alarms, activity heatmaps, and offline LeetCode tracking — built 100% private with local SQLite.
+        Simultaneous zero-border desktop widgets, macOS traffic light controls, silent machine-wide installer, looping alarms, and offline LeetCode tracking — built 100% private with local SQLite.
       </p>
 
       <!-- CTA Buttons -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.7.0/RemindGo-Setup-2.7.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] text-white font-semibold py-3 px-6 rounded-2xl shadow-[0_6px_24px_rgba(10,132,255,0.45)] text-sm transition-all hover:-translate-y-0.5">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.0/RemindGo-Setup-2.8.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#0a84ff] to-[#0066d6] hover:from-[#389eff] hover:to-[#0a84ff] text-white font-semibold py-3 px-6 rounded-2xl shadow-[0_6px_24px_rgba(10,132,255,0.45)] text-sm transition-all hover:-translate-y-0.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
           <span>Download RemindGo Setup (.exe)</span>
         </a>
-        <a href="#features" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/10 text-white font-medium py-3 px-6 rounded-2xl text-sm transition-all">
-          <span>Explore Features</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.0/RemindGo-Portable-2.8.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/10 text-white font-medium py-3 px-6 rounded-2xl text-sm transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          <span>Portable (.exe)</span>
         </a>
+      </div>
+
+      <!-- Windows SmartScreen Guide -->
+      <div class="max-w-2xl mx-auto mb-16 p-4 rounded-2xl liquid-glass-card border border-white/15 bg-white/[0.03] text-left text-xs text-white/70 shadow-lg">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#0a84ff]/20 text-[#0a84ff] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-white text-sm mb-1">Windows Defender SmartScreen First-Time Notice</div>
+            <p class="leading-relaxed text-white/60">
+              When installing for the first time, Windows Defender SmartScreen may display <em>"Windows protected your PC"</em>. Simply click <strong class="text-white">"More info"</strong> and then <strong class="text-[#0a84ff]">"Run anyway"</strong>. RemindGo is 100% offline, local-first, free, and developed with care by <span class="text-white font-semibold">HARIPRASANTH T</span>.
+            </p>
+          </div>
+        </div>
       </div>
 
       <!-- Interactive Window Mockup -->
       <div class="max-w-4xl mx-auto rounded-2xl overflow-hidden liquid-glass-card border border-white/20 shadow-[0_25px_70px_rgba(0,0,0,0.6)] text-left">
         <!-- Window Bar -->
         <div class="h-10 bg-black/40 border-b border-white/10 flex items-center justify-end px-4">
-          <!-- Standard Window Controls -->
-          <div class="flex items-center text-white/50 text-xs gap-3 pr-2 font-mono">
-            <span class="hover:text-white cursor-pointer">&minus;</span>
-            <span class="hover:text-white cursor-pointer">&#9634;</span>
-            <span class="hover:text-red-400 cursor-pointer">&times;</span>
+          <!-- macOS Traffic Light Controls -->
+          <div class="flex items-center gap-2.5">
+            <span class="w-[12px] h-[12px] rounded-full bg-[#ffbd2e] border border-[#d89e24] shadow-sm"></span>
+            <span class="w-[12px] h-[12px] rounded-full bg-[#27c93f] border border-[#1aab29] shadow-sm"></span>
+            <span class="w-[12px] h-[12px] rounded-full bg-[#ff5f56] border border-[#e0443e] shadow-sm"></span>
           </div>
         </div>
 
@@ -301,14 +316,31 @@
       </div>
 
       <div class="space-y-4">
-        <!-- v2.7.0 Final -->
+        <!-- v2.8.0 -->
         <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-[#0a84ff]">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.7.0 Final — Simultaneous Multi-Widget Desktop Engine & 65% Windows Low-RAM Architecture</span>
+              <span class="font-bold text-sm text-white">v2.8.0 — True Zero-Border Transparent Desktop Widgets, macOS Traffic Lights & Silent All-Users Installer</span>
               <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0a84ff]/20 text-[#0a84ff]">Latest Release</span>
             </div>
-            <span class="text-xs text-white/40 font-mono">Current</span>
+            <span class="text-xs text-white/40 font-mono">v2.8.0</span>
+          </div>
+          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
+            <li>Zero-Border Desktop Widgets: Completely eliminated the white background container underneath desktop widgets by resolving compositor process conflicts and applying strict transparent window canvas settings. Pure pitch-black cards floating natively on Windows desktop.</li>
+            <li>Authentic macOS Traffic Light Controls: Restored circular macOS buttons (Yellow Minimize, Green Maximize/Restore, Red Close) with specular highlights and smooth hover animations positioned on the right titlebar.</li>
+            <li>Machine-Wide All-Users Installer: Streamlined NSIS setup with <code>perMachine: true</code> to install directly for all computer users without showing any user-selection prompt.</li>
+            <li>Windows SmartScreen Notice: First-time setup guidance (Click <em>More info</em> &rarr; <em>Run anyway</em>) and verified developer metadata for HARIPRASANTH T.</li>
+          </ul>
+        </div>
+
+        <!-- v2.7.0 Final -->
+        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-white">v2.7.0 Final — Simultaneous Multi-Widget Desktop Engine & 65% Windows Low-RAM Architecture</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
+            </div>
+            <span class="text-xs text-white/40 font-mono">v2.7.0</span>
           </div>
           <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
             <li>Simultaneous Multi-Widget Desktop Engine: Run multiple independent standalone widgets simultaneously across your Windows desktop wallpaper (e.g. Task Activity Matrix, LeetCode Streak, Daily Checklist in different corners).</li>
@@ -416,12 +448,12 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.7.0/RemindGo-Setup-2.7.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0a84ff] hover:bg-[#0066d6] text-white font-semibold py-3 px-6 rounded-2xl shadow-lg text-xs transition-all hover:scale-105">
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.0/RemindGo-Setup-2.8.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0a84ff] hover:bg-[#0066d6] text-white font-semibold py-3 px-6 rounded-2xl shadow-lg text-xs transition-all hover:scale-105">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             <span>Download RemindGo Setup (.exe)</span>
             <span class="text-white/50 text-[10px]">~91 MB</span>
           </a>
-          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.7.0/RemindGo-Portable-2.7.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/15 text-white font-semibold py-3 px-6 rounded-2xl text-xs transition-all hover:scale-105">
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.8.0/RemindGo-Portable-2.8.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/15 text-white font-semibold py-3 px-6 rounded-2xl text-xs transition-all hover:scale-105">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             <span>Download RemindGo Portable (.exe)</span>
             <span class="text-white/50 text-[10px]">~91 MB</span>
