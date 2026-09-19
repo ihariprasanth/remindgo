@@ -103,7 +103,7 @@
       <!-- Tag Pill -->
       <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full liquid-glass-pill text-xs font-medium text-white/90 mb-6 shadow-sm">
         <span class="w-2 h-2 rounded-full bg-[#0a84ff] shadow-[0_0_8px_#0a84ff]"></span>
-        <span>RemindGo v2.5.6 Professional Edition</span>
+        <span>RemindGo v2.6.0 Professional Edition</span>
         <span class="text-white/40">• Windows Desktop Offline App</span>
       </div>
 
@@ -132,10 +132,11 @@
       <div class="max-w-4xl mx-auto rounded-2xl overflow-hidden liquid-glass-card border border-white/20 shadow-[0_25px_70px_rgba(0,0,0,0.6)] text-left">
         <!-- Window Bar -->
         <div class="h-10 bg-black/40 border-b border-white/10 flex items-center justify-end px-4">
-          <div class="flex items-center gap-2 pr-1">
-            <span class="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] border border-[#d89e24] shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] inline-block" title="Minimize"></span>
-            <span class="w-3.5 h-3.5 rounded-full bg-[#27c93f] border border-[#1aab29] shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] inline-block" title="Maximize"></span>
-            <span class="w-3.5 h-3.5 rounded-full bg-[#ff5f56] border border-[#e0443e] shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] inline-block" title="Close"></span>
+          <!-- Standard Window Controls -->
+          <div class="flex items-center text-white/50 text-xs gap-3 pr-2 font-mono">
+            <span class="hover:text-white cursor-pointer">&minus;</span>
+            <span class="hover:text-white cursor-pointer">&#9634;</span>
+            <span class="hover:text-red-400 cursor-pointer">&times;</span>
           </div>
         </div>
 
@@ -338,19 +339,37 @@
       </div>
 
       <div class="space-y-4">
-        <!-- v2.5.6 -->
+        <!-- v2.6.0 -->
         <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-[#0a84ff]">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-white">v2.5.6 — Multi-Variant Desktop Widgets, Enlarged Traffic Lights & Apple SF Pro</span>
+              <span class="font-bold text-sm text-white">v2.6.0 — 6 Standalone Desktop Widgets (Pure Black), Standard Window Controls & Daily Routine Tracking</span>
               <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0a84ff]/20 text-[#0a84ff]">Latest Release</span>
             </div>
             <span class="text-xs text-white/40 font-mono">Current</span>
           </div>
           <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
-            <li>Multi-Variant Desktop Widgets: 4 instant modes including dedicated LeetCode Submissions Heatmap, dedicated Task Completion History Heatmap, Today's To-Do Checklist, and Hybrid Overview.</li>
-            <li>Enlarged macOS Traffic Lights: Circular window control buttons enlarged to 14px with authentic specular highlights and crisp hover symbols.</li>
-            <li>Apple San Francisco Typography Everywhere: Strictly -apple-system, SF Pro Display, SF Pro Text, and SF Mono enforced across all UI components, buttons, and inputs.</li>
+            <li>6 Standalone Desktop Widgets: Pure pitch-black OLED background (#000000) for vivid heatmap contrast, featuring Task Activity Matrix, Daily Checklist, LeetCode Activity, Coding Platforms Hub, Routine & Streak Progress Meter, and Minimalist Pill.</li>
+            <li>Clean Standard Window Controls: Replaced traffic lights with clean, professional standard controls (Minimize, Maximize/Restore, Close).</li>
+            <li>Strict Heatmap Separation: Main Dashboard strictly hosts the To-Do Tasks Completion Heatmap; LeetCode submissions calendar is housed exclusively inside the LeetCode tab.</li>
+            <li>Pre-Configured Daily Developer Routine: Built-in daily recurring tasks for LeetCode, CodeChef, GeeksForGeeks POTD, JavaScript Learning, and Project Work.</li>
+            <li>8:00 PM Daily Reminder ("Complete Today Tasks"): Dedicated reminder popup with 1-click "Mark as Done" action.</li>
+            <li>10:00 PM Incomplete Tasks Warning: Automated alert if any today tasks remain incomplete to safeguard your daily streak.</li>
+          </ul>
+        </div>
+
+        <!-- v2.5.6 -->
+        <div class="liquid-glass-card rounded-2xl p-6 border-l-4 border-l-white/20">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-white">v2.5.6 — Multi-Variant Desktop Widgets & Apple SF Pro</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/60">Previous</span>
+            </div>
+            <span class="text-xs text-white/40 font-mono">v2.5.6</span>
+          </div>
+          <ul class="text-xs text-white/70 space-y-1.5 list-disc list-inside">
+            <li>Multi-Variant Desktop Widgets: Dedicated LeetCode submissions, tasks heatmap, and checklist.</li>
+            <li>Enforced Apple San Francisco typography stack across all user interfaces.</li>
             <li>Zero Emojis: 100% clean professional software design.</li>
           </ul>
         </div>
@@ -406,12 +425,12 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.5.6/RemindGo-Setup-2.5.6.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0a84ff] hover:bg-[#0066d6] text-white font-semibold py-3 px-6 rounded-2xl shadow-lg text-xs transition-all hover:scale-105">
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.6.0/RemindGo-Setup-2.6.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0a84ff] hover:bg-[#0066d6] text-white font-semibold py-3 px-6 rounded-2xl shadow-lg text-xs transition-all hover:scale-105">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             <span>Download RemindGo Setup (.exe)</span>
             <span class="text-white/50 text-[10px]">~91 MB</span>
           </a>
-          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.5.6/RemindGo-Portable-2.5.6.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/15 text-white font-semibold py-3 px-6 rounded-2xl text-xs transition-all hover:scale-105">
+          <a href="https://github.com/ihariprasanth/remindgo/releases/download/v2.6.0/RemindGo-Portable-2.6.0.exe" class="w-full sm:w-auto flex items-center justify-center gap-2 liquid-glass-pill hover:bg-white/15 text-white font-semibold py-3 px-6 rounded-2xl text-xs transition-all hover:scale-105">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             <span>Download RemindGo Portable (.exe)</span>
             <span class="text-white/50 text-[10px]">~91 MB</span>
