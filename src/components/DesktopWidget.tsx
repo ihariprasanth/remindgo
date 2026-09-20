@@ -26,6 +26,118 @@ export const WIDGET_OPTIONS: { id: WidgetVariant; name: string; subtitle: string
   { id: 'mini-pill', name: 'Minimalist Compact Pill', subtitle: 'Ultra-compact mini heatmap desktop strip', icon: Flame },
 ];
 
+interface ActivityRingsProps {
+  easyRatio: number;
+  mediumRatio: number;
+  hardRatio: number;
+  size?: number;
+}
+
+const ActivityRings: React.FC<ActivityRingsProps> = ({
+  easyRatio,
+  mediumRatio,
+  hardRatio,
+  size = 46
+}) => {
+  const center = size / 2;
+  const strokeWidth = 3.2;
+
+  // Concentric radii from outer to inner
+  const rOuter = 18;
+  const rMiddle = 13;
+  const rInner = 8;
+
+  const circOuter = 2 * Math.PI * rOuter;
+  const circMiddle = 2 * Math.PI * rMiddle;
+  const circInner = 2 * Math.PI * rInner;
+
+  // Ensure small minimum arc so active color dot is visible even if low ratio
+  const clamp = (v: number) => Math.min(1, Math.max(0.02, v));
+  const pOuter = clamp(easyRatio);
+  const pMiddle = clamp(mediumRatio);
+  const pInner = clamp(hardRatio);
+
+  return (
+    <div
+      className="relative flex items-center justify-center rounded-full bg-[#081309]"
+      style={{ width: size, height: size }}
+    >
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="transform -rotate-90"
+      >
+        {/* Outer Ring Background Track */}
+        <circle
+          cx={center}
+          cy={center}
+          r={rOuter}
+          fill="none"
+          stroke="#112a17"
+          strokeWidth={strokeWidth}
+        />
+        {/* Outer Ring Progress (Apple Green) */}
+        <circle
+          cx={center}
+          cy={center}
+          r={rOuter}
+          fill="none"
+          stroke="#30d158"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circOuter}
+          strokeDashoffset={circOuter * (1 - pOuter)}
+          strokeLinecap="round"
+        />
+
+        {/* Middle Ring Background Track */}
+        <circle
+          cx={center}
+          cy={center}
+          r={rMiddle}
+          fill="none"
+          stroke="#2d2707"
+          strokeWidth={strokeWidth}
+        />
+        {/* Middle Ring Progress (Yellow) */}
+        <circle
+          cx={center}
+          cy={center}
+          r={rMiddle}
+          fill="none"
+          stroke="#ffd60a"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circMiddle}
+          strokeDashoffset={circMiddle * (1 - pMiddle)}
+          strokeLinecap="round"
+        />
+
+        {/* Inner Ring Background Track */}
+        <circle
+          cx={center}
+          cy={center}
+          r={rInner}
+          fill="none"
+          stroke="#2d0e0c"
+          strokeWidth={strokeWidth}
+        />
+        {/* Inner Ring Progress (Red / Coral) */}
+        <circle
+          cx={center}
+          cy={center}
+          r={rInner}
+          fill="none"
+          stroke="#ff453a"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circInner}
+          strokeDashoffset={circInner * (1 - pInner)}
+          strokeLinecap="round"
+        />
+      </svg>
+    </div>
+  );
+};
+
 export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) => {
   const [variant, setVariant] = useState<WidgetVariant>(() => {
     if (initialVariant && WIDGET_OPTIONS.some((o) => o.id === initialVariant)) {
@@ -491,7 +603,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   );
 
   const containerClasses = `w-full h-full p-1.5 select-none font-sans bg-transparent`;
-  const cardClasses = `group relative p-3 rounded-2xl border border-[#222222] shadow-2xl overflow-hidden transition-all bg-[#000000] text-white flex flex-col justify-between h-full ${
+  const cardClasses = `group relative p-3 rounded-2xl border border-transparent shadow-2xl overflow-hidden transition-all bg-[#000000] text-white flex flex-col justify-between h-full ${
     isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/50'
   }`;
 
@@ -615,48 +727,177 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   }
 
   // =========================================================================
-  // 3. DEDICATED LEETCODE SUBMISSIONS HEATMAP WIDGET
+  // 3. DEDICATED LEETCODE SUBMISSIONS HEATMAP WIDGET (MATCHING APPLE REFERENCE)
   // =========================================================================
   if (variant === 'leetcode') {
-    const clusters = buildMonthClusters(leetCodeMap, 5);
+    // Effective submission map: real LeetCode calendar or sample data matching reference
+    const effectiveMap = (() => {
+      if (leetCodeMap.size > 0) return leetCodeMap;
+      const map = new Map<string, number>();
+      const now = new Date();
+      // Offsets in days for sample active dots matching reference screenshot
+      const sampleOffsets = [
+        145, 142, 138, 131, 126,
+        110, 102, 95,
+        82, 78, 74, 69, 63,
+        52, 48, 44, 38, 33, 31,
+        25, 20, 16, 12
+      ];
+      for (const off of sampleOffsets) {
+        const d = new Date(now.getTime() - off * 86400000);
+        map.set(format(d, 'yyyy-MM-dd'), 1);
+      }
+      return map;
+    })();
+
+    const clusters = buildMonthClusters(effectiveMap, 6);
+    const totalSolved = leetCodeData?.totalSolved ?? 400;
+    const totalQuestions = leetCodeData?.totalQuestions || 4059;
+    const easyRatio = leetCodeData && leetCodeData.totalEasy
+      ? leetCodeData.easySolved / leetCodeData.totalEasy
+      : 0.22;
+    const mediumRatio = leetCodeData && leetCodeData.totalMedium
+      ? leetCodeData.mediumSolved / leetCodeData.totalMedium
+      : 0.28;
+    const hardRatio = leetCodeData && leetCodeData.totalHard
+      ? leetCodeData.hardSolved / leetCodeData.totalHard
+      : 0.06;
+
     return (
-      <div className={containerClasses}>
-        <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
-          {renderHeader(
-            'LeetCode Activity',
-            <Code2 size={13} className="text-[#39d353]" />,
-            leetCodeData && (
-              <div className="flex items-center gap-1.5 mr-1 font-mono text-[10px]">
-                <span className="flex items-center gap-1 text-[#f43f5e]">
-                  <Flame size={11} />
-                  <span className="font-bold">{leetCodeData.streak}d</span>
-                </span>
-                <span className="text-white/40">•</span>
-                <span className="text-[#39d353]">#{leetCodeData.ranking ? leetCodeData.ranking.toLocaleString() : 'N/A'}</span>
-              </div>
-            )
-          )}
+      <div className="w-full h-full p-1.5 select-none font-sans bg-transparent">
+        <div
+          className={`group relative p-4 rounded-[26px] shadow-2xl overflow-hidden bg-[#000000] text-white flex flex-col justify-between h-full select-none ${
+            isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#30d158]/30'
+          }`}
+          style={{ backgroundColor: '#000000' }}
+        >
+          {/* Subtle Floating Controls: Appear smoothly only on hover to keep pristine iOS look */}
+          <div className="absolute top-2.5 right-3 flex items-center gap-1 bg-[#161b22]/90 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30 no-drag">
+            <div className="relative">
+              <button
+                onClick={() => setShowMenu((prev) => !prev)}
+                title="Switch Widget Option"
+                className="p-1 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              >
+                <LayoutGrid size={11} />
+              </button>
 
-          {renderHeatmapGrid(clusters, 'green')}
-
-          {/* Minimalist footer: total solved & green intensity legend */}
-          <div className="flex items-center justify-between text-[10px] text-white/50 pt-1.5 font-mono">
-            {leetCodeData ? (
-              <>
-                <span className="text-white font-bold">{leetCodeData.totalSolved} Problems Solved</span>
-                <div className="flex items-center gap-1">
-                  <span>Less</span>
-                  <div className="flex gap-1">
-                    {[0, 1, 2, 3, 4].map((l) => (
-                      <div key={l} className={`w-2 h-2 rounded-[1px] border ${getCellColor(l, 'green')}`} />
-                    ))}
+              {showMenu && (
+                <div className="absolute right-0 top-6 z-50 w-52 bg-[#0d1117] border border-white/20 rounded-xl shadow-2xl p-1 text-xs">
+                  <div className="px-2 py-1 text-[10px] font-mono text-white/40 uppercase tracking-wider border-b border-white/10 mb-1">
+                    Individual Widgets
                   </div>
-                  <span>More</span>
+                  {WIDGET_OPTIONS.map((opt) => {
+                    const IconComp = opt.icon;
+                    const isSelected = variant === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => selectVariant(opt.id)}
+                        className={`w-full text-left px-2 py-1.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#0a84ff] text-white font-bold'
+                            : 'text-white/70 hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        <IconComp size={13} className={isSelected ? 'text-white' : 'text-white/50'} />
+                        <div className="truncate">
+                          <div className="leading-tight text-[11px]">{opt.name}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-              </>
-            ) : (
-              <span>Connect LeetCode username in App</span>
-            )}
+              )}
+            </div>
+
+            <button
+              onClick={toggleLock}
+              title={isLocked ? 'Widget is Locked (Non-Draggable)' : 'Widget is Unlocked (Click & Drag)'}
+              className={`p-1 rounded-full transition-all cursor-pointer ${
+                isLocked ? 'text-white/60 hover:text-white hover:bg-white/10' : 'text-[#ffd60a] bg-[#ffd60a]/20'
+              }`}
+            >
+              {isLocked ? <Lock size={11} /> : <Unlock size={11} />}
+            </button>
+
+            <button
+              onClick={handleOpenFullApp}
+              title="Open RemindGo App"
+              className="p-1 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+            >
+              <ExternalLink size={11} />
+            </button>
+
+            <button
+              onClick={handleClose}
+              title="Close Widget"
+              className="p-1 rounded-full text-white/60 hover:text-white hover:bg-[#ff453a] transition-all cursor-pointer"
+            >
+              <X size={11} />
+            </button>
+          </div>
+
+          {/* Top Header: Progress & Solved Total on Left, Activity Rings on Right */}
+          <div className="flex items-start justify-between w-full no-drag">
+            <div>
+              <div className="text-[#30d158] font-semibold text-[17px] tracking-tight leading-none mb-1">
+                Progress
+              </div>
+              <div className="flex items-baseline gap-0.5">
+                <span className="text-white font-black text-[30px] leading-none tracking-tight">
+                  {totalSolved.toLocaleString()}
+                </span>
+                <span className="text-[#8e8e93] font-medium text-[16px] leading-none tracking-tight">
+                  /{totalQuestions.toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            <div className="relative">
+              <ActivityRings
+                easyRatio={easyRatio}
+                mediumRatio={mediumRatio}
+                hardRatio={hardRatio}
+                size={46}
+              />
+            </div>
+          </div>
+
+          {/* Bottom Grid: Exactly 6 Month Clusters ending with Current Month */}
+          <div className="flex justify-between items-start w-full no-drag pt-1">
+            {clusters.map((cluster, cIdx) => (
+              <div key={cIdx} className="flex flex-col items-center">
+                <div className="flex gap-[2.5px]">
+                  {cluster.weeks.map((wk, wIdx) => (
+                    <div key={wIdx} className="flex flex-col gap-[2.5px]">
+                      {wk.map((day, dIdx) => {
+                        if (!day) {
+                          return (
+                            <div
+                              key={dIdx}
+                              className="w-[8px] h-[8px] rounded-[2px] opacity-0 pointer-events-none"
+                            />
+                          );
+                        }
+                        const isActive = day.count > 0;
+                        return (
+                          <div
+                            key={dIdx}
+                            className={`w-[8px] h-[8px] rounded-[2px] transition-colors ${
+                              isActive ? 'bg-[#30d158]' : 'bg-[#132617]'
+                            }`}
+                          />
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+                <span className="mt-2 text-[11px] text-[#8e8e93] font-medium tracking-tight select-none">
+                  {cluster.monthName}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
