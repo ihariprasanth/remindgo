@@ -128,11 +128,7 @@ export const CodeChefPage: React.FC<CodeChefPageProps> = ({
             {/* User Profile Card */}
             <div className="liquid-glass-card rounded-2xl p-5 flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#eab308]/20 to-[#ca8a04]/30 border border-[#eab308]/30 flex items-center justify-center text-[#eab308] font-bold text-xl overflow-hidden flex-shrink-0">
-                {codeChefData.userAvatar ? (
-                  <img src={codeChefData.userAvatar} alt={codeChefData.username} className="w-full h-full object-cover" />
-                ) : (
-                  <Trophy size={28} />
-                )}
+                <Trophy size={26} />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">

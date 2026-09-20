@@ -39,12 +39,6 @@ export const Heatmap: React.FC<HeatmapProps> = ({
     mode === 'tasks-only' ? 'tasks' : mode === 'leetcode-only' ? 'leetcode' : 'all'
   );
 
-  const [hoveredCell, setHoveredCell] = useState<{
-    cell: CellData;
-    x: number;
-    y: number;
-  } | null>(null);
-
   // Map of completed_at date (YYYY-MM-DD) -> task count
   const taskMap = useMemo(() => {
     const map = new Map<string, number>();
@@ -333,16 +327,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
                         <div
                           key={dIdx}
                           onClick={() => onSelectDate?.(cell.dateStr)}
-                          onMouseEnter={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            setHoveredCell({
-                              cell,
-                              x: rect.left + rect.width / 2,
-                              y: rect.top
-                            });
-                          }}
-                          onMouseLeave={() => setHoveredCell(null)}
-                          className={`w-[12px] h-[12px] rounded-[3px] border transition-all cursor-pointer ${getCellColor(
+                          className={`w-[12px] h-[12px] rounded-[3px] border cursor-pointer ${getCellColor(
                             cell.level,
                             isSelected
                           )}`}
@@ -385,32 +370,6 @@ export const Heatmap: React.FC<HeatmapProps> = ({
           <span>More</span>
         </div>
       </div>
-
-      {/* LeetCode Reference Floating Tooltip Pill */}
-      {hoveredCell && (
-        <div
-          style={{
-            left: `${hoveredCell.x}px`,
-            top: `${hoveredCell.y - 8}px`
-          }}
-          className="fixed z-50 transform -translate-x-1/2 -translate-y-full pointer-events-none bg-[#1f1f1f] border border-white/20 text-white text-xs px-3 py-1.5 rounded-lg shadow-2xl font-sans whitespace-nowrap"
-        >
-          <span className="font-semibold">
-            {hoveredCell.cell.count === 0
-              ? `No ${dataSource === 'leetcode' ? 'submissions' : 'tasks'}`
-              : `${hoveredCell.cell.count} ${
-                  dataSource === 'leetcode'
-                    ? hoveredCell.cell.count === 1
-                      ? 'submission'
-                      : 'submissions'
-                    : hoveredCell.cell.count === 1
-                    ? 'task'
-                    : 'tasks'
-                }`}
-          </span>
-          <span className="text-[#8b949e]"> on {format(hoveredCell.cell.date, 'MMM d, yyyy')}</span>
-        </div>
-      )}
     </div>
   );
 };

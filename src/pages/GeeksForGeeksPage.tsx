@@ -119,11 +119,7 @@ export const GeeksForGeeksPage: React.FC<GeeksForGeeksPageProps> = ({
             {/* User Profile Card */}
             <div className="liquid-glass-card rounded-2xl p-5 flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#22c55e]/20 to-[#15803d]/30 border border-[#22c55e]/30 flex items-center justify-center text-[#22c55e] font-bold text-xl overflow-hidden flex-shrink-0">
-                {gfgData.userAvatar ? (
-                  <img src={gfgData.userAvatar} alt={gfgData.username} className="w-full h-full object-cover" />
-                ) : (
-                  <Terminal size={28} />
-                )}
+                <Terminal size={26} />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">

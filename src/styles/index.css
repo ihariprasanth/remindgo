@@ -122,7 +122,6 @@ body {
   background-image: 
     radial-gradient(ellipse 90% 40% at 50% -5%, rgba(255, 255, 255, 0.05) 0%, transparent 65%),
     radial-gradient(circle at 10% 95%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
-  background-attachment: fixed;
   color: #FFFFFF;
 }
 
@@ -132,7 +131,6 @@ body {
   background-image: 
     radial-gradient(circle at 20% 20%, rgba(0, 122, 255, 0.06) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(52, 199, 89, 0.05) 0%, transparent 50%);
-  background-attachment: fixed;
   color: #1d1d1f;
 }
 
@@ -166,11 +164,11 @@ body.widget-transparent,
 
 .liquid-glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
   border: 1px solid var(--border-glass);
   box-shadow: var(--border-specular), 0 10px 30px rgba(0, 0, 0, 0.4);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .dark .liquid-glass-card:hover {
@@ -359,4 +357,13 @@ input:checked + .macos-slider:before {
 /* Monospace font */
 .font-mono {
   font-family: var(--font-mono);
+}
+
+/* Hardware-accelerated, zero-flicker scrolling */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: scroll-position;
 }
