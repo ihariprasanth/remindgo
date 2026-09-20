@@ -200,8 +200,55 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     return streak;
   }, [taskMap]);
 
-  // Helper to build 20-week grid (140 days) from map
-  const buildWeeksGrid = useCallback((map: Map<string, number>, weekCount = 20) => {
+  // Helper to build 5-month clusters from map ending at today
+  const buildMonthClusters = useCallback((map: Map<string, number>, monthsCount = 5) => {
+    const now = new Date();
+    const startMonthDate = new Date(now.getFullYear(), now.getMonth() - (monthsCount - 1), 1);
+    const clusters: {
+      monthName: string;
+      weeks: ({ dateStr: string; count: number; level: number } | null)[][];
+    }[] = [];
+
+    for (let m = 0; m < monthsCount; m++) {
+      const curMonth = new Date(startMonthDate.getFullYear(), startMonthDate.getMonth() + m, 1);
+      const year = curMonth.getFullYear();
+      const month = curMonth.getMonth();
+      const monthName = format(curMonth, 'MMM');
+
+      const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
+      const lastDayOfMonth = isCurrentMonth ? now.getDate() : new Date(year, month + 1, 0).getDate();
+
+      const weeks: ({ dateStr: string; count: number; level: number } | null)[][] = [];
+      let currentWeek: ({ dateStr: string; count: number; level: number } | null)[] = new Array(7).fill(null);
+
+      for (let dayNum = 1; dayNum <= lastDayOfMonth; dayNum++) {
+        const dayDate = new Date(year, month, dayNum);
+        const dayOfWeek = dayDate.getDay();
+        const dateStr = format(dayDate, 'yyyy-MM-dd');
+        const count = map.get(dateStr) || 0;
+
+        let level = 0;
+        if (count === 1) level = 1;
+        else if (count >= 2 && count <= 3) level = 2;
+        else if (count >= 4 && count <= 6) level = 3;
+        else if (count >= 7) level = 4;
+
+        currentWeek[dayOfWeek] = { dateStr, count, level };
+
+        if (dayOfWeek === 6 || dayNum === lastDayOfMonth) {
+          weeks.push(currentWeek);
+          currentWeek = new Array(7).fill(null);
+        }
+      }
+
+      clusters.push({ monthName, weeks });
+    }
+
+    return clusters;
+  }, []);
+
+  // Helper to build compact week strip for mini-pill
+  const buildWeeksGrid = useCallback((map: Map<string, number>, weekCount = 12) => {
     const now = new Date();
     const startDate = startOfWeek(subWeeks(now, weekCount - 1), { weekStartsOn: 0 });
     const weeksGrid: { dateStr: string; count: number; level: number }[][] = [];
@@ -399,17 +446,45 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     </div>
   );
 
-  // Render 20-week green grid
-  const renderHeatmapGrid = (weeksGrid: { dateStr: string; count: number; level: number }[][], _label: string, colorType: 'green' | 'amber' = 'green') => (
-    <div className="flex gap-[3px] justify-center no-drag pb-0.5">
-      {weeksGrid.map((wk, wIdx) => (
-        <div key={wIdx} className="flex flex-col gap-[3px]">
-          {wk.map((day, dIdx) => (
-            <div
-              key={dIdx}
-              className={`w-[11px] h-[11px] rounded-[2px] border transition-all ${getCellColor(day.level, colorType)}`}
-            />
-          ))}
+  // Render month-clustered green grid
+  const renderHeatmapGrid = (
+    clusters: {
+      monthName: string;
+      weeks: ({ dateStr: string; count: number; level: number } | null)[][];
+    }[],
+    colorType: 'green' | 'amber' = 'green'
+  ) => (
+    <div className="flex gap-2.5 sm:gap-3 justify-center no-drag items-start pb-0.5">
+      {clusters.map((cluster, cIdx) => (
+        <div key={cIdx} className="flex flex-col items-center">
+          <div className="flex gap-[3px]">
+            {cluster.weeks.map((wk, wIdx) => (
+              <div key={wIdx} className="flex flex-col gap-[3px]">
+                {wk.map((day, dIdx) => {
+                  if (!day) {
+                    return (
+                      <div
+                        key={dIdx}
+                        className="w-[11px] h-[11px] rounded-[2px] opacity-0 pointer-events-none"
+                      />
+                    );
+                  }
+                  return (
+                    <div
+                      key={dIdx}
+                      className={`w-[11px] h-[11px] rounded-[2px] border transition-all ${getCellColor(
+                        day.level,
+                        colorType
+                      )}`}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+          <span className="mt-1 text-[9px] text-white/40 font-mono select-none">
+            {cluster.monthName}
+          </span>
         </div>
       ))}
     </div>
@@ -424,7 +499,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   // 1. DEDICATED TO-DO TASKS HEATMAP WIDGET
   // =========================================================================
   if (variant === 'tasks-heatmap') {
-    const weeksGrid = buildWeeksGrid(taskMap, 20);
+    const clusters = buildMonthClusters(taskMap, 5);
     return (
       <div className={containerClasses}>
         <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
@@ -441,7 +516,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
             </div>
           )}
 
-          {renderHeatmapGrid(weeksGrid, 'completed tasks', 'green')}
+          {renderHeatmapGrid(clusters, 'green')}
 
           <div className="flex items-center justify-between text-[10px] text-white/50 pt-1.5 font-mono">
             <span>{totalCompleted} total tasks finished</span>
@@ -543,7 +618,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   // 3. DEDICATED LEETCODE SUBMISSIONS HEATMAP WIDGET
   // =========================================================================
   if (variant === 'leetcode') {
-    const weeksGrid = buildWeeksGrid(leetCodeMap, 20);
+    const clusters = buildMonthClusters(leetCodeMap, 5);
     return (
       <div className={containerClasses}>
         <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
@@ -562,7 +637,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
             )
           )}
 
-          {renderHeatmapGrid(weeksGrid, 'submissions', 'green')}
+          {renderHeatmapGrid(clusters, 'green')}
 
           {/* Minimalist footer: total solved & green intensity legend */}
           <div className="flex items-center justify-between text-[10px] text-white/50 pt-1.5 font-mono">

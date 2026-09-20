@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { dbInstance } from '../db/database';
 import { WidgetVariant } from '../../src/types';
-import { getMainWindow } from './mainWindow';
+import { getMainWindow, getIsQuitting } from './mainWindow';
 
 // Active standalone widget instances mapped by variant
 const activeWidgetWindows = new Map<WidgetVariant, BrowserWindow>();
@@ -239,6 +239,15 @@ export function createOrShowWidgetWindow(
 
   activeWidgetWindows.set(variant, win);
 
+  (win as any).__explicitCloseAllowed = false;
+
+  // Prevent Alt+F4 from closing the desktop widget
+  win.webContents.on('before-input-event', (event, input) => {
+    if (input.alt && (input.key === 'F4' || input.key === 'f4' || input.code === 'F4')) {
+      event.preventDefault();
+    }
+  });
+
   // Load URL with variant query param
   if (isDev && devServerUrl) {
     win.loadURL(`${devServerUrl}/widget.html?variant=${variant}`);
@@ -274,7 +283,12 @@ export function createOrShowWidgetWindow(
   win.on('move', persistCurrentPos);
   win.on('moved', persistCurrentPos);
 
-  win.on('close', () => {
+  win.on('close', (event) => {
+    if (!(win as any).__explicitCloseAllowed && !getIsQuitting()) {
+      event.preventDefault();
+      return;
+    }
+
     if (win && !win.isDestroyed()) {
       const [currX, currY] = win.getPosition();
       saveWidgetPosition(variant, currX, currY);
@@ -303,6 +317,7 @@ export function createOrShowWidgetWindow(
 export function closeWidgetWindow(variant: WidgetVariant): void {
   const win = activeWidgetWindows.get(variant);
   if (win && !win.isDestroyed()) {
+    (win as any).__explicitCloseAllowed = true;
     win.close();
     activeWidgetWindows.delete(variant);
     broadcastActiveWidgets();
@@ -312,6 +327,7 @@ export function closeWidgetWindow(variant: WidgetVariant): void {
 export function closeAllWidgetWindows(): void {
   for (const [variant, win] of Array.from(activeWidgetWindows.entries())) {
     if (win && !win.isDestroyed()) {
+      (win as any).__explicitCloseAllowed = true;
       win.close();
     }
     activeWidgetWindows.delete(variant);
@@ -330,6 +346,7 @@ export function toggleWidgetWindow(
   const win = activeWidgetWindows.get(variant);
   if (win && !win.isDestroyed()) {
     if (win.isVisible()) {
+      (win as any).__explicitCloseAllowed = true;
       win.close();
       activeWidgetWindows.delete(variant);
       broadcastActiveWidgets();

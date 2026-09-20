@@ -53,8 +53,8 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.9.0';
-  const commitMsg = `Release v2.9.0: Startup Background Widgets Mode, Clean Heatmap (No Tooltips), and Navbar-Free Website`;
+  const version = 'v2.9.1';
+  const commitMsg = `Release v2.9.1: Authentic Apple SF Pro Typography, LeetCode Monthly Clustered Heatmap, and Alt+F4 Protection`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

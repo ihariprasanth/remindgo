@@ -8,13 +8,13 @@ if (-not $cert) {
 Write-Host "Using Certificate: $($cert.Subject)"
 
 $targets = @(
-    "release\RemindGo-Setup-2.9.0.exe",
-    "release\RemindGo-Portable-2.9.0.exe",
-    "D:\PROJECTS\RemindGo\v2.9.0\RemindGo-Setup-2.9.0.exe",
-    "D:\PROJECTS\RemindGo\v2.9.0\RemindGo-Portable-2.9.0.exe",
-    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Setup-2.9.0.exe",
-    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo Setup 2.9.0.exe",
-    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Portable-2.9.0.exe"
+    "release\RemindGo-Setup-2.9.1.exe",
+    "release\RemindGo-Portable-2.9.1.exe",
+    "D:\PROJECTS\RemindGo\v2.9.1\RemindGo-Setup-2.9.1.exe",
+    "D:\PROJECTS\RemindGo\v2.9.1\RemindGo-Portable-2.9.1.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Setup-2.9.1.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo Setup 2.9.1.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Portable-2.9.1.exe"
 )
 
 foreach ($t in $targets) {
