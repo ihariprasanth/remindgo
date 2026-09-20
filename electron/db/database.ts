@@ -330,6 +330,8 @@ export class TaskDatabase {
       closeToTray: settingsMap.closeToTray !== undefined ? settingsMap.closeToTray === 'true' : true,
       startWithWindows: settingsMap.startWithWindows !== undefined ? settingsMap.startWithWindows === 'true' : true,
       leetcodeUsername: settingsMap.leetcodeUsername || '',
+      codechefUsername: settingsMap.codechefUsername || '',
+      gfgUsername: settingsMap.gfgUsername || '',
       theme: 'dark',
       autoOpenWidget: settingsMap.autoOpenWidget !== undefined ? settingsMap.autoOpenWidget === 'true' : true,
       widgetAlwaysOnTop: settingsMap.widgetAlwaysOnTop === 'true',
@@ -376,6 +378,62 @@ export class TaskDatabase {
   public setLeetCodeCache(username: string, data: any): void {
     if (!this.db) return;
     const stmt = this.db.prepare('INSERT OR REPLACE INTO leetcode_cache (username, data, last_synced) VALUES (?, ?, ?)');
+    stmt.run([username.toLowerCase().trim(), JSON.stringify(data), new Date().toISOString()]);
+    stmt.free();
+    this.save();
+  }
+
+  public getCodeChefCache(username: string): { data: any; last_synced: string } | null {
+    if (!this.db) return null;
+    const stmt = this.db.prepare('SELECT data, last_synced FROM codechef_cache WHERE username = ?');
+    stmt.bind([username.toLowerCase().trim()]);
+    let result: { data: any; last_synced: string } | null = null;
+    if (stmt.step()) {
+      const row = stmt.getAsObject() as { data: string; last_synced: string };
+      try {
+        result = {
+          data: JSON.parse(row.data),
+          last_synced: row.last_synced
+        };
+      } catch (err) {
+        console.error('[TaskDatabase] JSON parse error in codechef_cache:', err);
+      }
+    }
+    stmt.free();
+    return result;
+  }
+
+  public setCodeChefCache(username: string, data: any): void {
+    if (!this.db) return;
+    const stmt = this.db.prepare('INSERT OR REPLACE INTO codechef_cache (username, data, last_synced) VALUES (?, ?, ?)');
+    stmt.run([username.toLowerCase().trim(), JSON.stringify(data), new Date().toISOString()]);
+    stmt.free();
+    this.save();
+  }
+
+  public getGeeksForGeeksCache(username: string): { data: any; last_synced: string } | null {
+    if (!this.db) return null;
+    const stmt = this.db.prepare('SELECT data, last_synced FROM gfg_cache WHERE username = ?');
+    stmt.bind([username.toLowerCase().trim()]);
+    let result: { data: any; last_synced: string } | null = null;
+    if (stmt.step()) {
+      const row = stmt.getAsObject() as { data: string; last_synced: string };
+      try {
+        result = {
+          data: JSON.parse(row.data),
+          last_synced: row.last_synced
+        };
+      } catch (err) {
+        console.error('[TaskDatabase] JSON parse error in gfg_cache:', err);
+      }
+    }
+    stmt.free();
+    return result;
+  }
+
+  public setGeeksForGeeksCache(username: string, data: any): void {
+    if (!this.db) return;
+    const stmt = this.db.prepare('INSERT OR REPLACE INTO gfg_cache (username, data, last_synced) VALUES (?, ?, ?)');
     stmt.run([username.toLowerCase().trim(), JSON.stringify(data), new Date().toISOString()]);
     stmt.free();
     this.save();

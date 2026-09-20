@@ -45,7 +45,7 @@ export const LeetCodePage: React.FC<LeetCodePageProps> = ({
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full max-w-5xl mx-auto">
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 overflow-y-auto h-full w-full max-w-[1720px] mx-auto">
       {/* Top Header & Username Connect Bar */}
       <div className="liquid-glass-card rounded-2xl p-6 relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

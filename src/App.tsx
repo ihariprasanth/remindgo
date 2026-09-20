@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Task, Settings, LeetCodeData, TaskPriority } from './types';
 import { api } from './services/api';
 import { Sidebar, NavTab } from './components/Sidebar';
 import { Header } from './components/Header';
@@ -11,6 +10,9 @@ import { DashboardPage } from './pages/DashboardPage';
 import { TasksPage } from './pages/TasksPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { LeetCodePage } from './pages/LeetCodePage';
+import { CodeChefPage } from './pages/CodeChefPage';
+import { GeeksForGeeksPage } from './pages/GeeksForGeeksPage';
+import { Task, Settings, LeetCodeData, CodeChefData, GeeksForGeeksData, TaskPriority } from './types';
 
 export const App: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
@@ -26,11 +28,20 @@ export const App: React.FC = () => {
     closeToTray: true,
     startWithWindows: true,
     leetcodeUsername: '',
+    codechefUsername: '',
+    gfgUsername: '',
     theme: 'dark'
   });
 
   const [leetCodeData, setLeetCodeData] = useState<LeetCodeData | null>(null);
   const [isLeetCodeLoading, setIsLeetCodeLoading] = useState(false);
+
+  const [codeChefData, setCodeChefData] = useState<CodeChefData | null>(null);
+  const [isCodeChefLoading, setIsCodeChefLoading] = useState(false);
+
+  const [gfgData, setGfgData] = useState<GeeksForGeeksData | null>(null);
+  const [isGfgLoading, setIsGfgLoading] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [modalPrefill, setModalPrefill] = useState<{
@@ -50,15 +61,23 @@ export const App: React.FC = () => {
 
   const loadData = useCallback(async () => {
     try {
-      const [fetchedTasks, fetchedSettings, storedLeetCode] = await Promise.all([
+      const [fetchedTasks, fetchedSettings, storedLeetCode, storedCodeChef, storedGfg] = await Promise.all([
         api.getTasks(),
         api.getSettings(),
-        api.getStoredLeetCodeData()
+        api.getStoredLeetCodeData(),
+        api.getStoredCodeChefData(),
+        api.getStoredGeeksForGeeksData()
       ]);
       setTasks(fetchedTasks);
       setSettings(fetchedSettings);
       if (storedLeetCode) {
         setLeetCodeData(storedLeetCode);
+      }
+      if (storedCodeChef) {
+        setCodeChefData(storedCodeChef);
+      }
+      if (storedGfg) {
+        setGfgData(storedGfg);
       }
 
       if (fetchedSettings.leetcodeUsername) {
@@ -68,6 +87,26 @@ export const App: React.FC = () => {
           })
           .catch((err) => {
             console.warn('[App] Background LeetCode refresh:', err);
+          });
+      }
+
+      if (fetchedSettings.codechefUsername) {
+        api.getCodeChefData(fetchedSettings.codechefUsername, false)
+          .then((liveData) => {
+            if (liveData) setCodeChefData(liveData);
+          })
+          .catch((err) => {
+            console.warn('[App] Background CodeChef refresh:', err);
+          });
+      }
+
+      if (fetchedSettings.gfgUsername) {
+        api.getGeeksForGeeksData(fetchedSettings.gfgUsername, false)
+          .then((liveData) => {
+            if (liveData) setGfgData(liveData);
+          })
+          .catch((err) => {
+            console.warn('[App] Background GFG refresh:', err);
           });
       }
     } catch (err) {
@@ -176,6 +215,52 @@ export const App: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  // CodeChef refresh
+  const handleRefreshCodeChef = async (username: string, force: boolean = false) => {
+    setIsCodeChefLoading(true);
+    try {
+      const data = await api.getCodeChefData(username, force);
+      setCodeChefData(data);
+      setSettings((prev) => ({ ...prev, codechefUsername: username }));
+    } finally {
+      setIsCodeChefLoading(false);
+    }
+  };
+
+  const handleAddCodeChefContestTask = (title: string, description: string) => {
+    setEditingTask(null);
+    setModalPrefill({
+      title,
+      description,
+      category: 'Coding',
+      priority: 'high'
+    });
+    setIsModalOpen(true);
+  };
+
+  // GeeksforGeeks refresh
+  const handleRefreshGfg = async (username: string, force: boolean = false) => {
+    setIsGfgLoading(true);
+    try {
+      const data = await api.getGeeksForGeeksData(username, force);
+      setGfgData(data);
+      setSettings((prev) => ({ ...prev, gfgUsername: username }));
+    } finally {
+      setIsGfgLoading(false);
+    }
+  };
+
+  const handleAddGfgDailyTask = (title: string, description: string) => {
+    setEditingTask(null);
+    setModalPrefill({
+      title,
+      description,
+      category: 'Coding',
+      priority: 'medium'
+    });
+    setIsModalOpen(true);
+  };
+
   // Task Handlers
   const handleSaveTask = async (taskData: Omit<Task, 'id' | 'created_at' | 'status'> & { id?: string }) => {
     if (taskData.id) {
@@ -225,6 +310,12 @@ export const App: React.FC = () => {
     if (partial.leetcodeUsername && partial.leetcodeUsername !== leetCodeData?.username) {
       handleRefreshLeetCode(partial.leetcodeUsername, true);
     }
+    if (partial.codechefUsername && partial.codechefUsername !== codeChefData?.username) {
+      handleRefreshCodeChef(partial.codechefUsername, true);
+    }
+    if (partial.gfgUsername && partial.gfgUsername !== gfgData?.username) {
+      handleRefreshGfg(partial.gfgUsername, true);
+    }
   };
 
   const getHeaderTitle = () => {
@@ -237,6 +328,10 @@ export const App: React.FC = () => {
         return 'Today’s Schedule';
       case 'leetcode':
         return 'LeetCode Tracker';
+      case 'codechef':
+        return 'CodeChef Rating & Rank Tracker';
+      case 'geeksforgeeks':
+        return 'GeeksforGeeks POTD & Score Tracker';
       case 'settings':
         return 'Settings';
     }
@@ -262,6 +357,8 @@ export const App: React.FC = () => {
             onSelectTab={navigateToTab}
             tasks={tasks}
             hasLeetCodeUsername={Boolean(settings.leetcodeUsername || leetCodeData?.username)}
+            hasCodeChefUsername={Boolean(settings.codechefUsername || codeChefData?.username)}
+            hasGfgUsername={Boolean(settings.gfgUsername || gfgData?.username)}
             theme={settings.theme}
           />
 
@@ -307,6 +404,26 @@ export const App: React.FC = () => {
                 onRefreshData={handleRefreshLeetCode}
                 isLoading={isLeetCodeLoading}
                 onAddDailyTask={handleAddLeetCodeDailyTask}
+              />
+            )}
+
+            {currentTab === 'codechef' && (
+              <CodeChefPage
+                codeChefData={codeChefData}
+                savedUsername={settings.codechefUsername || ''}
+                onRefreshData={handleRefreshCodeChef}
+                isLoading={isCodeChefLoading}
+                onAddContestTask={handleAddCodeChefContestTask}
+              />
+            )}
+
+            {currentTab === 'geeksforgeeks' && (
+              <GeeksForGeeksPage
+                gfgData={gfgData}
+                savedUsername={settings.gfgUsername || ''}
+                onRefreshData={handleRefreshGfg}
+                isLoading={isGfgLoading}
+                onAddDailyTask={handleAddGfgDailyTask}
               />
             )}
 

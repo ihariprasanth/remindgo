@@ -62,23 +62,23 @@ async function main() {
         password: ''
       })
     });
-    console.log('✓ Main branch pushed successfully!');
-
-    console.log('\n[3/3] Pushing release tag v2.5.0...');
+    const pkg = JSON.parse(fs.readFileSync(path.join(projectDir, 'package.json'), 'utf8'));
+    const versionTag = `v${pkg.version}`;
+    console.log(`\n[3/3] Pushing release tag ${versionTag}...`);
     try {
       await git.push({
         fs,
         http,
         dir: projectDir,
         remote: 'origin',
-        ref: 'refs/tags/v2.5.0',
+        ref: `refs/tags/${versionTag}`,
         force: true,
         onAuth: () => ({
           username: token,
           password: ''
         })
       });
-      console.log('✓ Tag v2.5.0 pushed successfully!');
+      console.log(`✓ Tag ${versionTag} pushed successfully!`);
     } catch(tagErr) {
       console.log('Note on tag push:', tagErr.message);
     }

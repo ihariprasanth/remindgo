@@ -26,6 +26,8 @@ export interface Settings {
   closeToTray: boolean;
   startWithWindows: boolean;
   leetcodeUsername?: string;
+  codechefUsername?: string;
+  gfgUsername?: string;
   theme: 'dark' | 'light';
   autoOpenWidget?: boolean;
   widgetAlwaysOnTop?: boolean;
@@ -82,6 +84,38 @@ export interface LeetCodeData {
   errorMessage?: string;
 }
 
+export interface CodeChefData {
+  username: string;
+  name: string;
+  userAvatar?: string;
+  rating: number | string;
+  stars: string;
+  division?: string;
+  globalRank: number | string;
+  countryRank: number | string;
+  fullySolved: number;
+  partiallySolved: number;
+  isOffline: boolean;
+  lastSynced: string;
+  errorMessage?: string;
+}
+
+export interface GeeksForGeeksData {
+  username: string;
+  name: string;
+  designation?: string;
+  userAvatar?: string;
+  codingScore: number;
+  totalSolved: number;
+  instituteRank: number | string;
+  streak: number;
+  currentStreak: number;
+  potdSolved: number;
+  isOffline: boolean;
+  lastSynced: string;
+  errorMessage?: string;
+}
+
 export interface ElectronAPI {
   // Task management
   getTasks: () => Promise<Task[]>;
@@ -99,6 +133,12 @@ export interface ElectronAPI {
   // LeetCode integration
   getLeetCodeData: (username: string, forceRefresh?: boolean) => Promise<LeetCodeData>;
   getStoredLeetCodeData: () => Promise<LeetCodeData | null>;
+
+  // CodeChef & GeeksforGeeks integration
+  getCodeChefData: (username: string, forceRefresh?: boolean) => Promise<CodeChefData>;
+  getStoredCodeChefData: () => Promise<CodeChefData | null>;
+  getGeeksForGeeksData: (username: string, forceRefresh?: boolean) => Promise<GeeksForGeeksData>;
+  getStoredGeeksForGeeksData: () => Promise<GeeksForGeeksData | null>;
 
   // Alarm actions
   onAlarmTrigger: (callback: (task: Task) => void) => () => void;

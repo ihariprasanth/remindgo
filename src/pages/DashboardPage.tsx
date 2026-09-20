@@ -48,7 +48,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   );
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full max-w-6xl mx-auto">
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 overflow-y-auto h-full w-full max-w-[1720px] mx-auto">
       {/* Activity Heatmap Header Section */}
       <div>
         <div className="flex items-center justify-between mb-3">

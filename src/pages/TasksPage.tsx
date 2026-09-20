@@ -113,7 +113,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
   ];
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full max-w-5xl mx-auto">
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 overflow-y-auto h-full w-full max-w-[1720px] mx-auto">
       {/* Title & Action Bar */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>

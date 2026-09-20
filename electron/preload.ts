@@ -19,6 +19,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getLeetCodeData: (username: string, forceRefresh?: boolean) => ipcRenderer.invoke('get-leetcode-data', { username, forceRefresh }),
   getStoredLeetCodeData: () => ipcRenderer.invoke('get-stored-leetcode-data'),
 
+  // CodeChef & GeeksforGeeks
+  getCodeChefData: (username: string, forceRefresh?: boolean) => ipcRenderer.invoke('get-codechef-data', { username, forceRefresh }),
+  getStoredCodeChefData: () => ipcRenderer.invoke('get-stored-codechef-data'),
+  getGeeksForGeeksData: (username: string, forceRefresh?: boolean) => ipcRenderer.invoke('get-gfg-data', { username, forceRefresh }),
+  getStoredGeeksForGeeksData: () => ipcRenderer.invoke('get-stored-gfg-data'),
+
   // Alarms
   onAlarmTrigger: (callback: (task: Task) => void) => {
     const handler = (_event: any, task: Task) => callback(task);

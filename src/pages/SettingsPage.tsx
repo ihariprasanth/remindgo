@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, Check, Code2, Pin, ExternalLink, CheckSquare, Calendar, Sparkles, Cpu } from 'lucide-react';
+import { Volume2, Bell, Play, Square, HardDrive, Download, Upload, ShieldCheck, Check, Code2, Pin, ExternalLink, CheckSquare, Calendar, Sparkles, Cpu, Trophy, Terminal } from 'lucide-react';
 import { Settings, WidgetVariant } from '../types';
 import { SOUND_OPTIONS, audioService } from '../services/audioService';
 import { api } from '../services/api';
@@ -20,6 +20,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [lcUsername, setLcUsername] = useState(settings.leetcodeUsername || '');
+  const [ccUsername, setCcUsername] = useState(settings.codechefUsername || '');
+  const [gfgUser, setGfgUser] = useState(settings.gfgUsername || '');
   const [activeWidgets, setActiveWidgets] = useState<WidgetVariant[]>(settings.activeWidgets || ['tasks-heatmap']);
 
   useEffect(() => {
@@ -90,6 +92,18 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
     setTimeout(() => setExportMessage(null), 3000);
   };
 
+  const handleSaveCodeChef = () => {
+    onUpdateSettings({ codechefUsername: ccUsername.trim() });
+    setExportMessage('CodeChef username updated!');
+    setTimeout(() => setExportMessage(null), 3000);
+  };
+
+  const handleSaveGfg = () => {
+    onUpdateSettings({ gfgUsername: gfgUser.trim() });
+    setExportMessage('GeeksforGeeks username updated!');
+    setTimeout(() => setExportMessage(null), 3000);
+  };
+
   const handleExport = async () => {
     setExportMessage(null);
     const res = await api.exportData();
@@ -112,42 +126,115 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full max-w-4xl mx-auto">
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 overflow-y-auto h-full w-full max-w-[1720px] mx-auto">
       <div>
         <h2 className="text-lg font-bold text-[var(--text-main)] tracking-wide">Application Preferences</h2>
         <p className="text-xs text-[var(--text-sub)]">
-          Configure alarms, tray behavior, sound alerts, LeetCode profile, and offline backups
+          Configure alarms, tray behavior, sound alerts, coding platform integrations, and offline backups
         </p>
       </div>
 
-      {/* LeetCode Sync Settings */}
-      <div className="liquid-glass-card rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
-          <Code2 size={16} className="text-[#f59e0b]" />
-          LeetCode Account Integration
-        </h3>
+      {/* Coding Account Integrations (3-Card Responsive Grid) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* LeetCode Sync Settings */}
+        <div className="liquid-glass-card rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
+              <Code2 size={16} className="text-[#f59e0b]" />
+              LeetCode Integration
+            </h3>
 
-        <div>
-          <label className="block text-xs font-medium text-[var(--text-sub)] mb-1.5">
-            Default LeetCode Username
-          </label>
-          <div className="flex gap-2 max-w-md">
-            <input
-              type="text"
-              value={lcUsername}
-              onChange={(e) => setLcUsername(e.target.value)}
-              placeholder="e.g. neal_wu"
-              className="flex-1 bg-black/5 dark:bg-black/40 border border-[var(--border-glass)] rounded-xl px-3.5 py-2 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#f59e0b] font-mono"
-            />
-            <button
-              onClick={handleSaveLeetCode}
-              className="px-4 py-2 bg-[#f59e0b] hover:bg-[#d97706] text-black text-xs font-bold rounded-xl transition-colors cursor-pointer"
-            >
-              Save
-            </button>
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-[var(--text-sub)] mb-1.5">
+                LeetCode Username
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={lcUsername}
+                  onChange={(e) => setLcUsername(e.target.value)}
+                  placeholder="e.g. 1har1prasanth"
+                  className="flex-1 bg-black/5 dark:bg-black/40 border border-[var(--border-glass)] rounded-xl px-3.5 py-2 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#f59e0b] font-mono"
+                />
+                <button
+                  onClick={handleSaveLeetCode}
+                  className="px-3.5 py-2 bg-[#f59e0b] hover:bg-[#d97706] text-black text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
           </div>
-          <p className="text-[11px] text-[var(--text-muted)] mt-1.5">
-            Your LeetCode profile data and submission activity will be cached offline in local SQLite.
+          <p className="text-[11px] text-[var(--text-muted)]">
+            Caches solved problems, streak, and calendar offline.
+          </p>
+        </div>
+
+        {/* CodeChef Sync Settings */}
+        <div className="liquid-glass-card rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
+              <Trophy size={16} className="text-[#eab308]" />
+              CodeChef Integration
+            </h3>
+
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-[var(--text-sub)] mb-1.5">
+                CodeChef Username
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={ccUsername}
+                  onChange={(e) => setCcUsername(e.target.value)}
+                  placeholder="e.g. tourist"
+                  className="flex-1 bg-black/5 dark:bg-black/40 border border-[var(--border-glass)] rounded-xl px-3.5 py-2 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#eab308] font-mono"
+                />
+                <button
+                  onClick={handleSaveCodeChef}
+                  className="px-3.5 py-2 bg-[#eab308] hover:bg-[#ca8a04] text-black text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+          <p className="text-[11px] text-[var(--text-muted)]">
+            Caches ratings, star tier, global rank, and division points offline.
+          </p>
+        </div>
+
+        {/* GeeksforGeeks Sync Settings */}
+        <div className="liquid-glass-card rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2 border-b border-[var(--border-glass)] pb-3">
+              <Terminal size={16} className="text-[#22c55e]" />
+              GeeksforGeeks Integration
+            </h3>
+
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-[var(--text-sub)] mb-1.5">
+                GeeksforGeeks Username
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={gfgUser}
+                  onChange={(e) => setGfgUser(e.target.value)}
+                  placeholder="e.g. shariqsde"
+                  className="flex-1 bg-black/5 dark:bg-black/40 border border-[var(--border-glass)] rounded-xl px-3.5 py-2 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#22c55e] font-mono"
+                />
+                <button
+                  onClick={handleSaveGfg}
+                  className="px-3.5 py-2 bg-[#22c55e] hover:bg-[#16a34a] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+          <p className="text-[11px] text-[var(--text-muted)]">
+            Caches coding score, POTD streaks, and campus leaderboard rank offline.
           </p>
         </div>
       </div>

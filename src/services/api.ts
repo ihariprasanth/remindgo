@@ -1,4 +1,4 @@
-import { Task, Settings, ElectronAPI, LeetCodeData } from '../types';
+import { Task, Settings, ElectronAPI, LeetCodeData, CodeChefData, GeeksForGeeksData } from '../types';
 
 let mockTasks: Task[] = [
   {
@@ -80,6 +80,36 @@ let mockLeetCodeData: LeetCodeData = {
   lastSynced: new Date().toISOString()
 };
 
+let mockCodeChefData: CodeChefData = {
+  username: 'demo_chef',
+  name: 'Demo Chef',
+  userAvatar: '',
+  rating: 1850,
+  stars: '4★',
+  division: 'Div 2',
+  globalRank: 4120,
+  countryRank: 890,
+  fullySolved: 142,
+  partiallySolved: 18,
+  isOffline: false,
+  lastSynced: new Date().toISOString()
+};
+
+let mockGeeksForGeeksData: GeeksForGeeksData = {
+  username: 'demo_gfg',
+  name: 'Demo GFG',
+  designation: 'Software Developer',
+  userAvatar: '',
+  codingScore: 840,
+  totalSolved: 280,
+  instituteRank: 24,
+  streak: 35,
+  currentStreak: 12,
+  potdSolved: 110,
+  isOffline: false,
+  lastSynced: new Date().toISOString()
+};
+
 const mockAPI: ElectronAPI = {
   getTasks: async () => [...mockTasks],
   createTask: async (taskData) => {
@@ -118,6 +148,20 @@ const mockAPI: ElectronAPI = {
   },
   getStoredLeetCodeData: async () => {
     return mockSettings.leetcodeUsername ? mockLeetCodeData : null;
+  },
+  getCodeChefData: async (username, _force) => {
+    mockCodeChefData.username = username;
+    return mockCodeChefData;
+  },
+  getStoredCodeChefData: async () => {
+    return mockSettings.codechefUsername ? mockCodeChefData : null;
+  },
+  getGeeksForGeeksData: async (username, _force) => {
+    mockGeeksForGeeksData.username = username;
+    return mockGeeksForGeeksData;
+  },
+  getStoredGeeksForGeeksData: async () => {
+    return mockSettings.gfgUsername ? mockGeeksForGeeksData : null;
   },
   onAlarmTrigger: () => () => {},
   onAlarmDismissed: () => () => {},

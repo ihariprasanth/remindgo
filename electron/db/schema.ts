@@ -26,6 +26,18 @@ CREATE TABLE IF NOT EXISTS leetcode_cache (
   last_synced TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS codechef_cache (
+  username TEXT PRIMARY KEY,
+  data TEXT NOT NULL,
+  last_synced TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS gfg_cache (
+  username TEXT PRIMARY KEY,
+  data TEXT NOT NULL,
+  last_synced TEXT NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
 CREATE INDEX IF NOT EXISTS idx_tasks_date ON tasks(date);
 CREATE INDEX IF NOT EXISTS idx_tasks_completed_at ON tasks(completed_at);
@@ -39,6 +51,8 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   closeToTray: 'true',
   startWithWindows: 'true',
   leetcodeUsername: '',
+  codechefUsername: '',
+  gfgUsername: '',
   theme: 'dark',
   autoOpenWidget: 'true'
 };

@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Clock, Settings as SettingsIcon, 
-  Code2, Search 
+  Code2, Search, Trophy, Terminal
 } from 'lucide-react';
 import { Task } from '../types';
 import { getISTDate } from '../utils/istTime';
 
-export type NavTab = 'dashboard' | 'tasks' | 'today' | 'leetcode' | 'settings';
+export type NavTab = 'dashboard' | 'tasks' | 'today' | 'leetcode' | 'codechef' | 'geeksforgeeks' | 'settings';
 
 interface SidebarProps {
   currentTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
   tasks: Task[];
   hasLeetCodeUsername: boolean;
+  hasCodeChefUsername?: boolean;
+  hasGfgUsername?: boolean;
   theme: 'dark' | 'light';
 }
 
@@ -21,6 +22,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   tasks,
   hasLeetCodeUsername,
+  hasCodeChefUsername = false,
+  hasGfgUsername = false,
   theme: _theme
 }) => {
   const [filterText, setFilterText] = useState('');
@@ -60,6 +63,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: 'LeetCode',
           icon: Code2,
           badge: hasLeetCodeUsername ? 'Live' : 'Connect'
+        },
+        {
+          id: 'codechef' as const,
+          label: 'CodeChef',
+          icon: Trophy,
+          badge: hasCodeChefUsername ? 'Live' : 'Connect'
+        },
+        {
+          id: 'geeksforgeeks' as const,
+          label: 'GeeksforGeeks',
+          icon: Terminal,
+          badge: hasGfgUsername ? 'Live' : 'Connect'
         }
       ]
     },

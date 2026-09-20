@@ -53,8 +53,9 @@ async function syncGit() {
     email: 'hariprasanth.user@gmail.com'
   };
 
-  const version = 'v2.9.1';
-  const commitMsg = `Release v2.9.1: Authentic Apple SF Pro Typography, LeetCode Monthly Clustered Heatmap, and Alt+F4 Protection`;
+  const pkg = JSON.parse(fs.readFileSync(path.join(projectDir, 'package.json'), 'utf8'));
+  const version = `v${pkg.version}`;
+  const commitMsg = `Release ${version}: CodeChef and GeeksforGeeks Account Tracking, Fullscreen Layout Expansion, and UI Alignment`;
 
   console.log(`[Git] Committing: "${commitMsg}"...`);
   const sha = await git.commit({

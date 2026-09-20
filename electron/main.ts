@@ -20,6 +20,8 @@ import {
 import { setupTray, destroyTray } from './tray';
 import { AlarmScheduler } from './scheduler';
 import { fetchLeetCodeData } from './leetcode';
+import { fetchCodeChefData } from './codechef';
+import { fetchGeeksForGeeksData } from './geeksforgeeks';
 import { Task, Settings, WidgetVariant } from '../src/types';
 
 // Windows Low-RAM & Resource Optimization Engine (Chromium Switches)
@@ -251,6 +253,45 @@ ipcMain.handle('get-stored-leetcode-data', async () => {
   const settings = dbInstance.getSettings();
   if (settings.leetcodeUsername) {
     const cached = dbInstance.getLeetCodeCache(settings.leetcodeUsername);
+    if (cached) {
+      return {
+        ...cached.data,
+        lastSynced: cached.last_synced
+      };
+    }
+  }
+  return null;
+});
+
+// ==========================================
+// IPC Handlers - CodeChef & GeeksforGeeks
+// ==========================================
+ipcMain.handle('get-codechef-data', async (_event, { username, forceRefresh }: { username: string; forceRefresh?: boolean }) => {
+  return fetchCodeChefData(username, forceRefresh);
+});
+
+ipcMain.handle('get-stored-codechef-data', async () => {
+  const settings = dbInstance.getSettings();
+  if (settings.codechefUsername) {
+    const cached = dbInstance.getCodeChefCache(settings.codechefUsername);
+    if (cached) {
+      return {
+        ...cached.data,
+        lastSynced: cached.last_synced
+      };
+    }
+  }
+  return null;
+});
+
+ipcMain.handle('get-gfg-data', async (_event, { username, forceRefresh }: { username: string; forceRefresh?: boolean }) => {
+  return fetchGeeksForGeeksData(username, forceRefresh);
+});
+
+ipcMain.handle('get-stored-gfg-data', async () => {
+  const settings = dbInstance.getSettings();
+  if (settings.gfgUsername) {
+    const cached = dbInstance.getGeeksForGeeksCache(settings.gfgUsername);
     if (cached) {
       return {
         ...cached.data,

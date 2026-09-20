@@ -8,14 +8,20 @@ if (-not $cert) {
 Write-Host "Using Certificate: $($cert.Subject)"
 
 $targets = @(
-    "release\RemindGo-Setup-2.9.1.exe",
-    "release\RemindGo-Portable-2.9.1.exe",
-    "D:\PROJECTS\RemindGo\v2.9.1\RemindGo-Setup-2.9.1.exe",
-    "D:\PROJECTS\RemindGo\v2.9.1\RemindGo-Portable-2.9.1.exe",
-    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Setup-2.9.1.exe",
-    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo Setup 2.9.1.exe",
-    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Portable-2.9.1.exe"
+    "release\RemindGo-Setup-2.9.2.exe",
+    "release\RemindGo-Portable-2.9.2.exe",
+    "D:\PROJECTS\RemindGo\v2.9.2\RemindGo-Setup-2.9.2.exe",
+    "D:\PROJECTS\RemindGo\v2.9.2\RemindGo-Portable-2.9.2.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Setup-2.9.2.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo Setup 2.9.2.exe",
+    "C:\Users\HARIPRASANTH\Desktop\RemindGo App\RemindGo-Portable-2.9.2.exe"
 )
+
+Get-ChildItem -Path "release\*.exe" | ForEach-Object {
+    if ($targets -notcontains $_.FullName) {
+        $targets += $_.FullName
+    }
+}
 
 foreach ($t in $targets) {
     if (Test-Path $t) {
