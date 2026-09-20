@@ -26,8 +26,6 @@ import { Task, Settings, WidgetVariant } from '../src/types';
 
 // Windows Low-RAM & Resource Optimization Engine (Chromium Switches)
 app.commandLine.appendSwitch('disable-background-networking');
-app.commandLine.appendSwitch('disable-background-timer-throttling');
-app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 app.commandLine.appendSwitch('disable-breakpad');
 app.commandLine.appendSwitch('disable-component-update');
 app.commandLine.appendSwitch('disable-domain-reliability');
@@ -36,13 +34,12 @@ app.commandLine.appendSwitch('disable-features', 'AutofillServerCommunication,Ca
 app.commandLine.appendSwitch('disable-hang-monitor');
 app.commandLine.appendSwitch('disable-ipc-flooding-protection');
 app.commandLine.appendSwitch('disable-popup-blocking');
-app.commandLine.appendSwitch('disable-renderer-backgrounding');
 app.commandLine.appendSwitch('disable-sync');
 app.commandLine.appendSwitch('disable-translate');
 app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
 app.commandLine.appendSwitch('metrics-recording-only');
 app.commandLine.appendSwitch('no-first-run');
-app.commandLine.appendSwitch('js-flags', '--lite-mode --max-old-space-size=96 --expose-gc');
+app.commandLine.appendSwitch('js-flags', '--expose-gc');
 
 // Ensure single instance
 const gotLock = app.requestSingleInstanceLock();

@@ -233,7 +233,7 @@ export function createOrShowWidgetWindow(
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
-      backgroundThrottling: false
+      backgroundThrottling: true
     }
   });
 

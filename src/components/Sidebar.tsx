@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Clock, Settings as SettingsIcon, 
   Code2, Search, Trophy, Terminal
