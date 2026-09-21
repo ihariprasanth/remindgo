@@ -154,6 +154,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [leetCodeData, setLeetCodeData] = useState<LeetCodeData | null>(null);
   const [quickTitle, setQuickTitle] = useState('');
+  const [sampleCompletedIds, setSampleCompletedIds] = useState<Record<string, boolean>>({});
 
   // Per-widget lock state: when locked, widget cannot be accidentally dragged
   const [isLocked, setIsLocked] = useState<boolean>(() => {
@@ -190,7 +191,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     if (!api.resizeWidget) return;
     switch (v) {
       case 'todo':
-        api.resizeWidget(380, 360);
+        api.resizeWidget(350, 410);
         break;
       case 'coding-platforms':
         api.resizeWidget(380, 270);
@@ -648,75 +649,196 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   }
 
   // =========================================================================
-  // 2. DEDICATED TODAY'S TO-DO DAILY CHECKLIST WIDGET
+  // 2. DEDICATED APPLE REMINDERS TO-DO WIDGET (MATCHING REFERENCE EXACTLY)
   // =========================================================================
   if (variant === 'todo') {
-    return (
-      <div className={containerClasses}>
-        <div className={cardClasses} style={{ backgroundColor: '#000000' }}>
-          {renderHeader(
-            'Daily Checklist',
-            <CheckSquare size={13} className="text-[#0a84ff]" />,
-            <span className="text-[10px] font-mono text-[#0a84ff] mr-1">
-              {completedTodayCount}/{todayTasks.length} Done
-            </span>
-          )}
+    // 7 Sample reminders matching reference image when user has not added custom tasks
+    const sampleReminders = [
+      { id: 'sample-1', title: 'Pick up arts & crafts supplies' },
+      { id: 'sample-2', title: 'Send cookie recipe to Rigo' },
+      { id: 'sample-3', title: 'Book club prep' },
+      { id: 'sample-4', title: 'Hike with Darla' },
+      { id: 'sample-5', title: 'Schedule car maintenance' },
+      { id: 'sample-6', title: 'Cancel membership' },
+      { id: 'sample-7', title: 'Check spare tire' },
+    ];
 
-          {/* Scrollable list */}
-          <div className="space-y-1.5 flex-1 min-h-[140px] max-h-[225px] overflow-y-auto no-drag pr-1 py-1">
-            {todayTasks.length === 0 ? (
-              <div className="text-center py-6 text-xs text-white/40 border border-dashed border-white/10 rounded-xl">
-                No tasks scheduled for today.
-              </div>
-            ) : (
-              todayTasks.map((t) => {
-                const isCompleted = t.status === 'completed';
-                return (
-                  <div
-                    key={t.id}
-                    onClick={() => handleToggleTask(t.id)}
-                    className={`flex items-center gap-2 p-2 rounded-xl border transition-all cursor-pointer ${
-                      isCompleted
-                        ? 'bg-white/[0.03] border-white/5 text-white/40'
-                        : 'bg-white/[0.06] border-white/10 hover:border-[#0a84ff]/60 text-white'
-                    }`}
-                  >
-                    <button
-                      className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all flex-shrink-0 ${
-                        isCompleted
-                          ? 'bg-[#39d353] border-[#39d353] text-black'
-                          : 'border-white/30 hover:border-[#0a84ff]'
-                      }`}
-                    >
-                      {isCompleted && <Check size={11} strokeWidth={3} />}
-                    </button>
-                    <div className="flex-1 min-w-0">
-                      <div className={`text-xs truncate ${isCompleted ? 'line-through text-white/40' : 'font-medium text-white'}`}>
-                        {t.title}
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-mono text-white/40 flex-shrink-0">
-                      {t.time}
-                    </span>
+    const hasRealTasks = todayTasks.length > 0;
+    const items = hasRealTasks
+      ? todayTasks.map((t) => ({
+          id: t.id,
+          title: t.title,
+          isCompleted: t.status === 'completed',
+        }))
+      : sampleReminders.map((s) => ({
+          id: s.id,
+          title: s.title,
+          isCompleted: Boolean(sampleCompletedIds[s.id]),
+        }));
+
+    const countDisplay = hasRealTasks ? todayTasks.length : 20;
+
+    const toggleItem = async (id: string) => {
+      if (id.startsWith('sample-')) {
+        setSampleCompletedIds((prev) => ({
+          ...prev,
+          [id]: !prev[id],
+        }));
+        return;
+      }
+      await handleToggleTask(id);
+    };
+
+    return (
+      <div className="w-full h-full p-1.5 select-none font-sans bg-transparent">
+        <div
+          className={`group relative p-5 rounded-[28px] shadow-2xl overflow-hidden bg-[#1c1c1e] text-white flex flex-col justify-between h-full select-none border border-[#2c2c2e]/90 ${
+            isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#ff453a]/30'
+          }`}
+          style={{ backgroundColor: '#1c1c1e' }}
+        >
+          {/* Subtle Floating Controls: Appear smoothly only on hover */}
+          <div className="absolute top-2.5 right-3 flex items-center gap-1 bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30 no-drag">
+            <div className="relative">
+              <button
+                onClick={() => setShowMenu((prev) => !prev)}
+                title="Switch Widget Option"
+                className="p-1 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              >
+                <LayoutGrid size={11} />
+              </button>
+
+              {showMenu && (
+                <div className="absolute right-0 top-6 z-50 w-52 bg-[#0d1117] border border-white/20 rounded-xl shadow-2xl p-1 text-xs">
+                  <div className="px-2 py-1 text-[10px] font-mono text-white/40 uppercase tracking-wider border-b border-white/10 mb-1">
+                    Individual Widgets
                   </div>
-                );
-              })
-            )}
+                  {WIDGET_OPTIONS.map((opt) => {
+                    const IconComp = opt.icon;
+                    const isSelected = variant === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => selectVariant(opt.id)}
+                        className={`w-full text-left px-2 py-1.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#0a84ff] text-white font-bold'
+                            : 'text-white/70 hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        <IconComp size={13} className={isSelected ? 'text-white' : 'text-white/50'} />
+                        <div className="truncate">
+                          <div className="leading-tight text-[11px]">{opt.name}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={toggleLock}
+              title={isLocked ? 'Widget is Locked (Non-Draggable)' : 'Widget is Unlocked (Click & Drag)'}
+              className={`p-1 rounded-full transition-all cursor-pointer ${
+                isLocked ? 'text-white/60 hover:text-white hover:bg-white/10' : 'text-[#ffd60a] bg-[#ffd60a]/20'
+              }`}
+            >
+              {isLocked ? <Lock size={11} /> : <Unlock size={11} />}
+            </button>
+
+            <button
+              onClick={handleOpenFullApp}
+              title="Open RemindGo App"
+              className="p-1 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+            >
+              <ExternalLink size={11} />
+            </button>
+
+            <button
+              onClick={handleClose}
+              title="Close Widget"
+              className="p-1 rounded-full text-white/60 hover:text-white hover:bg-[#ff453a] transition-all cursor-pointer"
+            >
+              <X size={11} />
+            </button>
           </div>
 
-          {/* Quick-add task input */}
-          <form onSubmit={handleQuickAdd} className="mt-2 pt-2 border-t border-white/10 flex items-center gap-1.5 no-drag">
+          {/* Top Header: Count on Left, Dark Maroon Circle Badge on Right */}
+          <div className="flex items-start justify-between w-full no-drag">
+            <div>
+              <div className="text-white font-bold text-[36px] tracking-tight leading-none">
+                {countDisplay}
+              </div>
+              <div className="text-[#ff453a] font-semibold text-[16px] leading-tight mt-1">
+                Reminders
+              </div>
+            </div>
+
+            {/* Apple Reminders List Circle Badge */}
+            <div className="w-[34px] h-[34px] rounded-full bg-[#7c201d] flex-shrink-0 shadow-sm" />
+          </div>
+
+          {/* Solid Dividing Line */}
+          <div className="border-b border-[#38383a] mt-3 mb-1.5 w-full" />
+
+          {/* Reminders List */}
+          <div className="flex-1 overflow-y-auto no-drag pr-0.5 space-y-0 min-h-0">
+            {items.map((item, idx) => (
+              <div key={item.id} className="group/item">
+                <div
+                  onClick={() => toggleItem(item.id)}
+                  className="flex items-center gap-3 py-2 cursor-pointer transition-colors"
+                >
+                  {/* Circular Checkbox (Double-ring with red dot when completed) */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleItem(item.id);
+                    }}
+                    className={`w-5 h-5 rounded-full flex-shrink-0 transition-all cursor-pointer flex items-center justify-center p-0 ${
+                      item.isCompleted
+                        ? 'border-2 border-[#ff453a] bg-transparent'
+                        : 'border-2 border-[#545458] bg-transparent hover:border-[#ff453a]'
+                    }`}
+                    aria-label="Toggle reminder"
+                  >
+                    {item.isCompleted && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#ff453a]" />
+                    )}
+                  </button>
+
+                  {/* Reminder Text */}
+                  <span className="text-white text-[14px] font-normal leading-snug flex-1 select-none truncate">
+                    {item.title}
+                  </span>
+                </div>
+
+                {/* Dotted border indented below text, omitted after last item */}
+                {idx < items.length - 1 && (
+                  <div className="ml-8 border-b border-dotted border-white/15" />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Quick Add Form: Revealed only on hover */}
+          <form
+            onSubmit={handleQuickAdd}
+            className="mt-2 pt-2 border-t border-[#2c2c2e] flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 no-drag"
+          >
             <input
               type="text"
-              placeholder="Add to-do for today..."
+              placeholder="Add reminder..."
               value={quickTitle}
               onChange={(e) => setQuickTitle(e.target.value)}
-              className="flex-1 px-2.5 py-1.5 bg-white/5 border border-white/15 rounded-lg text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#0a84ff]"
+              className="flex-1 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#ff453a]"
             />
             <button
               type="submit"
               disabled={!quickTitle.trim()}
-              className="p-1.5 rounded-lg bg-[#0a84ff] hover:bg-[#0066d6] disabled:opacity-40 text-white cursor-pointer transition-all"
+              className="p-1.5 rounded-xl bg-[#ff453a] hover:bg-[#e0382e] disabled:opacity-30 text-white cursor-pointer transition-all"
             >
               <Plus size={13} />
             </button>

@@ -63,7 +63,7 @@ export function saveAllActiveWidgetPositions(): void {
 export function getWidgetDimensions(variant: WidgetVariant): { width: number; height: number } {
   switch (variant) {
     case 'todo':
-      return { width: 380, height: 360 };
+      return { width: 350, height: 410 };
     case 'coding-platforms':
       return { width: 380, height: 270 };
     case 'routine-progress':
