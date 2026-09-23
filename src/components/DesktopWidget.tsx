@@ -37,15 +37,15 @@ const ActivityRings: React.FC<ActivityRingsProps> = ({
   easyRatio,
   mediumRatio,
   hardRatio,
-  size = 46
+  size = 38
 }) => {
   const center = size / 2;
-  const strokeWidth = 3.2;
+  const strokeWidth = Math.max(2.4, size * 0.075);
 
-  // Concentric radii from outer to inner
-  const rOuter = 18;
-  const rMiddle = 13;
-  const rInner = 8;
+  // Concentric radii scaled dynamically to fit viewBox
+  const rOuter = size * 0.39;
+  const rMiddle = size * 0.285;
+  const rInner = size * 0.175;
 
   const circOuter = 2 * Math.PI * rOuter;
   const circMiddle = 2 * Math.PI * rMiddle;
@@ -191,24 +191,24 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     if (!api.resizeWidget) return;
     switch (v) {
       case 'todo':
-        api.resizeWidget(350, 410);
+        api.resizeWidget(310, 355);
         break;
       case 'coding-platforms':
-        api.resizeWidget(380, 270);
+        api.resizeWidget(330, 240);
         break;
       case 'routine-progress':
-        api.resizeWidget(380, 230);
+        api.resizeWidget(330, 205);
         break;
       case 'leetcode-streak':
-        api.resizeWidget(360, 205);
+        api.resizeWidget(315, 180);
         break;
       case 'mini-pill':
-        api.resizeWidget(320, 65);
+        api.resizeWidget(280, 54);
         break;
       case 'leetcode':
       case 'tasks-heatmap':
       default:
-        api.resizeWidget(415, 205);
+        api.resizeWidget(360, 178);
         break;
     }
   }, []);
@@ -567,25 +567,25 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     }[],
     colorType: 'green' | 'amber' = 'green'
   ) => (
-    <div className="flex gap-2.5 sm:gap-3 justify-center no-drag items-start pb-0.5">
+    <div className="flex gap-2 justify-center no-drag items-start pb-0.5">
       {clusters.map((cluster, cIdx) => (
         <div key={cIdx} className="flex flex-col items-center">
-          <div className="flex gap-[3px]">
+          <div className="flex gap-[2px]">
             {cluster.weeks.map((wk, wIdx) => (
-              <div key={wIdx} className="flex flex-col gap-[3px]">
+              <div key={wIdx} className="flex flex-col gap-[2px]">
                 {wk.map((day, dIdx) => {
                   if (!day) {
                     return (
                       <div
                         key={dIdx}
-                        className="w-[11px] h-[11px] rounded-[2px] opacity-0 pointer-events-none"
+                        className="w-[9px] h-[9px] rounded-[2px] opacity-0 pointer-events-none"
                       />
                     );
                   }
                   return (
                     <div
                       key={dIdx}
-                      className={`w-[11px] h-[11px] rounded-[2px] border transition-all ${getCellColor(
+                      className={`w-[9px] h-[9px] rounded-[2px] border transition-all ${getCellColor(
                         day.level,
                         colorType
                       )}`}
@@ -603,7 +603,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     </div>
   );
 
-  const containerClasses = `w-full h-full p-1.5 select-none font-sans bg-transparent`;
+  const containerClasses = `w-full h-full p-1 select-none font-sans bg-transparent`;
   const cardClasses = `group relative p-3 rounded-2xl border border-transparent shadow-2xl overflow-hidden transition-all bg-[#000000] text-white flex flex-col justify-between h-full ${
     isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/50'
   }`;
@@ -690,9 +690,9 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     };
 
     return (
-      <div className="w-full h-full p-1.5 select-none font-sans bg-transparent">
+      <div className="w-full h-full p-1 select-none font-sans bg-transparent">
         <div
-          className={`group relative p-5 rounded-[28px] shadow-2xl overflow-hidden bg-[#1c1c1e] text-white flex flex-col justify-between h-full select-none border border-[#2c2c2e]/90 ${
+          className={`group relative p-4 rounded-[24px] shadow-2xl overflow-hidden bg-[#1c1c1e] text-white flex flex-col justify-between h-full select-none border border-[#2c2c2e]/90 ${
             isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#ff453a]/30'
           }`}
           style={{ backgroundColor: '#1c1c1e' }}
@@ -767,20 +767,20 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
           {/* Top Header: Count on Left, Dark Maroon Circle Badge on Right */}
           <div className="flex items-start justify-between w-full no-drag">
             <div>
-              <div className="text-white font-bold text-[36px] tracking-tight leading-none">
+              <div className="text-white font-bold text-[30px] tracking-tight leading-none">
                 {countDisplay}
               </div>
-              <div className="text-[#ff453a] font-semibold text-[16px] leading-tight mt-1">
+              <div className="text-[#ff453a] font-semibold text-[14px] leading-tight mt-0.5">
                 Reminders
               </div>
             </div>
 
             {/* Apple Reminders List Circle Badge */}
-            <div className="w-[34px] h-[34px] rounded-full bg-[#7c201d] flex-shrink-0 shadow-sm" />
+            <div className="w-7 h-7 rounded-full bg-[#7c201d] flex-shrink-0 shadow-sm" />
           </div>
 
           {/* Solid Dividing Line */}
-          <div className="border-b border-[#38383a] mt-3 mb-1.5 w-full" />
+          <div className="border-b border-[#38383a] mt-2 mb-1 w-full" />
 
           {/* Reminders List */}
           <div className="flex-1 overflow-y-auto no-drag pr-0.5 space-y-0 min-h-0">
@@ -788,7 +788,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
               <div key={item.id} className="group/item">
                 <div
                   onClick={() => toggleItem(item.id)}
-                  className="flex items-center gap-3 py-2 cursor-pointer transition-colors"
+                  className="flex items-center gap-2.5 py-1 cursor-pointer transition-colors"
                 >
                   {/* Circular Checkbox (Double-ring with red dot when completed) */}
                   <button
@@ -797,7 +797,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
                       e.stopPropagation();
                       toggleItem(item.id);
                     }}
-                    className={`w-5 h-5 rounded-full flex-shrink-0 transition-all cursor-pointer flex items-center justify-center p-0 ${
+                    className={`w-4 h-4 rounded-full flex-shrink-0 transition-all cursor-pointer flex items-center justify-center p-0 ${
                       item.isCompleted
                         ? 'border-2 border-[#ff453a] bg-transparent'
                         : 'border-2 border-[#545458] bg-transparent hover:border-[#ff453a]'
@@ -805,19 +805,19 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
                     aria-label="Toggle reminder"
                   >
                     {item.isCompleted && (
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#ff453a]" />
+                      <div className="w-2 h-2 rounded-full bg-[#ff453a]" />
                     )}
                   </button>
 
                   {/* Reminder Text */}
-                  <span className="text-white text-[14px] font-normal leading-snug flex-1 select-none truncate">
+                  <span className="text-white text-[13px] font-normal leading-snug flex-1 select-none truncate">
                     {item.title}
                   </span>
                 </div>
 
                 {/* Dotted border indented below text, omitted after last item */}
                 {idx < items.length - 1 && (
-                  <div className="ml-8 border-b border-dotted border-white/15" />
+                  <div className="ml-6.5 border-b border-dotted border-white/15" />
                 )}
               </div>
             ))}
@@ -826,21 +826,21 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
           {/* Quick Add Form: Revealed only on hover */}
           <form
             onSubmit={handleQuickAdd}
-            className="mt-2 pt-2 border-t border-[#2c2c2e] flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 no-drag"
+            className="mt-1.5 pt-1.5 border-t border-[#2c2c2e] flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 no-drag"
           >
             <input
               type="text"
               placeholder="Add reminder..."
               value={quickTitle}
               onChange={(e) => setQuickTitle(e.target.value)}
-              className="flex-1 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#ff453a]"
+              className="flex-1 px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#ff453a]"
             />
             <button
               type="submit"
               disabled={!quickTitle.trim()}
-              className="p-1.5 rounded-xl bg-[#ff453a] hover:bg-[#e0382e] disabled:opacity-30 text-white cursor-pointer transition-all"
+              className="p-1 rounded-lg bg-[#ff453a] hover:bg-[#e0382e] disabled:opacity-30 text-white cursor-pointer transition-all"
             >
-              <Plus size={13} />
+              <Plus size={12} />
             </button>
           </form>
         </div>
@@ -886,9 +886,9 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
       : 0.06;
 
     return (
-      <div className="w-full h-full p-1.5 select-none font-sans bg-transparent">
+      <div className="w-full h-full p-1 select-none font-sans bg-transparent">
         <div
-          className={`group relative p-4 rounded-[26px] shadow-2xl overflow-hidden bg-[#000000] text-white flex flex-col justify-between h-full select-none ${
+          className={`group relative p-3.5 rounded-[22px] shadow-2xl overflow-hidden bg-[#000000] text-white flex flex-col justify-between h-full select-none ${
             isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#30d158]/30'
           }`}
           style={{ backgroundColor: '#000000' }}
@@ -963,14 +963,14 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
           {/* Top Header: Progress & Solved Total on Left, Activity Rings on Right */}
           <div className="flex items-start justify-between w-full no-drag">
             <div>
-              <div className="text-[#30d158] font-semibold text-[17px] tracking-tight leading-none mb-1">
+              <div className="text-[#30d158] font-semibold text-[15px] tracking-tight leading-none mb-1">
                 Progress
               </div>
               <div className="flex items-baseline gap-0.5">
-                <span className="text-white font-black text-[30px] leading-none tracking-tight">
+                <span className="text-white font-black text-[26px] leading-none tracking-tight">
                   {totalSolved.toLocaleString()}
                 </span>
-                <span className="text-[#8e8e93] font-medium text-[16px] leading-none tracking-tight">
+                <span className="text-[#8e8e93] font-medium text-[14px] leading-none tracking-tight">
                   /{totalQuestions.toLocaleString()}
                 </span>
               </div>
@@ -981,7 +981,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
                 easyRatio={easyRatio}
                 mediumRatio={mediumRatio}
                 hardRatio={hardRatio}
-                size={46}
+                size={38}
               />
             </div>
           </div>
@@ -990,15 +990,15 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
           <div className="flex justify-between items-start w-full no-drag pt-1">
             {clusters.map((cluster, cIdx) => (
               <div key={cIdx} className="flex flex-col items-center">
-                <div className="flex gap-[2.5px]">
+                <div className="flex gap-[2px]">
                   {cluster.weeks.map((wk, wIdx) => (
-                    <div key={wIdx} className="flex flex-col gap-[2.5px]">
+                    <div key={wIdx} className="flex flex-col gap-[2px]">
                       {wk.map((day, dIdx) => {
                         if (!day) {
                           return (
                             <div
                               key={dIdx}
-                              className="w-[8px] h-[8px] rounded-[2px] opacity-0 pointer-events-none"
+                              className="w-[7px] h-[7px] rounded-[1.5px] opacity-0 pointer-events-none"
                             />
                           );
                         }
@@ -1006,7 +1006,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
                         return (
                           <div
                             key={dIdx}
-                            className={`w-[8px] h-[8px] rounded-[2px] transition-colors ${
+                            className={`w-[7px] h-[7px] rounded-[1.5px] transition-colors ${
                               isActive ? 'bg-[#30d158]' : 'bg-[#132617]'
                             }`}
                           />
@@ -1015,7 +1015,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
                     </div>
                   ))}
                 </div>
-                <span className="mt-2 text-[11px] text-[#8e8e93] font-medium tracking-tight select-none">
+                <span className="mt-1.5 text-[10px] text-[#8e8e93] font-medium tracking-tight select-none">
                   {cluster.monthName}
                 </span>
               </div>
@@ -1039,29 +1039,29 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
             <span className="text-[10px] font-mono text-[#39d353] mr-1">Daily Streak</span>
           )}
 
-          <div className="flex items-center justify-between gap-3 py-1.5 no-drag">
-            <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-[#f43f5e]/15 border border-[#f43f5e]/30 flex flex-col items-center justify-center flex-shrink-0">
-                <Flame size={24} className="text-[#f43f5e] animate-pulse" />
-                <span className="text-[10px] font-mono font-bold text-[#f43f5e] -mt-0.5">
+          <div className="flex items-center justify-between gap-2.5 py-1 no-drag">
+            <div className="flex items-center gap-2.5">
+              <div className="w-12 h-12 rounded-xl bg-[#f43f5e]/15 border border-[#f43f5e]/30 flex flex-col items-center justify-center flex-shrink-0">
+                <Flame size={20} className="text-[#f43f5e] animate-pulse" />
+                <span className="text-[9px] font-mono font-bold text-[#f43f5e] -mt-0.5">
                   {leetCodeData ? `${leetCodeData.streak}d` : '0d'}
                 </span>
               </div>
 
               <div>
-                <div className="text-sm font-bold text-white tracking-wide">
+                <div className="text-xs font-bold text-white tracking-wide">
                   {leetCodeData ? `${leetCodeData.streak} Days Active` : 'No Streak'}
                 </div>
-                <div className="text-[11px] font-mono text-white/50 mt-0.5">
+                <div className="text-[10px] font-mono text-white/50 mt-0.5">
                   Rank: <span className="text-[#39d353]">#{leetCodeData?.ranking ? leetCodeData.ranking.toLocaleString() : 'N/A'}</span>
                 </div>
-                <div className="text-[11px] font-mono text-white/50">
+                <div className="text-[10px] font-mono text-white/50">
                   Solved: <span className="text-white font-bold">{leetCodeData?.totalSolved || 0}</span> problems
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col items-end gap-1.5">
+            <div className="flex flex-col items-end gap-1">
               <button
                 onClick={() => {
                   if (api.openExternal) {
@@ -1070,16 +1070,16 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
                     window.open('https://leetcode.com/problemset/all/', '_blank');
                   }
                 }}
-                className="px-3 py-1.5 rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white text-[11px] font-semibold transition-all flex items-center gap-1 shadow-lg cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-[#238636] hover:bg-[#2ea043] text-white text-[10px] font-semibold transition-all flex items-center gap-1 shadow-lg cursor-pointer"
               >
                 <span>Solve Today</span>
-                <ExternalLink size={10} />
+                <ExternalLink size={9} />
               </button>
-              <span className="text-[9px] font-mono text-white/40">POTD Active</span>
+              <span className="text-[8px] font-mono text-white/40">POTD Active</span>
             </div>
           </div>
 
-          <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-white/50 font-mono">
+          <div className="pt-1.5 border-t border-white/10 flex items-center justify-between text-[9px] text-white/50 font-mono">
             <span>Username: {leetCodeData?.username || 'Not set'}</span>
             <span className="text-[#39d353]">{leetCodeData?.streak && leetCodeData.streak > 0 ? 'On Fire' : 'Active'}</span>
           </div>
@@ -1108,7 +1108,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
             <span className="text-[10px] font-mono text-[#39d353] mr-1">Active</span>
           )}
 
-          <div className="space-y-1.5 no-drag py-1">
+          <div className="space-y-1 no-drag py-0.5">
             {platforms.map((p) => {
               const matched = tasks.find((t) => t.date === todayStr && t.title.toLowerCase().includes(p.name.toLowerCase().slice(0, 10)));
               const isDone = matched?.status === 'completed';
@@ -1120,26 +1120,26 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
                   onClick={() => {
                     if (matched) handleToggleTask(matched.id);
                   }}
-                  className={`flex items-center justify-between p-2 rounded-xl border transition-all cursor-pointer ${
+                  className={`flex items-center justify-between p-1.5 rounded-lg border transition-all cursor-pointer ${
                     isDone
                       ? 'bg-[#238636]/15 border-[#238636]/40 text-white'
                       : 'bg-white/[0.05] border-white/10 hover:border-white/25 text-white'
                   }`}
                 >
                   <div className="flex items-center gap-2 truncate">
-                    <IconComp size={14} className={p.color} />
-                    <span className={`text-xs truncate ${isDone ? 'line-through text-white/50' : 'font-medium'}`}>
+                    <IconComp size={13} className={p.color} />
+                    <span className={`text-[11px] truncate ${isDone ? 'line-through text-white/50' : 'font-medium'}`}>
                       {p.name}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <div
-                      className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all ${
+                      className={`w-3.5 h-3.5 rounded-[3px] border flex items-center justify-center transition-all ${
                         isDone ? 'bg-[#39d353] border-[#39d353] text-black' : 'border-white/30'
                       }`}
                     >
-                      {isDone && <Check size={11} strokeWidth={3} />}
+                      {isDone && <Check size={10} strokeWidth={3} />}
                     </div>
                   </div>
                 </div>
@@ -1147,7 +1147,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
             })}
           </div>
 
-          <div className="pt-2 mt-1 border-t border-white/10 flex items-center justify-between text-[10px] text-white/50 font-mono">
+          <div className="pt-1.5 mt-0.5 border-t border-white/10 flex items-center justify-between text-[9px] text-white/50 font-mono">
             <span>Daily Coding Goals</span>
             <span className="text-[#39d353]">8:00 PM IST Notification</span>
           </div>
@@ -1174,26 +1174,26 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
             </span>
           )}
 
-          <div className="py-2 space-y-2.5 no-drag">
+          <div className="py-1 space-y-2 no-drag">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-white/70">Today's Progress</span>
-              <span className="text-xs font-mono font-bold text-[#39d353]">{pct}% ({completedTodayCount}/{totalToday})</span>
+              <span className="text-[11px] text-white/70">Today's Progress</span>
+              <span className="text-[11px] font-mono font-bold text-[#39d353]">{pct}% ({completedTodayCount}/{totalToday})</span>
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-[#0a84ff] to-[#39d353] rounded-full transition-all duration-500"
                 style={{ width: `${pct}%` }}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-[10px] font-mono pt-1">
-              <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+            <div className="grid grid-cols-2 gap-1.5 text-[9px] font-mono pt-0.5">
+              <div className="p-1.5 rounded-lg bg-white/5 border border-white/10">
                 <div className="text-white/40">8:00 PM IST</div>
                 <div className="text-white font-semibold mt-0.5">Tasks Reminder</div>
               </div>
-              <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+              <div className="p-1.5 rounded-lg bg-white/5 border border-white/10">
                 <div className="text-white/40">10:00 PM IST</div>
                 <div className="text-[#f59e0b] font-semibold mt-0.5">Warning Cutoff</div>
               </div>
@@ -1212,7 +1212,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     return (
       <div className="w-full h-full p-1 select-none font-sans bg-transparent">
         <div 
-          className={`group flex items-center justify-between gap-2 p-2 rounded-xl border border-[#222222] shadow-2xl bg-[#000000] text-white h-full ${
+          className={`group flex items-center justify-between gap-2 p-1.5 rounded-xl border border-white/10 shadow-2xl bg-[#000000] text-white h-full ${
             isLocked ? 'select-none' : 'titlebar-drag cursor-move ring-1 ring-[#0a84ff]/50'
           }`}
           style={{ backgroundColor: '#000000' }}

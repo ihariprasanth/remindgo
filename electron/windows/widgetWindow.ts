@@ -63,19 +63,19 @@ export function saveAllActiveWidgetPositions(): void {
 export function getWidgetDimensions(variant: WidgetVariant): { width: number; height: number } {
   switch (variant) {
     case 'todo':
-      return { width: 350, height: 410 };
+      return { width: 310, height: 355 };
     case 'coding-platforms':
-      return { width: 380, height: 270 };
+      return { width: 330, height: 240 };
     case 'routine-progress':
-      return { width: 380, height: 230 };
+      return { width: 330, height: 205 };
     case 'leetcode-streak':
-      return { width: 360, height: 205 };
+      return { width: 315, height: 180 };
     case 'mini-pill':
-      return { width: 320, height: 65 };
+      return { width: 280, height: 54 };
     case 'leetcode':
     case 'tasks-heatmap':
     default:
-      return { width: 415, height: 205 };
+      return { width: 360, height: 178 };
   }
 }
 
@@ -125,27 +125,27 @@ function calculateDefaultPosition(variant: WidgetVariant, width: number, height:
     case 'tasks-heatmap':
       return {
         x: Math.max(workX + 20, workX + screenWidth - width - 25),
-        y: workY + 25
+        y: workY + 20
       };
     case 'todo':
       return {
         x: Math.max(workX + 20, workX + screenWidth - width - 25),
-        y: workY + 245
+        y: workY + 210
       };
     case 'leetcode-streak':
       return {
         x: workX + 25,
-        y: workY + 25
+        y: workY + 20
       };
     case 'leetcode':
       return {
-        x: workX + 25,
-        y: workY + 245
+        x: Math.max(workX + 20, workX + screenWidth - width - 25),
+        y: workY + 20
       };
     case 'coding-platforms':
       return {
-        x: Math.max(workX + 20, workX + screenWidth - width - 425),
-        y: workY + 25
+        x: Math.max(workX + 20, workX + screenWidth - width - 380),
+        y: workY + 20
       };
     case 'routine-progress':
       return {
@@ -155,12 +155,12 @@ function calculateDefaultPosition(variant: WidgetVariant, width: number, height:
     case 'mini-pill':
       return {
         x: workX + Math.floor((screenWidth - width) / 2),
-        y: workY + 25
+        y: workY + 20
       };
     default:
       return {
         x: Math.max(workX + 20, workX + screenWidth - width - 25),
-        y: workY + 25
+        y: workY + 20
       };
   }
 }
