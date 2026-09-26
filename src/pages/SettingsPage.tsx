@@ -18,7 +18,7 @@ interface SettingsPageProps {
 const THEME_OPTIONS: Array<{
   id: AppTheme;
   name: string;
-  category: 'macOS' | 'Windows';
+  category: 'Liquid Glass' | 'Fluent Mica';
   appearance: 'Dark' | 'Light';
   description: string;
   bgPreview: string;
@@ -27,40 +27,40 @@ const THEME_OPTIONS: Array<{
 }> = [
   {
     id: 'mac-dark',
-    name: 'macOS Sonoma Dark',
-    category: 'macOS',
+    name: 'Liquid Glass Dark',
+    category: 'Liquid Glass',
     appearance: 'Dark',
-    description: 'Deep obsidian liquid glass with Apple traffic-light controls & vibrant dark glow',
+    description: 'Deep obsidian liquid glass with ambient glow & clean rounded controls',
     bgPreview: 'from-[#141419] to-[#0a0a0f] border-white/10',
     accentPreview: '#0a84ff',
     isWindows: false,
   },
   {
     id: 'mac-light',
-    name: 'macOS Sonoma Light',
-    category: 'macOS',
+    name: 'Liquid Glass Light',
+    category: 'Liquid Glass',
     appearance: 'Light',
-    description: 'Frosted pearl glass with Apple traffic lights, subtle shadows & crisp readability',
+    description: 'Frosted pearl liquid glass with subtle shadows & crisp readability',
     bgPreview: 'from-[#f5f5f7] to-[#e8e8ed] border-black/10',
     accentPreview: '#0071e3',
     isWindows: false,
   },
   {
     id: 'windows-dark',
-    name: 'Windows 11 Mica Dark',
-    category: 'Windows',
+    name: 'Fluent Mica Dark',
+    category: 'Fluent Mica',
     appearance: 'Dark',
-    description: 'Fluent Mica Dark acrylic styling, sleek borders & native Windows 11 window controls',
+    description: 'Fluent Mica Dark acrylic styling, sleek borders & modern window controls',
     bgPreview: 'from-[#202020] to-[#121212] border-white/10',
     accentPreview: '#60cdff',
     isWindows: true,
   },
   {
     id: 'windows-light',
-    name: 'Windows 11 Mica Light',
-    category: 'Windows',
+    name: 'Fluent Mica Light',
+    category: 'Fluent Mica',
     appearance: 'Light',
-    description: 'Fluent Clean Light slate styling, sharp modern borders & native Windows title controls',
+    description: 'Fluent Clean Light slate styling, sharp modern borders & clean title controls',
     bgPreview: 'from-[#f3f3f3] to-[#e9e9e9] border-black/10',
     accentPreview: '#005fb8',
     isWindows: true,
@@ -86,9 +86,9 @@ const FONT_OPTIONS: Array<{
   preview: string;
   desc: string;
 }> = [
-  { id: 'sf-pro', name: 'Apple SF Pro', preview: 'Aa Bb Gg 123', desc: 'macOS Sonoma native rounded typography' },
-  { id: 'segoe-ui', name: 'Windows Segoe UI', preview: 'Aa Bb Gg 123', desc: 'Windows 11 Fluent interface typography' },
-  { id: 'mono', name: 'JetBrains / Geist Mono', preview: 'const code = 1;', desc: 'High-precision monospace for developers' },
+  { id: 'sf-pro', name: 'SF Pro Display', preview: 'Aa Bb Gg 123', desc: 'Precision engineered rounded display typography' },
+  { id: 'segoe-ui', name: 'Segoe UI Fluent', preview: 'Aa Bb Gg 123', desc: 'Modern fluent interface typography' },
+  { id: 'mono', name: 'Developer Mono', preview: 'const code = 1;', desc: 'High-precision monospace for developers' },
 ];
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({
@@ -230,7 +230,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               Appearance & Theme Studio
             </h3>
             <p className="text-[11px] text-[var(--text-sub)] mt-0.5">
-              Choose between native macOS Sonoma and Windows 11 Fluent design engines with instant live preview
+              Choose between premium Liquid Glass and Fluent Mica design engines with instant live preview
             </p>
           </div>
           <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/30 font-semibold">
@@ -961,7 +961,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
               <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
                 <span className="text-xs font-bold font-mono px-3 py-1 rounded-full bg-[#0a84ff]/15 text-[#0a84ff] border border-[#0a84ff]/30 shadow-sm">
-                  v3.5.0 Production
+                  v4.0.0 Production
                 </span>
                 <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 shadow-sm flex items-center gap-1.5">
                   <ShieldCheck size={13} />
