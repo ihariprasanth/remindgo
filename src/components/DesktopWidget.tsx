@@ -231,6 +231,18 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
     }
   }, []);
 
+  // Prevent Alt+F4 accidental closure on widget
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.alt && (e.key === 'F4' || e.key === 'f4')) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, []);
+
   useEffect(() => {
     loadData();
     adjustWindowSize(variant);

@@ -779,7 +779,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             </div>
 
             {/* Visual Cards for Individual Standalone Widgets */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
               {[
                 { id: 'tasks-heatmap', name: 'Task Activity Matrix', desc: '20-week to-do tasks heatmap & streak', color: 'text-[#39d353]' },
                 { id: 'todo', name: 'Today\'s Daily Checklist', desc: '1-click checkoff for routine & to-dos', color: 'text-[#0a84ff]' },
@@ -961,7 +961,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
               <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
                 <span className="text-xs font-bold font-mono px-3 py-1 rounded-full bg-[#0a84ff]/15 text-[#0a84ff] border border-[#0a84ff]/30 shadow-sm">
-                  v3.0.0 Production
+                  v3.5.0 Production
                 </span>
                 <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 shadow-sm flex items-center gap-1.5">
                   <ShieldCheck size={13} />

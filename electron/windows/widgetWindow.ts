@@ -226,6 +226,9 @@ export function createOrShowWidgetWindow(
     backgroundColor: '#00000000',
     hasShadow: false,
     resizable: false,
+    minimizable: false,
+    maximizable: false,
+    fullscreenable: false,
     alwaysOnTop: isPinned || Boolean(settings.widgetAlwaysOnTop),
     skipTaskbar: true,
     show: false,
@@ -237,16 +240,52 @@ export function createOrShowWidgetWindow(
     }
   });
 
+  win.setMinimizable(false);
+  win.setMaximizable(false);
+  win.setFullScreenable(false);
+
   activeWidgetWindows.set(variant, win);
 
   (win as any).__explicitCloseAllowed = false;
 
-  // Prevent Alt+F4 from closing the desktop widget
+  // Prevent Alt+F4 and window closing/minimizing shortcuts from affecting desktop widgets
   win.webContents.on('before-input-event', (event, input) => {
     if (input.alt && (input.key === 'F4' || input.key === 'f4' || input.code === 'F4')) {
       event.preventDefault();
     }
+    if ((input.control || input.meta) && (input.key === 'w' || input.key === 'W' || input.key === 'm' || input.key === 'M' || input.key === 'd' || input.key === 'D')) {
+      event.preventDefault();
+    }
   });
+
+  // Windows trackpad swipe down / gesture minimize immunity
+  win.on('minimize', (event) => {
+    event.preventDefault();
+    if (win && !win.isDestroyed()) {
+      win.restore();
+      win.showInactive();
+    }
+  });
+
+  // Prevent Windows system context menu (Restore / Move / Minimize / Close)
+  win.on('system-context-menu', (e) => e.preventDefault());
+
+  // Windows-specific WM_SYSCOMMAND hook to trap SC_MINIMIZE (0xF020)
+  if (process.platform === 'win32') {
+    try {
+      win.hookWindowMessage(0x0112, (wParam) => {
+        const cmd = (typeof wParam === 'number' ? wParam : (wParam as any).readUInt32LE ? (wParam as any).readUInt32LE(0) : 0) & 0xFFF0;
+        if (cmd === 0xF020) { // SC_MINIMIZE
+          setTimeout(() => {
+            if (win && !win.isDestroyed()) {
+              win.restore();
+              win.showInactive();
+            }
+          }, 0);
+        }
+      });
+    } catch {}
+  }
 
   // Load URL with variant query param
   if (isDev && devServerUrl) {
