@@ -52,12 +52,49 @@ export const App: React.FC = () => {
   } | undefined>(undefined);
   const [inAppAlarmTask, setInAppAlarmTask] = useState<Task | null>(null);
 
-  // Pure Pitch-Black OLED Dark Mode Only
+  // Dynamic Multi-Theme System (macOS & Windows Dark/Light + Accents & Fonts)
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove('light');
-    root.classList.add('dark');
-  }, []);
+    const body = document.body;
+
+    root.classList.remove('dark', 'light', 'theme-mac-dark', 'theme-mac-light', 'theme-windows-dark', 'theme-windows-light');
+    body.classList.remove('dark', 'light', 'theme-mac-dark', 'theme-mac-light', 'theme-windows-dark', 'theme-windows-light');
+
+    const activeTheme = settings.theme || 'mac-dark';
+    const isDark = activeTheme === 'mac-dark' || activeTheme === 'windows-dark' || activeTheme === 'dark';
+    const themeClass = activeTheme === 'mac-light' ? 'theme-mac-light'
+      : activeTheme === 'windows-light' ? 'theme-windows-light'
+      : activeTheme === 'windows-dark' ? 'theme-windows-dark'
+      : 'theme-mac-dark';
+
+    if (isDark) {
+      root.classList.add('dark');
+      body.classList.add('dark');
+    } else {
+      root.classList.add('light');
+      body.classList.add('light');
+    }
+
+    root.classList.add(themeClass);
+    body.classList.add(themeClass);
+    root.setAttribute('data-theme', activeTheme);
+    body.setAttribute('data-theme', activeTheme);
+
+    // Dynamic Accent
+    const accent = settings.accentColor || 'blue';
+    root.setAttribute('data-accent', accent);
+    body.setAttribute('data-accent', accent);
+
+    // Font Engine
+    const font = settings.fontFamily || (activeTheme.startsWith('windows') ? 'segoe-ui' : 'sf-pro');
+    root.setAttribute('data-font', font);
+    body.setAttribute('data-font', font);
+
+    // Glass / Solid Mode
+    const glass = settings.glassEffects !== false;
+    root.setAttribute('data-glass', String(glass));
+    body.setAttribute('data-glass', String(glass));
+  }, [settings.theme, settings.accentColor, settings.fontFamily, settings.glassEffects]);
 
   const loadData = useCallback(async () => {
     try {
@@ -337,13 +374,16 @@ export const App: React.FC = () => {
     }
   };
 
+  const isDark = settings.theme === 'mac-dark' || settings.theme === 'windows-dark' || settings.theme === 'dark';
+
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden dark">
-      {/* Outer macOS Window Container with Liquid Glass Frame */}
+    <div className={`flex flex-col h-screen w-screen overflow-hidden ${isDark ? 'dark' : 'light'}`}>
+      {/* Outer Window Container with Liquid Glass Frame */}
       <div className="flex flex-col flex-1 overflow-hidden liquid-glass-base">
-        {/* macOS Unified Titlebar & Toolbar */}
+        {/* Adaptive Unified Titlebar */}
         <Header
           title={getHeaderTitle()}
+          theme={settings.theme}
           onOpenAddTask={handleOpenAddTask}
           onBack={handleBack}
           onForward={handleForward}

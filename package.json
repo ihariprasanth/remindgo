@@ -1,9 +1,9 @@
 {
   "name": "remindgo",
-  "version": "2.9.6",
+  "version": "3.0.0",
   "description": "Offline Windows Task Reminder App with Liquid Glass UI & LeetCode Tracker",
   "main": "dist-electron/main.js",
-  "author": "Hariprasanth T (RemindGo)",
+  "author": "HARIPRASANTH T",
   "license": "MIT",
   "scripts": {
     "dev:vite": "vite",

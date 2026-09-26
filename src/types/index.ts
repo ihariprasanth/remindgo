@@ -18,6 +18,10 @@ export interface Task {
   last_notified_at?: string | null;
 }
 
+export type AppTheme = 'mac-dark' | 'mac-light' | 'windows-dark' | 'windows-light';
+export type AccentColor = 'blue' | 'purple' | 'green' | 'amber' | 'coral' | 'cyan';
+export type FontFamily = 'sf-pro' | 'segoe-ui' | 'mono';
+
 export interface Settings {
   alarmSound: string;
   soundVolume: number;
@@ -28,7 +32,12 @@ export interface Settings {
   leetcodeUsername?: string;
   codechefUsername?: string;
   gfgUsername?: string;
-  theme: 'dark' | 'light';
+  theme: AppTheme | 'dark' | 'light';
+  accentColor?: AccentColor;
+  fontFamily?: FontFamily;
+  glassEffects?: boolean;
+  compactMode?: boolean;
+  instantStartup?: boolean;
   autoOpenWidget?: boolean;
   widgetAlwaysOnTop?: boolean;
   widgetMode?: 'tasks-heatmap' | 'todo' | 'leetcode' | 'leetcode-streak' | 'coding-platforms' | 'routine-progress' | 'mini-pill' | 'combined';

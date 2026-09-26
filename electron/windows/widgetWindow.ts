@@ -255,18 +255,17 @@ export function createOrShowWidgetWindow(
     win.loadFile(path.join(__dirname, '../dist/widget.html'), { query: { variant } });
   }
 
-  win.once('ready-to-show', () => {
-    if (win && !win.isDestroyed()) {
-      win.showInactive();
-    }
-  });
-
-  // Fallback reveal
-  setTimeout(() => {
+  const revealImmediately = () => {
     if (win && !win.isDestroyed() && !win.isVisible()) {
       win.showInactive();
     }
-  }, 350);
+  };
+
+  win.once('ready-to-show', revealImmediately);
+  win.webContents.once('dom-ready', revealImmediately);
+
+  // Fast fallback reveal (100ms)
+  setTimeout(revealImmediately, 100);
 
   // Reliable, debounced position tracking for Windows
   let moveDebounceTimer: any = null;

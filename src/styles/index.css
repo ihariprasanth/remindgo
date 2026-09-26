@@ -53,85 +53,189 @@
   font-style: normal;
 }
 
-/* Apple San Francisco Typography & Liquid Glass Theme Tokens */
+/* Typography Tokens */
 :root {
   --font-mac: 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, "SF Pro", "San Francisco", "Helvetica Neue", sans-serif;
-  --font-mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --font-segoe: 'Segoe UI Variable Display', 'Segoe UI Variable Text', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Cascadia Code", monospace;
   font-size: 14.5px;
+
+  /* Default Accents (Apple Blue) */
+  --accent-primary: #0a84ff;
+  --accent-secondary: #0066d6;
+  --accent-hover: #389eff;
+  --accent-rgb: 10, 132, 255;
 }
 
-/* Dark Mode Tokens (Pure Pitch-Black & Crystal Liquid Glass) */
-.dark {
+/* ========================================================================= */
+/* THEME 1: MACOS DARK (Authentic Apple Pitch-Black & Liquid Glass)           */
+/* ========================================================================= */
+[data-theme="mac-dark"], .theme-mac-dark, .dark {
   --bg-app: #000000;
-  --bg-glass-base: rgba(0, 0, 0, 0.90);
-  --bg-sidebar: rgba(4, 4, 4, 0.88);
-  --bg-card: rgba(12, 12, 12, 0.82);
-  --bg-card-hover: rgba(22, 22, 22, 0.95);
+  --bg-glass-base: rgba(0, 0, 0, 0.92);
+  --bg-sidebar: rgba(14, 14, 16, 0.92);
+  --bg-header: rgba(0, 0, 0, 0.75);
+  --bg-card: rgba(22, 22, 24, 0.88);
+  --bg-card-hover: rgba(32, 32, 36, 0.96);
   --border-glass: rgba(255, 255, 255, 0.09);
   --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   --text-main: #FFFFFF;
   --text-sub: #A1A1A6;
   --text-muted: #636366;
-  --input-bg: rgba(10, 10, 10, 0.90);
+  --input-bg: rgba(12, 12, 14, 0.92);
   --pill-active-bg: rgba(255, 255, 255, 0.14);
   --pill-active-border: rgba(255, 255, 255, 0.22);
   --pill-active-text: #FFFFFF;
   --pill-active-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   --status-bar-bg: rgba(0, 0, 0, 0.95);
+  --font-family-theme: var(--font-mac);
+  --radius-window: 24px;
+  --radius-card: 16px;
 }
 
-* {
-  box-sizing: border-box;
-  font-family: var(--font-mac);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+/* ========================================================================= */
+/* THEME 2: MACOS LIGHT (Crisp Apple Silver Titanium & Frosted Light Glass)   */
+/* ========================================================================= */
+[data-theme="mac-light"], .theme-mac-light {
+  --bg-app: #f5f5f7;
+  --bg-glass-base: rgba(245, 245, 247, 0.95);
+  --bg-sidebar: rgba(238, 238, 242, 0.94);
+  --bg-header: rgba(245, 245, 247, 0.88);
+  --bg-card: #ffffff;
+  --bg-card-hover: #f9f9fb;
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --text-main: #1d1d1f;
+  --text-sub: #6e6e73;
+  --text-muted: #86868b;
+  --input-bg: #ffffff;
+  --pill-active-bg: var(--accent-primary);
+  --pill-active-border: var(--accent-secondary);
+  --pill-active-text: #ffffff;
+  --pill-active-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.25);
+  --status-bar-bg: rgba(245, 245, 247, 0.95);
+  --font-family-theme: var(--font-mac);
+  --radius-window: 24px;
+  --radius-card: 16px;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", sans-serif;
-  letter-spacing: -0.025em;
+/* ========================================================================= */
+/* THEME 3: WINDOWS 11 DARK (Fluent Mica Charcoal & Acrylic Borders)          */
+/* ========================================================================= */
+[data-theme="windows-dark"], .theme-windows-dark {
+  --bg-app: #202020;
+  --bg-glass-base: rgba(32, 32, 32, 0.96);
+  --bg-sidebar: rgba(26, 26, 26, 0.96);
+  --bg-header: rgba(32, 32, 32, 0.90);
+  --bg-card: rgba(43, 43, 43, 0.92);
+  --bg-card-hover: rgba(54, 54, 54, 0.98);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  --text-main: #ffffff;
+  --text-sub: #cccccc;
+  --text-muted: #8a8a8a;
+  --input-bg: rgba(30, 30, 30, 0.95);
+  --pill-active-bg: rgba(255, 255, 255, 0.10);
+  --pill-active-border: rgba(255, 255, 255, 0.18);
+  --pill-active-text: var(--accent-hover);
+  --pill-active-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --status-bar-bg: rgba(32, 32, 32, 0.95);
+  --font-family-theme: var(--font-segoe);
+  --radius-window: 12px;
+  --radius-card: 10px;
 }
 
-p, span, label, button, input, textarea, select {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", sans-serif;
-  letter-spacing: -0.012em;
+/* ========================================================================= */
+/* THEME 4: WINDOWS 11 LIGHT (Fluent Pure White & Crisp Light UI)             */
+/* ========================================================================= */
+[data-theme="windows-light"], .theme-windows-light, .light {
+  --bg-app: #f3f3f3;
+  --bg-glass-base: rgba(243, 243, 243, 0.97);
+  --bg-sidebar: rgba(238, 238, 238, 0.96);
+  --bg-header: rgba(243, 243, 243, 0.90);
+  --bg-card: #ffffff;
+  --bg-card-hover: #f9f9f9;
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --text-main: #1f1f1f;
+  --text-sub: #5c5c5c;
+  --text-muted: #767676;
+  --input-bg: #ffffff;
+  --pill-active-bg: var(--accent-primary);
+  --pill-active-border: var(--accent-secondary);
+  --pill-active-text: #ffffff;
+  --pill-active-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.25);
+  --status-bar-bg: rgba(243, 243, 243, 0.95);
+  --font-family-theme: var(--font-segoe);
+  --radius-window: 12px;
+  --radius-card: 10px;
 }
 
-code, kbd, samp, pre, .font-mono {
-  font-family: var(--font-mono) !important;
-  letter-spacing: normal;
+/* ========================================================================= */
+/* DYNAMIC ACCENT COLOR OVERRIDES                                             */
+/* ========================================================================= */
+[data-accent="blue"] {
+  --accent-primary: #0a84ff;
+  --accent-secondary: #0066d6;
+  --accent-hover: #389eff;
+  --accent-rgb: 10, 132, 255;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-mac);
-  font-size: 14px;
-  letter-spacing: -0.015em;
-  overflow: hidden;
-  user-select: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+[data-accent="purple"] {
+  --accent-primary: #bf5af2;
+  --accent-secondary: #9333ea;
+  --accent-hover: #d946ef;
+  --accent-rgb: 191, 90, 242;
 }
 
-/* Dark mode ambient body glow - 100% Pure Black, Zero Blue Tint */
-.dark body, body.dark {
-  background-color: #000000;
-  background-image: 
-    radial-gradient(ellipse 90% 40% at 50% -5%, rgba(255, 255, 255, 0.05) 0%, transparent 65%),
-    radial-gradient(circle at 10% 95%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
-  color: #FFFFFF;
+[data-accent="green"] {
+  --accent-primary: #30d158;
+  --accent-secondary: #16a34a;
+  --accent-hover: #4ade80;
+  --accent-rgb: 48, 209, 88;
 }
 
-/* Light mode ambient body glow */
-.light body, body.light {
-  background-color: #f4f6f9;
-  background-image: 
-    radial-gradient(circle at 20% 20%, rgba(0, 122, 255, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(52, 199, 89, 0.05) 0%, transparent 50%);
-  color: #1d1d1f;
+[data-accent="amber"] {
+  --accent-primary: #ff9f0a;
+  --accent-secondary: #d97706;
+  --accent-hover: #fbbf24;
+  --accent-rgb: 255, 159, 10;
+}
+
+[data-accent="coral"] {
+  --accent-primary: #ff453a;
+  --accent-secondary: #dc2626;
+  --accent-hover: #f87171;
+  --accent-rgb: 255, 69, 58;
+}
+
+[data-accent="cyan"] {
+  --accent-primary: #60cdff;
+  --accent-secondary: #0284c7;
+  --accent-hover: #38bdf8;
+  --accent-rgb: 96, 205, 255;
+}
+
+/* ========================================================================= */
+/* DYNAMIC FONT ENGINE OVERRIDES                                             */
+/* ========================================================================= */
+[data-font="sf-pro"] {
+  --font-active: var(--font-mac);
+}
+[data-font="segoe-ui"] {
+  --font-active: var(--font-segoe);
+}
+[data-font="mono"] {
+  --font-active: var(--font-mono);
+}
+
+/* Low-RAM Solid Mode (Disables GPU backdrop blur if toggled off) */
+[data-glass="false"] .liquid-glass-base,
+[data-glass="false"] .liquid-glass-sidebar,
+[data-glass="false"] .liquid-glass-card,
+[data-glass="false"] .liquid-glass-pill {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Transparent Desktop Widget Window Background */
@@ -221,15 +325,15 @@ body.widget-transparent,
 }
 
 .macos-btn-primary {
-  background: linear-gradient(180deg, #0A84FF 0%, #0066D6 100%);
+  background: linear-gradient(180deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.35);
   color: #ffffff;
 }
 
 .macos-btn-primary:hover {
-  background: linear-gradient(180deg, #389EFF 0%, #0A84FF 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 4px 16px rgba(10, 132, 255, 0.45);
+  background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent-primary) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 4px 16px rgba(var(--accent-rgb), 0.45);
 }
 
 .macos-btn-secondary {
@@ -270,8 +374,8 @@ body.widget-transparent,
 
 .macos-input:focus {
   outline: none;
-  border-color: #0A84FF;
-  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.25);
 }
 
 /* iOS/macOS Style Toggle Switch */

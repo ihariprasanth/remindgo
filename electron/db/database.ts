@@ -308,7 +308,14 @@ export class TaskDatabase {
       closeToTray: true,
       startWithWindows: true,
       leetcodeUsername: '',
-      theme: 'dark',
+      codechefUsername: '',
+      gfgUsername: '',
+      theme: 'mac-dark',
+      accentColor: 'blue',
+      fontFamily: 'sf-pro',
+      glassEffects: true,
+      compactMode: false,
+      instantStartup: true,
       autoOpenWidget: true,
       widgetAlwaysOnTop: false
     };
@@ -322,6 +329,11 @@ export class TaskDatabase {
     }
     stmt.free();
 
+    // Map old 'dark'/'light' values to 'mac-dark'/'windows-light' if legacy
+    let loadedTheme: any = settingsMap.theme || defaultSettings.theme;
+    if (loadedTheme === 'dark') loadedTheme = 'mac-dark';
+    if (loadedTheme === 'light') loadedTheme = 'windows-light';
+
     return {
       alarmSound: settingsMap.alarmSound || defaultSettings.alarmSound,
       soundVolume: settingsMap.soundVolume ? parseFloat(settingsMap.soundVolume) : defaultSettings.soundVolume,
@@ -332,7 +344,12 @@ export class TaskDatabase {
       leetcodeUsername: settingsMap.leetcodeUsername || '',
       codechefUsername: settingsMap.codechefUsername || '',
       gfgUsername: settingsMap.gfgUsername || '',
-      theme: 'dark',
+      theme: loadedTheme,
+      accentColor: (settingsMap.accentColor as any) || 'blue',
+      fontFamily: (settingsMap.fontFamily as any) || 'sf-pro',
+      glassEffects: settingsMap.glassEffects !== undefined ? settingsMap.glassEffects === 'true' : true,
+      compactMode: settingsMap.compactMode !== undefined ? settingsMap.compactMode === 'true' : false,
+      instantStartup: settingsMap.instantStartup !== undefined ? settingsMap.instantStartup === 'true' : true,
       autoOpenWidget: settingsMap.autoOpenWidget !== undefined ? settingsMap.autoOpenWidget === 'true' : true,
       widgetAlwaysOnTop: settingsMap.widgetAlwaysOnTop === 'true',
       widgetMode: (settingsMap.widgetMode as any) || 'tasks-heatmap',

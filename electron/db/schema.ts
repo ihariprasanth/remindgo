@@ -53,6 +53,11 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   leetcodeUsername: '',
   codechefUsername: '',
   gfgUsername: '',
-  theme: 'dark',
+  theme: 'mac-dark',
+  accentColor: 'blue',
+  fontFamily: 'sf-pro',
+  glassEffects: 'true',
+  compactMode: 'false',
+  instantStartup: 'true',
   autoOpenWidget: 'true'
 };

@@ -86,17 +86,25 @@ app.whenReady().then(async () => {
     console.warn('[Main] Could not set login item settings:', err);
   }
 
-  // Create main window & tray (remain hidden on startup boot so only desktop widgets show)
-  createMainWindow(isDev, devServerUrl, isStartupLaunch);
+  // 1. Setup system tray immediately
   setupTray(isDev, devServerUrl);
 
-  // Start alarm scheduler
+  // 2. INSTANT Desktop Widgets: launch immediately on startup without waiting for main window!
+  if (initialSettings.autoOpenWidget || isStartupLaunch) {
+    launchAllPreferredWidgets(isDev, devServerUrl);
+  }
+
+  // 3. Start alarm scheduler
   scheduler = new AlarmScheduler(isDev, devServerUrl);
   scheduler.start();
 
-  // Auto-open Desktop Widgets: activate widgets on startup or if autoOpenWidget is enabled
-  if (initialSettings.autoOpenWidget || isStartupLaunch) {
-    launchAllPreferredWidgets(isDev, devServerUrl);
+  // 4. Create main window: on startup, defer main window load so desktop widgets pop up instantly
+  if (isStartupLaunch) {
+    setTimeout(() => {
+      createMainWindow(isDev, devServerUrl, true);
+    }, 1500);
+  } else {
+    createMainWindow(isDev, devServerUrl, false);
   }
 
   // Periodic memory trimming & garbage collection to keep RAM ultra low

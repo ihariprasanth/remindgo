@@ -151,8 +151,22 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
   });
 
   const [showMenu, setShowMenu] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [leetCodeData, setLeetCodeData] = useState<LeetCodeData | null>(null);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    try {
+      const cached = localStorage.getItem('remindgo_cached_tasks');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [leetCodeData, setLeetCodeData] = useState<LeetCodeData | null>(() => {
+    try {
+      const cached = localStorage.getItem('remindgo_cached_leetcode');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
   const [quickTitle, setQuickTitle] = useState('');
   const [sampleCompletedIds, setSampleCompletedIds] = useState<Record<string, boolean>>({});
 
@@ -178,9 +192,13 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({ initialVariant }) 
         api.getTasks(),
         api.getStoredLeetCodeData()
       ]);
-      setTasks(fetchedTasks || []);
+      if (fetchedTasks) {
+        setTasks(fetchedTasks);
+        try { localStorage.setItem('remindgo_cached_tasks', JSON.stringify(fetchedTasks)); } catch {}
+      }
       if (storedLeetCode) {
         setLeetCodeData(storedLeetCode);
+        try { localStorage.setItem('remindgo_cached_leetcode', JSON.stringify(storedLeetCode)); } catch {}
       }
     } catch (err) {
       console.error('[Widget] Failed to load data:', err);
